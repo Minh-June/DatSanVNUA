@@ -52,7 +52,6 @@ html {
 
 /* Đăng ký - Đăng nhập */
 .container-access {
-    background-color: ;
     width: 550px;
     padding: 15px;
     margin: 50px auto;
@@ -483,10 +482,6 @@ html {
     margin-right: 60px;
 }
 
-.order-section-right{
-
-}
-
 /* Bảng đặt lịch */
 .container {
     width: 1000px;
@@ -522,10 +517,6 @@ html {
 #total_price {
     margin-top: 2px;
     margin-left: 5px;
-}
-
-.form-order-right {
-
 }
 
 .container > form {
@@ -687,10 +678,6 @@ html {
 /* Admin */
 .admin-section {
     margin-top: 4.5%;
-}
-
-.admin-content {
-    
 }
 
 .admin {
@@ -909,10 +896,6 @@ th {
     cursor: pointer;
     color: #000;
     background-color: #C8E6C9;
-}
-
-.order-update {
-    
 }
 
 .order-update select {   
