@@ -1,72 +1,100 @@
-function toggleTimeSlot(button) {
-    const selectedTimesInput = document.getElementById('selected_times');
-    const totalPriceElement = document.getElementById('total_price');
-    
-    // Lấy thông tin từ button
-    const time = button.getAttribute('data-time');
-    const price = parseFloat(button.getAttribute('data-price'));
-    
-    // Kiểm tra xem khung giờ đã được chọn hay chưa
-    if (button.classList.contains('booked')) {
-        alert('Khung giờ này đã được đặt.');
-        return;
-    }
-    
-    // Thay đổi trạng thái của button
-    button.classList.toggle('selected');
-    
-    // Cập nhật danh sách thời gian đã chọn
-    let selectedTimes = selectedTimesInput.value.split(',').filter(Boolean);
-    
-    if (button.classList.contains('selected')) {
-        selectedTimes.push(time);
-    } else {
-        selectedTimes = selectedTimes.filter(t => t !== time);
-    }
-    
-    selectedTimesInput.value = selectedTimes.join(',');
-    
-    const totalPrice = selectedTimes.reduce((sum, t) => {
-        const selectedTimeSlot = Array.from(document.querySelectorAll('.btn-time')).find(b => b.getAttribute('data-time') === t);
-        return sum + (selectedTimeSlot ? parseFloat(selectedTimeSlot.getAttribute('data-price')) : 0);
-    }, 0);
-    
-    // Cập nhật giá tiền hiển thị
-    totalPriceElement.textContent = totalPrice + ' VND';
-    
-    // Cập nhật giá trị vào input ẩn
-    document.getElementById('total_price_input').value = totalPrice;
-}
+let selectedTimes = [];
+let selectedPrices = [];
+let totalPrice = 0;
 
-function fetchBookedTimes() {
+function onDateChange() {
+    const yardId = document.getElementById('yard_id_input').value;
     const selectedDate = document.getElementById('date').value;
-
-    // Gửi yêu cầu AJAX để lấy các khung giờ đã đặt cho ngày đã chọn
-    fetch(`/get-booked-times?date=${selectedDate}&san_id=${document.querySelector('input[name="san_id"]').value}`)
-        .then(response => response.json())
-        .then(data => {
-            const bookedTimes = data.booked_times;
-
-            // Cập nhật trạng thái các nút khung giờ
-            const buttons = document.querySelectorAll('.btn-time');
-            buttons.forEach(button => {
-                const time = button.getAttribute('data-time');
-                if (bookedTimes.includes(time)) {
-                    button.disabled = true; // Khung giờ đã đặt
-                    button.classList.add('booked'); // Thêm lớp để hiển thị
-                } else {
-                    button.disabled = false; // Khung giờ có thể chọn
-                    button.classList.remove('booked'); // Xóa lớp
-                }
-            });
-        });
+    window.location.href = `/trang-chu/dat-san/${yardId}?date=${selectedDate}`;
 }
 
-function openModal(imgSrc) {
-    document.getElementById("modalImg").src = imgSrc;
-    document.getElementById("myModal").style.display = "block";
+function changeTimeSlot(button) {
+    const time = button.getAttribute('data-time');
+    const price = parseInt(button.getAttribute('data-price'));
+
+    if (button.classList.contains('selected')) {
+        button.classList.remove('selected');
+        const index = selectedTimes.indexOf(time);
+        if (index > -1) {
+            selectedTimes.splice(index, 1);
+            selectedPrices.splice(index, 1);
+            totalPrice -= price;
+        }
+    } else {
+        button.classList.add('selected');
+        selectedTimes.push(time);
+        selectedPrices.push(price);
+        totalPrice += price;
+    }
+
+    document.getElementById('total_price').innerText = totalPrice.toLocaleString('vi-VN') + ' VND';
+    document.getElementById('total_price_input').value = totalPrice;
+
+    // Cập nhật các input hidden cho selected_times[]
+    const container = document.getElementById('selected_times');
+    container.innerHTML = '';
+    selectedTimes.forEach(time => {
+        const input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = 'selected_times[]';
+        input.value = time;
+        container.appendChild(input);
+    });
+
+    // Cập nhật input hidden price_per_slot dưới dạng JSON string
+    let pricePerSlotInput = document.getElementById('price_per_slot_input');
+    if (!pricePerSlotInput) {
+        pricePerSlotInput = document.createElement('input');
+        pricePerSlotInput.type = 'hidden';
+        pricePerSlotInput.name = 'price_per_slot';
+        pricePerSlotInput.id = 'price_per_slot_input';
+        container.appendChild(pricePerSlotInput);
+    }
+    pricePerSlotInput.value = JSON.stringify(selectedPrices);
 }
 
-function closeModal() {
-    document.getElementById("myModal").style.display = "none";
+window.onload = function() {
+    const buttons = document.querySelectorAll('.btn-time:not(.booked)');
+    buttons.forEach(btn => {
+        btn.addEventListener('click', () => changeTimeSlot(btn));
+    });
+};
+
+function confirmBooking(event) {
+    event.preventDefault();
+
+    if (selectedTimes.length === 0) {
+        alert('Vui lòng chọn ít nhất một khung giờ để đặt sân.');
+        return false;
+    }
+
+    if (!confirm('Bạn muốn tiếp tục đặt sân không ?')) {
+        event.target.submit();
+        return true;
+    }
+
+    const form = event.target;
+    const formData = new FormData(form);
+
+    fetch(form.action, {
+        method: form.method,
+        body: formData,
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+            'X-CSRF-TOKEN': form.querySelector('input[name="_token"]').value
+        },
+    })
+    .then(response => {
+        if (response.ok) {
+            window.location.href = '/trang-chu';
+        } else {
+            return response.text().then(text => { throw new Error(text) });
+        }
+    })
+    .catch(error => {
+        alert('Đã xảy ra lỗi khi lưu đơn đặt sân: ' + error.message);
+    });
+
+    return false;
 }
+

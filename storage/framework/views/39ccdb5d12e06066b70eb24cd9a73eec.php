@@ -3,7 +3,7 @@
 <?php $__env->startSection('title', 'Cập nhật hình ảnh sân'); ?>
 
 <?php $__env->startSection('content'); ?>
-    <h3>Cập nhật hình ảnh sân</h3>
+    <h3>Cập nhật hình ảnh</h3>
 
     <?php if(session('success')): ?>
         <script>
@@ -11,20 +11,34 @@
         </script>
     <?php endif; ?>
 
-    <form method="POST" action="<?php echo e(route('sua-hinh-anh-san', ['image_id' => $image->image_id])); ?>" enctype="multipart/form-data">
-        <?php echo csrf_field(); ?> <!-- Thêm CSRF token nếu cần -->
+    <form method="POST" action="<?php echo e(route('cap-nhat-hinh-anh-san', ['image_id' => $image->image_id])); ?>" enctype="multipart/form-data">
+        <?php echo csrf_field(); ?>
         <div class="pay-information">
             <div class="admin-img">
-                <img src="<?php echo e(asset(Storage::url($image->image))); ?>" alt="Hình ảnh" class="admin-image">
+                <!-- Hiển thị ảnh hiện tại -->
+                <img src="<?php echo e(asset('storage/' . $image->image)); ?>" alt="Hình ảnh" class="admin-image">
             </div>
         </div>
 
         <div class="pay-information">
             <div class="admin-img">
-                <h3><?php echo e($tensan . ' - ' . $sosan); ?></h3><br><br>
+                <h3><?php echo e($image->yard->name); ?></h3>
+
                 <label for="image">Chọn hình ảnh mới:</label><br><br>
-                <input class="admin-time-select" type="file" name="image" id="image"><br><br>
-                <input type="submit" class="update-btn" value="Cập nhật hình ảnh sân">
+                <input type="file" name="image" id="image"><br>
+
+                <?php $__errorArgs = ['image'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                    <div class="error"><?php echo e($message); ?></div>
+                <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
+
+                <button type="submit" class="update-btn">Cập nhật</button>
             </div>
         </div>
     </form>                        

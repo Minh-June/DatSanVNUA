@@ -70,7 +70,7 @@
         
             <div class="input-group">
                 <i class="fa-regular fa-user"></i>
-                <input type="username" name="username" id="username" placeholder="Tên người dùng" required>
+                <input type="text" name="username" id="username" placeholder="Tên người dùng" required>
                 <label class="label-access" for="username"></label>
             </div>
         
@@ -90,4 +90,5 @@
 
     </div>
 <?php $__env->stopSection(); ?>
+
 <?php echo $__env->make('layouts.auth', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH D:\Workspace\laragon\www\qldatsan\resources\views/auth/register.blade.php ENDPATH**/ ?>

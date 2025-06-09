@@ -1,42 +1,141 @@
 
 
-<?php $__env->startSection('title', 'Cập nhật thông tin khách đặt sân thể thao'); ?>
+<?php $__env->startSection('title', 'Cập nhật thông tin đơn đặt sân'); ?>
 
 <?php $__env->startSection('content'); ?>
-    <h3>Cập nhật thông tin khách hàng</h3>
+    <?php if(session('price_change_message')): ?>
+        <script>
+            alert("<?php echo e(session('price_change_message')); ?>");
+        </script>
+    <?php endif; ?>
 
-    <div class="adminedit">
-        <form method="POST" action="<?php echo e(route('orders.update', $order->order_id)); ?>">
-            <?php echo csrf_field(); ?>
-            <input type="hidden" name="order_id" value="<?php echo e($order->order_id); ?>">
+    <!-- Hiển thị thông báo lỗi -->
+    <?php if(session('error')): ?>
+        <script>
+            alert("<?php echo e(session('error')); ?>");
+        </script>
+    <?php endif; ?>
+    
+    <h3>Chi tiết đơn đặt sân</h3>
 
-            <div class="admin-time">
-                <label for='san_id'>Chọn sân:</label>
-                <select class="admin-time-select" name='san_id' required>
-                    <?php $__currentLoopData = $sans; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $san): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                        <option value='<?php echo e($san->san_id); ?>' <?php echo e($san->san_id == $order->san_id ? 'selected' : ''); ?>>
-                            <?php echo e($san->tensan . " - " . $san->sosan); ?>
+    <div class="admin-top-bar">
+        <div class="admin-search"></div>
+
+        <div class="admin-add-btn">
+            <a href="<?php echo e(route('quan-ly-don-dat-san')); ?>">Quay lại danh sách</a>
+        </div>
+    </div>
+
+    <table id="ListCustomers">
+        <thead>
+            <tr>
+                <th>STT</th>
+                <th>Tên sân</th>
+                <th>Ngày thuê</th>
+                <th>Khung giờ</th>
+                <th>Giá</th>
+                <th>Ghi chú</th>
+                <th colspan="2">Tùy chọn</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php $__currentLoopData = $order->orderDetails; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $detail): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                <tr>
+                    <td><?php echo e($loop->iteration); ?></td>
+                    <td><?php echo e($detail->yard->name ?? 'Không xác định'); ?></td>
+                    <td><?php echo e(\Carbon\Carbon::parse($detail->date)->format('d/m/Y')); ?></td>
+                    <td><?php echo e(optional($detail->time)->time ?? $detail->time); ?></td>
+                    <td><?php echo e(number_format($detail->price, 0, ',', '.')); ?> VND</td>
+                    <td><?php echo e($detail->notes ?: 'Không có'); ?></td>
+                    <td>
+                        <form action="<?php echo e(route('cap-nhat-chi-tiet-don', $detail->order_detail_id)); ?>" method="GET" style="display:inline;">
+                            <button type="submit" class="update-btn">Sửa</button>
+                        </form>
+                    </td>
+                    <td>
+                        <form method="POST" action="<?php echo e(route('xoa-chi-tiet-don', $detail->order_detail_id)); ?>" onsubmit="return confirm('Bạn có chắc muốn xóa chi tiết này?')">
+                            <?php echo csrf_field(); ?>
+                            <?php echo method_field('DELETE'); ?>
+                            <button type="submit" class="update-btn">Xóa</button>
+                        </form>
+                    </td>
+                </tr>
+            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="6" style="text-align: right;"><strong>Tổng tiền:</strong></td>
+                <td colspan="2"><strong><?php echo e(number_format($totalPrice, 0, ',', '.')); ?> VND</strong></td>
+            </tr>
+        </tfoot>
+    </table>
+
+    <?php if(isset($editDetail) && $editDetail): ?>
+        <div class="adminedit">
+            
+            <form method="GET" action="<?php echo e(route('cap-nhat-chi-tiet-don', $editDetail->order_detail_id)); ?>" id="form-select-yard-date">
+                <label>Chọn sân:</label>
+                <select name="yard_id" id="yard_id" required onchange="document.getElementById('form-select-yard-date').submit()">
+                    <?php $__currentLoopData = $yards; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $san): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                        <option value="<?php echo e($san->yard_id); ?>"
+                            <?php echo e(request('yard_id', $editDetail->yard_id) == $san->yard_id ? 'selected' : ''); ?>>
+                            <?php echo e($san->name); ?>
 
                         </option>
                     <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                 </select><br>
-            </div>                        
 
-            <label for='name'>Họ và tên:</label>
-            <input type='text' name='name' value='<?php echo e($order->name); ?>' required><br>
-            <label for='phone'>Số điện thoại:</label>
-            <input type='text' name='phone' value='<?php echo e($order->phone); ?>' required><br>
-            <label for='date'>Ngày:</label>
-            <input type='date' name='date' value='<?php echo e($order->date); ?>' required><br>
-            <label for='time'>Thời gian:</label>
-            <input type='text' name='time' value='<?php echo e($order->time); ?>' required><br>
-            <label for='price'>Thành tiền:</label>
-            <input type='text' name='price' value='<?php echo e($order->price); ?>' required><br>
-            <label for='notes'>Ghi chú:</label><br><br>
-            <textarea name='notes' rows='4' cols='50'><?php echo e($order->notes); ?></textarea><br>
-            <input type='submit' class="update-btn" value='Cập nhật thông tin khách hàng'>
-        </form>                          
-    </div>
+                <label>Ngày thuê:</label>
+                <input type="date" name="date" id="date"
+                    value="<?php echo e(request('date', $editDetail->date)); ?>"
+                    required onchange="document.getElementById('form-select-yard-date').submit()">
+            </form>
+
+            
+            <form method="POST" action="<?php echo e(route('update.order_detail', $editDetail->order_detail_id)); ?>">
+                <?php echo csrf_field(); ?>
+
+                <input type="hidden" name="yard_id" value="<?php echo e(request('yard_id', $editDetail->yard_id)); ?>">
+                <input type="hidden" name="date" value="<?php echo e(request('date', $editDetail->date)); ?>">
+
+                <label>Khung giờ:</label>
+                <select name="time" id="time" required onchange="updatePrice()">
+                    <?php $__currentLoopData = $timesForSelectedDate; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $time): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                        <option value="<?php echo e($time->time); ?>" data-price="<?php echo e($time->price); ?>"
+                            <?php echo e(old('time', $editDetail->time ?? '') == $time->time ? 'selected' : ''); ?>>
+                            <?php echo e($time->time); ?>
+
+                        </option>
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                </select><br>
+
+                <label>Giá:</label>
+                <input type="text" id="price_display" value="" disabled>
+                <input type="hidden" name="price" id="price" value=""><br>
+
+                <label>Ghi chú:</label><br>
+                <textarea name="notes" rows="3"><?php echo e(old('notes', $editDetail->notes ?? '')); ?></textarea><br>
+
+                <button class="update-btn" type="submit">Cập nhật</button><br><br>
+            </form>
+        </div>
+    <?php endif; ?>
+
+    <script>
+        // Hàm cập nhật giá khi chọn khung giờ
+        function updatePrice() {
+            const timeSelect = document.getElementById('time');
+            const selectedOption = timeSelect.options[timeSelect.selectedIndex];
+            const price = selectedOption.getAttribute('data-price') || 0;
+            document.getElementById('price_display').value = new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(price);
+            document.getElementById('price').value = price;
+        }
+
+        // Khi load trang, hiển thị giá khung giờ đầu tiên
+        window.onload = function () {
+            updatePrice();
+        };
+    </script>
 <?php $__env->stopSection(); ?>
 
 <?php echo $__env->make('layouts.admin', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH D:\Workspace\laragon\www\qldatsan\resources\views/admin/orders/update.blade.php ENDPATH**/ ?>

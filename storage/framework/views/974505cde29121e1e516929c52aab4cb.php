@@ -3,22 +3,39 @@
 <?php $__env->startSection('title', 'Thêm sân'); ?>
 
 <?php $__env->startSection('content'); ?>
-    <div class="admin-section">
-        <h3>Thêm sân</h3>
+    <!-- Hiển thị thông báo -->
+    <?php if(session('success')): ?>
+        <script>
+            alert("<?php echo e(session('success')); ?>");
+        </script>
+    <?php endif; ?>
 
-        <!-- Form thêm sân mới -->
-        <div class="adminedit">
-            <form action="<?php echo e(route('them-san')); ?>" method="POST">
-                <?php echo csrf_field(); ?> <!-- Thêm CSRF token -->
-                <label for="tensan">Tên sân mới:</label>
-                <input type="text" id="tensan" name="tensan" required>
-                <br>
-                <label for="sosan">Số sân:</label>
-                <input type="text" id="sosan" name="sosan" required>
-                <br>
-                <button class="update-btn" type="submit">Lưu thông tin sân</button>
-            </form>
-        </div>
+    <!-- Hiển thị thông báo lỗi -->
+    <?php if(session('error')): ?>
+        <script>
+            alert("<?php echo e(session('error')); ?>");
+        </script>
+    <?php endif; ?>
+    
+    <h3>Thêm sân mới</h3>
+
+    <!-- Form thêm sân mới -->
+    <div class="adminedit">
+        <form action="<?php echo e(route('luu-san')); ?>" method="POST">
+            <?php echo csrf_field(); ?>
+            <label for="type_id">Thể loại sân:</label>
+            <select id="type_id" name="type_id" required>
+                <option value="">Chọn loại sân</option>
+                <?php $__currentLoopData = $types; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $type): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                    <option value="<?php echo e($type->type_id); ?>"><?php echo e($type->name); ?></option>
+                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+            </select>
+            <br>
+            <label for="name">Tên sân:</label>
+            <input type="text" id="name" name="name" required>
+            <br>
+            <button class="update-btn" type="submit">Lưu thông tin sân</button>
+        </form>
     </div>
 <?php $__env->stopSection(); ?>
 

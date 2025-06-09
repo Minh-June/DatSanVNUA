@@ -1,105 +1,123 @@
 @extends('layouts.admin')
 
-@section('title', 'Quản lý khách đặt sân thể thao')
+@section('title', 'Quản lý đơn đặt sân thể thao')
 
 @section('content')
-    <!-- Hiển thị thông báo thành công -->
     @if(session('success'))
         <script>
             alert("{{ session('success') }}");
         </script>
     @endif
 
-    <!-- Hiển thị thông báo lỗi -->
     @if(session('error'))
         <script>
             alert("{{ session('error') }}");
         </script>
     @endif
 
-    <h3>Danh sách khách đặt sân thể thao</h3>
+    <h3>Danh sách đơn sân thể thao</h3>
 
-    <!-- Begin: Date Filter -->
-    <div class="admin-time">
-        <form method="GET" action="{{ route('quan-ly-khach-hang') }}">
-            <label for="selected_date">Chọn ngày:</label>
-            <input type="date" id="selected_date" name="selected_date" value="{{ request('selected_date') }}" required>
-            <button class="admin-time-btn" type="submit" name="filter_date">Tìm kiếm</button>
-        </form>
-    </div>        
-    <!-- End: Date Filter -->
+    <div class="admin-top-bar">
+        <div class="admin-search">
+            <form method="GET" action="{{ route('quan-ly-don-dat-san') }}">
+                <label for="selected_date">Chọn ngày:</label>
+                <input type="date" id="selected_date" name="selected_date" value="{{ request('selected_date') }}">
+                <button class="admin-search-btn" type="submit">Tìm kiếm</button>
+            </form>
+        </div>
 
-    <!-- Begin: Display Orders -->
+        <div class="admin-add-btn">
+            <a href="{{ route('them-don-dat-san') }}">Thêm đơn đặt sân</a>
+        </div>
+    </div>
+
     @if($orders->count() > 0)
         <table id="ListCustomers">
             <tr>
                 <th>STT</th>
+                <th>Ngày tạo</th>
                 <th>Họ và tên</th>
-                <th>Số điện thoại</th>
-                <th>Tên sân</th>
-                <th>Số sân</th>
-                <th>Ngày</th>
+                <th>SĐT</th>
+                <!-- <th>Tên sân</th>
+                <th>Ngày thuê</th>
                 <th>Thời gian</th>
+                <th>Ghi chú</th> -->
                 <th>Thành tiền</th>
-                <th>Ghi chú</th>
                 <th>Ảnh thanh toán</th>
-                <th>Cập nhật</th>
-                <th>Xóa</th>
-                <th>Trạng thái</th>
+                <th>Thông tin</th>
+                <th colspan="2">Tùy chọn</th>
             </tr>
+
             @foreach($orders as $key => $order)
-                <tr>
-                    <td>{{ $key + 1 }}</td>
-                    <td>{{ $order->name }}</td>
-                    <td>{{ $order->phone }}</td>
-                    <td>{{ $order->san ? $order->san->tensan : 'Không xác định' }}</td>
-                    <td>{{ $order->san ? $order->san->sosan : 'Không xác định' }}</td>
-                    <td>{{ $order->date }}</td>
-                    <td>
-                        @foreach (explode(',', $order->time) as $timeSlot)
-                            {{ $timeSlot }} <br>
-                        @endforeach
-                    </td>
-                    <td>{{ $order->price }} VND</td>
-                    <td>{{ $order->notes }}</td>
-                    <td>
-                        @if($order->image)
-                            @php
-                                $images = json_decode($order->image);
-                            @endphp
-                            @foreach ($images as $img)
-                                <img src="{{ asset('storage/' . $img) }}" alt="Hình ảnh" class="admin-image">
-                            @endforeach
+                @php
+                    $rowspan = $order->groupedDetails->count();
+                @endphp
+
+                @foreach($order->groupedDetails as $index => $detail)
+                    <tr>
+                        @if($index === 0)
+                            <td rowspan="{{ $rowspan }}">{{ $key + 1 }}</td>
+                            <td rowspan="{{ $rowspan }}">                
+                                {{ \Carbon\Carbon::parse($order->date)->format('d/m/Y') }}<br>
+                                {{ \Carbon\Carbon::parse($order->date)->format('H:i') }}
+                            </td>
+                            <td rowspan="{{ $rowspan }}">{{ $order->name }}</td>
+                            <td rowspan="{{ $rowspan }}">{{ $order->phone }}</td>
                         @endif
-                    </td>
-                    <td>
-                        <form method="GET" action="{{ route('orders.edit', $order->order_id) }}">
-                            <button type="submit">Sửa</button>
-                        </form>
-                    </td>
-                    <td>
-                        <form method="POST" action="{{ route('orders.delete', $order->order_id) }}" onsubmit="return confirm('Bạn có chắc chắn muốn xóa đơn này?')">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit">Xóa</button>
-                        </form>
-                    </td>                                    
-                    <td>
-                        <form method='POST' action='{{ route('orders.updateStatus', $order->order_id) }}'>
-                            @csrf
-                            <select name='status'>
-                                <option value='choxacnhan' {{ $order->status == 'choxacnhan' ? 'selected' : '' }}>Chờ xác nhận</option>
-                                <option value='xacnhan' {{ $order->status == 'xacnhan' ? 'selected' : '' }}>Xác nhận đơn</option>
-                                <option value='huydon' {{ $order->status == 'huydon' ? 'selected' : '' }}>Hủy đơn</option>
-                            </select>
-                            <button type='submit'>Cập nhật</button>
-                        </form>
-                    </td>                                  
-                </tr>
+
+                        <!-- <td>{{ $detail['yard']->name ?? 'Không xác định' }}</td>
+                        <td>{{ \Carbon\Carbon::parse($detail['date'])->format('d/m/Y') }}</td>
+                        <td>{{ $detail['times'] }}</td>
+                        <td>{{ $detail['notes'] ?: 'Không có' }}</td> -->
+
+                        @if($index === 0)
+                            <td rowspan="{{ $rowspan }}">
+                                {{ number_format($order->orderDetails->sum('price'), 0, ',', '.') }} VND
+                            </td>
+                        @endif
+
+                        @if($index === 0)
+                            <td rowspan="{{ $rowspan }}">
+                                @php $images = json_decode($order->image); @endphp
+                                @if ($images && count($images) > 0)
+                                    @foreach ($images as $img)
+                                        <img src="{{ asset('storage/' . $img) }}" alt="Ảnh" style="width:100px; height:200px; cursor:pointer;" onclick="showImage(this.src)">
+                                    @endforeach
+                                @else
+                                    Không có
+                                @endif
+                            </td>
+                            
+                            <td rowspan="{{ $rowspan }}">
+                                <a href="{{ route('cap-nhat-don-dat-san', $order->order_id) }}">Xem chi tiết</a>
+                            </td>
+
+                            <td rowspan="{{ $rowspan }}">
+                                <form method="POST" action="{{ route('cap-nhat-trang-thai-don-dat-san', $order->order_id) }}">
+                                    @csrf
+                                    <select name="status">
+                                        <option value="0" {{ $order->status == 0 ? 'selected' : '' }}>Chờ xác nhận</option>
+                                        <option value="1" {{ $order->status == 1 ? 'selected' : '' }}>Xác nhận</option>
+                                        <option value="2" {{ $order->status == 2 ? 'selected' : '' }}>Hủy</option>
+                                    </select><br>
+                                    <button type="submit" class="update-btn">Cập nhật</button>
+                                </form>
+                            </td>
+
+                            <td rowspan="{{ $rowspan }}">
+                                <form method="POST" action="{{ route('xoa-don-dat-san', $order->order_id) }}" onsubmit="return confirm('Bạn có chắc muốn xóa đơn này?')">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="update-btn">Xóa</button>
+                                </form>
+                            </td>
+                        @endif
+                    </tr>
+                @endforeach
             @endforeach
         </table>
     @else
         <p>Không có kết quả</p>
     @endif
-    <!-- End: Display Orders -->
 @endsection
+

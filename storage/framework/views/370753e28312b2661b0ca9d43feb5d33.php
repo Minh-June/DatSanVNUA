@@ -4,57 +4,46 @@
 
 <?php $__env->startSection('content'); ?>
         <div id="slider">
-            <img src="<?php echo e(asset('./image/slider/slider1.jpg')); ?>" alt="Slider Image" style="width: 100%; height: auto;">
+            <img src="<?php echo e(asset('image/slider/slider1.jpg')); ?>" alt="Slider Image" style="width: 100%; height: auto;">
         </div>
         
         <!-- Begin: Content -->
-        <?php $__currentLoopData = $groupedSans; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $tensan => $sans): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+        <?php $__currentLoopData = $groupedYards; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $typeName => $yards): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
             <div id="content" class="content-section">
                 <h2 class="content-heading">
-                    <?php echo e($tensan); ?>
+                    <?php echo e($typeName); ?>
 
                 </h2>
-
                 <div class="content-list">
-                    <?php $__currentLoopData = $sans; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $san): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                    <?php $__currentLoopData = $yards; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $yard): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                         <div class="content-item">
-                            <?php
-                                // Lấy hình ảnh từ mảng $images theo san_id
-                                $imageData = $san->images->first(); // Lấy hình ảnh đầu tiên nếu có
-                                if ($imageData) {
-                                    // Hiển thị hình ảnh dưới dạng base64
-                                    echo '<img src="' . $imageData->url . '" alt="" class="football-img">'; // Sử dụng phương thức getUrlAttribute
-                                } else {
-                                    // Hiển thị hình ảnh mặc định nếu không có hình ảnh
-                                    echo '<img src="' . asset('./image/football.jpg') . '" alt="" class="football-img">';
-                                }
-                            ?>
+                            <img src="<?php echo e($yard->first_image_url ?? asset('image/football.jpg')); ?>" alt="" class="football-img">
                             <div class="content-body">
                                 <h3 class="content-body-name">
-                                    <?php echo e($san->tensan); ?> - <?php echo e($san->sosan); ?>
+                                    <?php echo e($yard->name); ?>
 
                                 </h3>
-                                <a class="order-football-btn" href="<?php echo e(route('dat-san', ['id' => $san->san_id])); ?>">Chọn sân</a>
+                                <a class="order-football-btn" href="<?php echo e(route('dat-san', ['yard_id' => $yard->yard_id])); ?>">
+                                    Chọn sân
+                                </a>
                             </div>
                         </div>
                     <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-
                     <div class="clear"></div>
                 </div>
             </div>
         <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
         <!-- End: Content -->
-
-
+            
         <!-- Begin: Contact section -->
         <div id="contact" class="content-section">
             <h2 class="content-heading">LIÊN HỆ</h2>
 
             <div class="row contact-content">
                 <div class="col col-half contact-infor">
-                    <p><i class="fa-solid fa-location-dot"></i>Hà Nội, Việt Nam</p>
-                    <p><i class="fa-solid fa-phone"></i>Điện thoại: <a href="tel:+00 151515">+84 356645445</a></p>
-                    <p><i class="fa-solid fa-envelope"></i>Email: <a href="mailto:mail@mail.com">minhjune18@gmail.com</a></p>
+                    <p><i class="fa-solid fa-location-dot"></i>Trâu Quỳ, Gia Lâm, Hà Nội, Việt Nam</p>
+                    <p><i class="fa-solid fa-phone"></i>Điện thoại: <a href="tel:+00 151515">+84 123456789</a></p>
+                    <p><i class="fa-solid fa-envelope"></i>Email: <a href="mailto:mail@mail.com">group48@gmail.com</a></p>
                 </div>
 
                 <div class="col col-half contact-form">

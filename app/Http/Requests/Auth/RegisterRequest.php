@@ -6,19 +6,11 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class RegisterRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
     public function authorize(): bool
     {
-        return true; // Cho phép tất cả người dùng
+        return true;
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
-     */
     public function rules(): array
     {
         return [
@@ -26,8 +18,8 @@ class RegisterRequest extends FormRequest
             'gender' => 'required|string',
             'birthdate' => 'required|date',
             'phonenb' => 'required|string|max:10|regex:/^[0-9]+$/',
-            'email' => 'required|string|email|max:255|unique:user,email',
-            'username' => 'required|string|max:255|unique:user,username',
+            'email' => 'required|string|email|max:255|unique:users,email',
+            'username' => 'required|string|max:255|unique:users,username',
             'password' => 'required|string|min:6',
         ];
     }

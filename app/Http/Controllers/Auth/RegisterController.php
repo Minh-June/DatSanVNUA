@@ -3,11 +3,10 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\Auth\RegisterRequest;
-use App\Models\User; 
+use App\Models\User;
 
 class RegisterController extends Controller
 {
@@ -20,16 +19,25 @@ class RegisterController extends Controller
     {
         // Xác thực dữ liệu đầu vào
         $validated = $request->validated();
-        
-        // Mã hóa mật khẩu bằng Hash
-        $validated['password'] = Hash::make($validated['password']);
-        
-        // Bạn có thể gán vai trò ở đây nếu không được gửi từ form
-        $validated['role'] = 1; 
-        
-        // Tạo người dùng mới
-        $user = User::create($validated); // Sử dụng $validated để đảm bảo chỉ lưu dữ liệu đã xác thực.
-        
+
+        // Tạo người dùng mới vào bảng 'users'
+        User::create([
+            'username'  => $validated['username'],
+            'password'  => Hash::make($validated['password']),
+            'role'      => 1, // Mặc định là người dùng thường
+            'fullname'  => $validated['fullname'],
+            'gender'    => $validated['gender'],
+            'birthdate' => $validated['birthdate'],
+            'phonenb'   => $validated['phonenb'],
+            'email'     => $validated['email'],
+        ]);
+
+        // Kiểm tra nếu user hiện tại là admin (role = 0)
+        if (Auth::check() && Auth::user()->role == 0) {
+            return redirect()->route('quan-ly-nguoi-dung')->with('success', 'Thêm người dùng thành công!');
+        }
+
+        // Nếu không phải admin thì redirect về đăng nhập
         return redirect()->route('dang-nhap')->with('success', 'Đăng ký thành công!');
-    }    
+    }
 }

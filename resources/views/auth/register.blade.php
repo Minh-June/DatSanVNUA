@@ -70,7 +70,7 @@
         
             <div class="input-group">
                 <i class="fa-regular fa-user"></i>
-                <input type="username" name="username" id="username" placeholder="Tên người dùng" required>
+                <input type="text" name="username" id="username" placeholder="Tên người dùng" required>
                 <label class="label-access" for="username"></label>
             </div>
         

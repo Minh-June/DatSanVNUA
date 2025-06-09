@@ -1,67 +1,94 @@
-<?php
+<?php 
 
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Http\Requests\Admin\Yard\StoreRequest;
-use App\Http\Requests\Admin\Yard\UpdateRequest;
 use App\Models\Yard;
+use App\Models\Type;
 
 class YardController extends Controller
 {
-    public function index() {
-        // Lấy tất cả các sân từ bảng 'tbl_san', sắp xếp theo 'tensan' và 'sosan'
-        $yards = Yard::orderBy('tensan', 'asc')
-            ->orderBy('sosan', 'asc')
-            ->get();
+    // Hiển thị danh sách sân
+    public function index(Request $request) {
+        $query = Yard::with('type')->orderBy('name', 'asc');
     
-        // Truyền dữ liệu sang view
-        return view('admin.yards.index', compact('yards'));
-    }
-    
-    public function create() {
-        return view('admin.yards.create');
-    }
-    
-    public function store(StoreRequest $request) {
-        // Tạo sân mới
-        $yard = new Yard();
-        $yard->tensan = $request->input('tensan');
-        $yard->sosan = $request->input('sosan');
-        $yard->save();
-        
-        // Chuyển hướng về trang danh sách sân với thông báo thành công
-        return redirect()->route('quan-ly-san')->with('success', 'Sân đã được thêm thành công.');
-    }
-    
-    public function edit($san_id) {
-        // Logic để lấy thông tin sân dựa trên san_id
-        $yard = Yard::findOrFail($san_id);
-        return view('admin.yards.update', compact('yard'));
-    }
-
-    public function update(UpdateRequest $request, $san_id) {
-        // Lấy sân cần cập nhật
-        $yard = Yard::findOrFail($san_id);
-    
-        // Cập nhật thông tin
-        $yard->tensan = $request->input('tensan');
-        $yard->sosan = $request->input('sosan');
-        $yard->save();
-    
-        // Chuyển hướng về trang danh sách sân với thông báo thành công
-        return redirect()->route('quan-ly-san')->with('success', 'Thông tin sân đã được cập nhật thành công.');
-    }
-
-    public function delete($san_id) {
-        // Logic để xóa sân dựa trên san_id
-        $yard = Yard::find($san_id);
-        if ($yard) {
-            $yard->delete();
-            return redirect()->route('quan-ly-san')->with('success', 'Sân đã được xóa thành công.');
+        // Kiểm tra nếu có filter theo thể loại sân
+        if ($request->has('type_id') && $request->type_id != '') {
+            $query->where('type_id', $request->type_id);
         }
-        return redirect()->route('quan-ly-san')->with('error', 'Không tìm thấy sân.');
-    }
     
+        $yards = $query->get();
+        $types = Type::all(); // Lấy tất cả thể loại sân để hiển thị trong dropdown
+    
+        return view('admin.yards.index', compact('yards', 'types'));
+    }
+
+    // Hiển thị form thêm sân
+    public function create() {
+        $types = Type::orderBy('name', 'asc')->get(); // Lấy tất cả các thể loại sân
+        return view('admin.yards.create', compact('types'));
+    }
+
+    // Lưu sân mới
+    public function store(Request $request) {
+        $request->validate([
+            'type_id' => 'required|exists:types,type_id',
+            'name' => 'required|string|max:255',
+        ]);
+    
+        // Kiểm tra tên sân đã tồn tại chưa
+        $exists = Yard::where('name', $request->name)->exists();
+        if ($exists) {
+            return redirect()->back()->with('error', 'Tên sân đã tồn tại, vui lòng nhập lại tên sân khác.');
+        }
+    
+        Yard::create([
+            'type_id' => $request->type_id,
+            'name' => $request->name,
+        ]);
+    
+        return redirect()->route('quan-ly-san')->with('success', 'Đã thêm sân thành công.');
+    }
+
+    // Hiển thị form chỉnh sửa sân
+    public function edit($yard_id) {
+        $yard = Yard::findOrFail($yard_id); // Tìm sân theo yard_id
+        $types = Type::orderBy('name', 'asc')->get(); // Lấy tất cả thể loại sân
+        return view('admin.yards.update', compact('yard', 'types'));
+    }
+
+    // Cập nhật thông tin sân
+    public function update(Request $request, $yard_id) {
+        $yard = Yard::findOrFail($yard_id);
+    
+        $request->validate([
+            'type_id' => 'required|exists:types,type_id',
+            'name' => 'required|string|max:255',
+        ]);
+    
+        // Kiểm tra tên sân trùng (ngoại trừ chính sân đang cập nhật)
+        $exists = Yard::where('name', $request->name)
+                    ->where('yard_id', '!=', $yard_id)
+                    ->exists();
+        if ($exists) {
+            return redirect()->back()->with('error', 'Tên sân đã tồn tại, vui lòng nhập lại tên sân khác.');
+        }
+    
+        $yard->update([
+            'type_id' => $request->type_id,
+            'name' => $request->name,
+        ]);
+    
+        return redirect()->route('quan-ly-san', ['type_id' => $request->type_id])->with('success', 'Đã cập nhật sân thành công.');
+    }
+
+    // Xóa sân
+    public function delete($yard_id, Request $request) {
+        $yard = Yard::findOrFail($yard_id);
+        $yard->delete();
+
+        // Trả về trang danh sách sân với 'type_id' còn lại trong URL
+        return redirect()->route('quan-ly-san', ['type_id' => $request->type_id])->with('success', 'Đã xóa sân thành công.');
+    }
 }

@@ -3,32 +3,32 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Foundation\Auth\User as Authenticatable; // Thay đổi đây
+use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-class User extends Authenticatable 
+class User extends Authenticatable
 {
     use HasFactory, Notifiable;
 
-    // Xác định tên bảng trong cơ sở dữ liệu
-    protected $table = 'user';
+    protected $table = 'users'; // Tên bảng
+    protected $primaryKey = 'user_id'; // Khóa chính
+    public $timestamps = false; // Không sử dụng timestamps
 
-    // user_id là khóa chính và tự động tăng
-    protected $primaryKey = 'user_id';
-    public $timestamps = false;
-
-    // Các thuộc tính có thể gán đại trà
     protected $fillable = [
         'user_id',
-        'username',
-        'password',
-        'role',
-        'fullname',
-        'gender',
-        'birthdate',
-        'phonenb',
-        'email'
-    ];
+        'username', // Tên đăng nhập
+        'password', // Mật khẩu
+        'role', // Quyền hạn (0: admin, 1: user)
+        'fullname', // Họ tên
+        'gender', // Giới tính (0: nam, 1: nữ, 2: khác)
+        'birthdate', // Ngày sinh
+        'phonenb', // Số điện thoại
+        'email' 
+    ]; // Các cột có thể gán
 
+    // Quan hệ: Một người dùng có thể có nhiều đơn đặt sân
+    public function orders()
+    {
+        return $this->hasMany(Order::class, 'user_id', 'user_id');
+    }
 }

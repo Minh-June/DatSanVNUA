@@ -1,98 +1,111 @@
 <?php $__env->startSection('title', 'Thanh toán'); ?>
 
 <?php $__env->startSection('content'); ?>
-    <!-- Hiển thị thông báo thành công -->
     <?php if(session('success')): ?>
-        <script>
-            alert("<?php echo e(session('success')); ?>");
-        </script>
+        <script>alert("<?php echo e(session('success')); ?>");</script>
     <?php endif; ?>
 
-    <!-- Hiển thị thông báo lỗi -->
     <?php if(session('error')): ?>
-        <script>
-            alert("<?php echo e(session('error')); ?>");
-        </script>
+        <script>alert("<?php echo e(session('error')); ?>");</script>
     <?php endif; ?>
 
-        <!-- Begin: Content -->
-        <div id="content" class="order-section">
-            <h2 class="order-heading">THANH TOÁN</h2>
+<div id="content" class="order-section">
+    <h2 class="order-heading">THANH TOÁN</h2>
 
-            <div class="pay-content">
-                <div class="pay-information">
-                    <div class="bank-account">
-                        Tài khoản ngân hàng
-                    </div>
-                    <div class="bank-account">
-                        Tên tài khoản: Nguyễn Hữu Quang Minh
-                    </div>
-                    <div class="bank-account">
-                        Số tài khoản: 1903 6786 8800 12
-                    </div>
-                    <div class="bank-account">
-                        Ngân hàng: Techcombank
-                    </div>
-                </div>
-                <div class="pay-information">
-                    <div class="bank-qr">
-                        Mã QR
-                        <br><img class="bank-qr-img" src="<?php echo e(asset('./image/qr/qr.jpg')); ?>" alt="Mã QR">
-                    </div>
-                </div>
+    <div class="pay-content">
+        <div class="pay-information">
+            <div class="bank-account">Tài khoản ngân hàng</div>
+            <div class="bank-account">Tên tài khoản: Nguyễn Hữu Quang Minh</div>
+            <div class="bank-account">Số tài khoản: 1903 6786 8800 12</div>
+            <div class="bank-account">Ngân hàng: Techcombank</div>
+        </div>
+        <div class="pay-information">
+            <div class="bank-qr">
+                Mã QR <br>
+                <img class="bank-qr-img" src="<?php echo e(asset('image/qr/qr.jpg')); ?>" alt="Mã QR">
             </div>
-            <div class="clear"></div>
+        </div>
+    </div>
+    <div class="clear"></div>
 
-            <div class="pay-customer">
-                <h3>Thông tin khách hàng và đặt sân</h3><br>
-                
-                <table id='ListCustomers'>
+    <div class="pay-customer">
+        <h3>Thông tin đơn đặt sân</h3><br>
+
+        <table id="ListCustomers">
+            <thead>
+                <tr>
+                    <th>STT</th>
+                    <th>Ngày đặt</th>
+                    <th>Họ và tên</th>
+                    <th>SĐT</th>
+                    <th>Tên sân</th>
+                    <th>Thời gian thuê</th>
+                    <th>Giá từng khung giờ</th>
+                    <th>Ghi chú</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php $totalAmount = 0; ?>
+                <?php $__empty_1 = true; $__currentLoopData = $orders; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $order): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
+                    <?php $totalAmount += $order['price']; ?>
                     <tr>
-                        <th>Họ và tên</th>
-                        <th>Số điện thoại</th>
-                        <th>Sân thể thao</th>
-                        <th>Ngày đặt</th>
-                        <th>Khung giờ đã chọn</th>
-                        <th>Thành tiền</th>
-                        <th>Ghi chú</th>
-                        
-                    </tr>
-                    <tr>
-                        <td><?php echo e(session('name')); ?></td>
-                        <td><?php echo e(session('phone')); ?></td>
-                        <td><?php echo e(session('tensan')); ?> - Sân số <?php echo e(session('sosan')); ?></td>
-                        <td><?php echo e(date('d/m/Y', strtotime(session('date')))); ?></td>
+                        <td><?php echo e($index + 1); ?></td>
+                        <td><?php echo e(\Carbon\Carbon::parse($order['date'])->format('d/m/Y')); ?></td>
+                        <?php if($index === 0): ?>
+                            <td rowspan="<?php echo e(count($orders)); ?>"><?php echo e($order['name']); ?></td>
+                            <td rowspan="<?php echo e(count($orders)); ?>"><?php echo e($order['phone']); ?></td>
+                        <?php endif; ?>
+                        <td><?php echo e($order['yard_name']); ?></td>
                         <td>
-                            <?php $__currentLoopData = session('time', []); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $time): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                            <?php $__currentLoopData = $order['times']; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $time): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                 <?php echo e($time); ?><br>
                             <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                         </td>
-                        <td><?php echo e(number_format(session('price'))); ?> VND</td>
-                        <td><?php echo e(session('notes', 'Không có ghi chú')); ?></td>
+                        <td>
+                            <?php if(!empty($order['price_per_slot']) && is_array($order['price_per_slot'])): ?>
+                            <?php $__currentLoopData = $order['price_per_slot']; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $price): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                            <?php echo e(number_format($price)); ?> VND<br>
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                            <?php else: ?>
+                            Không có dữ liệu
+                            <?php endif; ?>
+                        </td>
+                        <td><?php echo e($order['notes'] ?? 'Không có ghi chú'); ?></td>
                     </tr>
-                </table>
-                
-                <div class="pay-upload">
+                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
+                    <tr><td colspan="8">Không có đơn đặt sân nào.</td></tr>
+                <?php endif; ?>
+            </tbody>
+            <?php if(count($orders) > 0): ?>
+            <tfoot>
+                <tr>
+                    <td colspan="6" style="text-align: right;"><strong>Tổng tiền:</strong></td>
+                    <td colspan="2"><strong><?php echo e(number_format($totalAmount)); ?> VND</strong></td>
+                </tr>
+            </tfoot>
+            <?php endif; ?>
+        </table>
 
-                    <p>* Lưu ý: Nếu bạn muốn thanh toán trước<br><br>
-                        Chuyển khoản ĐÚNG số tiền ở cột "Thành tiền"<br><br>
-                        Nội dung chuyển khoản: TÊN + SĐT<br><br>
-                        Chuyển khoản xong bạn chụp lại màn hình phần giao dịch, gửi hình ảnh vào ô dưới đây</p>
-                    
-                        <form action="<?php echo e(route('pay.upload')); ?>" method="post" enctype="multipart/form-data">
-                            <?php echo csrf_field(); ?>
-                            <input class="pay_upload admin-time-select" type="file" name="images[]" id="images" multiple accept="image/*"><br>
-                            <div class="pay-btn">
-                                <input class="order-football-btn" type="submit" value="Xác nhận đặt sân">
-                            </div>
-                        </form>
+        <?php if(count($orders) > 0): ?>
+        <div class="pay-upload">
+            <p>* LƯU Ý: Nếu bạn muốn thanh toán trước<br><br>
+                Chuyển khoản ĐÚNG số tiền ở phần "Tổng tiền"<br><br>
+                Nội dung chuyển khoản: TÊN + SĐT<br><br>
+                Sau khi hoàn tất, chụp lại màn hình giao dịch và gửi ảnh bên dưới.</p>
 
-                    </div>
-                </div>                                                          
-
-            </div>
-            <div class="clear"></div>
+            <form action="<?php echo e(route('pay.upload')); ?>" method="post" enctype="multipart/form-data">
+                <?php echo csrf_field(); ?>
+                <input type="file" name="images[]" multiple accept="image/*"><br><br>
+                <div class="pay-btn">
+                    <button type="submit" class="order-football-btn">Xác nhận đặt sân</button>
+                </div>
+            </form>
         </div>
-        <!-- End: Content -->
+        <?php endif; ?>
+    </div>
+
+    <div class="clear"></div>
+</div>
 <?php $__env->stopSection(); ?>
+
 <?php echo $__env->make('layouts.client.client', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH D:\Workspace\laragon\www\qldatsan\resources\views/client/pay.blade.php ENDPATH**/ ?>

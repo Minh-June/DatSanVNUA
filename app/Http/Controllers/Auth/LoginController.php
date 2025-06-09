@@ -27,7 +27,7 @@ class LoginController extends Controller
             if ($user->role == 1) {
                 return redirect()->route('trang-chu'); // Điều hướng đến trang chủ
             } else {
-                return redirect()->route('admin'); // Điều hướng đến trang quản trị
+                return redirect()->route('thong-ke-bao-cao'); // Điều hướng đến trang quản trị
             }
         }
         

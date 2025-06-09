@@ -3,22 +3,43 @@
 @section('title', 'Sửa thông tin sân')
 
 @section('content')
-    <div class="admin-section">
-        <h3>Sửa thông tin sân</h3>
+    <!-- Hiển thị thông báo -->
+    @if(session('success'))
+        <script>
+            alert("{{ session('success') }}");
+        </script>
+    @endif
 
-        <!-- Form chỉnh sửa thông tin sân -->
-        <div class="adminedit">
-            <form method="POST" action="{{ route('yards.update', $yard->san_id) }}">
-                @csrf
-                <input type="hidden" name="_method" value="POST">
-                <label for="tensan">Tên sân:</label>
-                <input type="text" id="tensan" name="tensan" value="{{ old('tensan', $yard->tensan) }}" required>
-                <br>
-                <label for="sosan">Số sân:</label>
-                <input type="text" id="sosan" name="sosan" value="{{ old('sosan', $yard->sosan) }}" required>
-                <br>
-                <button class="update-btn" type="submit">Cập nhật thông tin sân</button>
-            </form>
-        </div>
+    <!-- Hiển thị thông báo lỗi -->
+    @if(session('error'))
+        <script>
+            alert("{{ session('error') }}");
+        </script>
+    @endif
+
+    <h3>Sửa thông tin sân</h3>
+
+    <!-- Form chỉnh sửa thông tin sân -->
+    <div class="adminedit">
+        <form method="POST" action="{{ route('update.yard', $yard->yard_id) }}">
+            @csrf
+            <input type="hidden" name="_method" value="POST">
+
+            <label for="type_id">Thể loại sân:</label>
+            <select id="type_id" name="type_id" required>
+                @foreach($types as $type)
+                    <option value="{{ $type->type_id }}" {{ $yard->type_id == $type->type_id ? 'selected' : '' }}>
+                        {{ $type->name }}
+                    </option>
+                @endforeach
+            </select>
+            <br>
+
+            <label for="name">Tên sân:</label>
+            <input type="text" id="name" name="name" value="{{ old('name', $yard->name) }}" required>
+            <br>
+
+            <button class="update-btn" type="submit">Cập nhật thông tin sân</button>
+        </form>
     </div>
 @endsection

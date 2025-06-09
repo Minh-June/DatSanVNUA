@@ -6,64 +6,72 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Client\PayRequest;
 use Illuminate\Http\Request;
 use App\Models\Order;
+use App\Models\OrderDetail;
 
 class PayController extends Controller
 {
-    public function index(Request $request)
+    public function index()
     {
-        // Lấy thông tin từ session
-        $payInfo = [
-            'name' => session('name'),
-            'phone' => session('phone'),
-            'tensan' => session('tensan'),
-            'sosan' => session('sosan'),
-            'time' => session('time'),
-            'date' => session('date'),
-            'price' => session('price'),
-            'notes' => session('notes'),
-        ];
+        // Lấy danh sách đơn hàng từ session
+        $orders = session('orders', []);
 
-        // Chuyển thông tin sang view pay.blade.php
-        return view('client.pay', compact('payInfo'));
+        // Truyền danh sách này sang view
+        return view('client.pay', compact('orders'));
     }
     
-    public function store(PayRequest  $request)
+    public function store(PayRequest $request)
     {
-        // Lưu thông tin từ session
-        $orderData = session()->only(['name', 'phone', 'san_id', 'time', 'date', 'price', 'notes']);
-        
-        // Lấy user_id từ session
-        $userId = session('user_id');
-    
-        // Tạo một mảng để lưu tên file
+        $orders = session('orders', []);
+        $userId = auth()->id();
+
+        if (!$userId) {
+            return redirect()->route('login')->with('error', 'Vui lòng đăng nhập trước khi thanh toán.');
+        }
+
+        if (empty($orders)) {
+            return redirect()->back()->with('error', 'Không có đơn đặt sân nào để thanh toán.');
+        }
+
+        // Lưu ảnh thanh toán
         $imagePaths = [];
-    
-        // Lưu ảnh
         if ($request->hasfile('images')) {
             foreach ($request->file('images') as $image) {
-                // Lưu ảnh vào thư mục public/bills và lấy tên file gốc
-                $path = $image->storeAs('bills', $image->getClientOriginalName(), 'public');
-                $imagePaths[] = $path; // Lưu đường dẫn của ảnh đã lưu
+                $path = $image->storeAs('bills', uniqid() . '_' . $image->getClientOriginalName(), 'public');
+                $imagePaths[] = $path;
             }
         }
-    
-        // Lưu thông tin vào bảng tbl_order
+
+        // Tạo đơn hàng tổng
         $order = new Order();
-        $order->name = $orderData['name'];
-        $order->phone = $orderData['phone'];
-        $order->san_id = $orderData['san_id']; // Sử dụng san_id
-        $order->user_id = $userId; // Lưu user_id
-        $order->date = $orderData['date'];
-        $order->time = implode(',', $orderData['time']); // Chuyển mảng thành chuỗi phân cách bằng dấu phẩy
-        $order->price = $orderData['price'];
-        $order->notes = $orderData['notes'];
-        $order->image = json_encode($imagePaths); // lưu đường dẫn ảnh
+        $order->user_id = $userId;
+        $order->name = $orders[0]['name'];
+        $order->phone = $orders[0]['phone'];
+        $order->date = now();
+        $order->status = 0;
+        $order->image = json_encode($imagePaths);
         $order->save();
-    
-        // Xóa thông tin khỏi session (nếu cần)
-        session()->forget(['name', 'phone', 'san_id', 'time', 'date', 'price', 'notes']);
-    
+
+        // Lưu chi tiết từng sân, mỗi khung giờ 1 dòng order_detail riêng
+        foreach ($orders as $item) {
+            foreach ($item['times'] as $index => $time) {
+                $orderDetail = new OrderDetail();
+                $orderDetail->order_id = $order->order_id;
+                $orderDetail->yard_id = $item['yard_id'];
+                $orderDetail->date = $item['date'];
+                $orderDetail->time = $time;   // Mỗi dòng chỉ lưu 1 khung giờ
+
+                // Lấy đúng giá cho từng khung giờ theo index
+                $pricePerTime = $item['price_per_slot'][$index] ?? 0;
+                $orderDetail->price = $pricePerTime;
+
+                $orderDetail->notes = $item['notes'] ?? null;
+                $orderDetail->save();
+            }
+        }
+
+        session()->forget('orders');
+
         return redirect()->route('trang-chu')->with('success', 'Bạn đã đặt sân thành công !');
     }
-    
+
 }

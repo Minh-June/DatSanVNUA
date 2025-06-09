@@ -1,26 +1,51 @@
 @extends('layouts.admin')
 
-@section('title', 'Sửa Thời gian thuê sân')
+@section('title', 'Cập nhật khung giờ sân')
 
 @section('content')
-    <div class="admin-section">
-        <h3>Sửa Thời gian thuê sân</h3>
+    <!-- Hiển thị thông báo -->
+    @if(session('success'))
+        <script>
+            alert("{{ session('success') }}");
+        </script>
+    @endif
 
-        <!-- Form chỉnh sửa thông tin sân -->
-        <div class="adminedit">
-            <form method="POST" action="{{ route('cap-nhat-thoi-gian-san', $time_slot['time_slot_id']) }}">
-                @csrf
-                <input type="hidden" name="time_slot_id" value="{{ $time_slot['time_slot_id'] }}">
-                <div class="form-group">
-                    <label for="new_time_slot">Khung giờ mới:</label>
-                    <input type="text" name="new_time_slot" id="new_time_slot" value="{{ old('new_time_slot', $time_slot['time_slot']) }}" required><br>
-                </div>
-                <div class="form-group">
-                    <label for="price">Giá tiền:</label>
-                    <input type="text" id="price" name="price" value="{{ old('price', $time_slot['price']) }}" required><br>
-                </div>
-                <button class="update-btn" type="submit" name="update_time_slot">Cập nhật thời gian</button>
-            </form>                                                     
-        </div>
+    @if(session('error'))
+        <script>
+            alert("{{ session('error') }}");
+        </script>
+    @endif
+
+    <h3>Cập nhật khung giờ</h3>
+
+    <!-- Form cập nhật khung giờ -->
+    <div class="adminedit">
+        <form action="{{ route('update.time', ['time_id' => $time->time_id]) }}" method="POST">
+            @csrf
+
+            <label for="yard_id">Chọn sân:</label>
+            <select id="yard_id" name="yard_id" required>
+                @foreach($yards as $yard)
+                    <option value="{{ $yard->yard_id }}" {{ $yard->yard_id == $time->yard_id ? 'selected' : '' }}>
+                        {{ $yard->name }}
+                    </option>
+                @endforeach
+            </select>
+            <br>
+
+            <label for="time">Khung giờ:</label>
+            <input type="text" id="time" name="time" value="{{ $time->time }}" required>
+            <br>
+
+            <label for="price">Giá (VNĐ):</label>
+            <input type="number" id="price" name="price" value="{{ $time->price }}" required min="0">
+            <br>
+
+            <label for="date">Ngày áp dụng:</label>
+            <input type="date" id="date" name="date" value="{{ $time->date }}" required>
+            <br>
+
+            <button class="update-btn" type="submit">Cập nhật khung giờ</button>
+        </form>
     </div>
 @endsection

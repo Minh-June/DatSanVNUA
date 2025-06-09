@@ -7,39 +7,38 @@ use Illuminate\Database\Eloquent\Model;
 
 class Order extends Model
 {
-    // Xác định tên bảng trong cơ sở dữ liệu
-    protected $table = 'order';
+    protected $table = 'orders'; // Tên bảng
+    protected $primaryKey = 'order_id'; // Khóa chính
+    public $timestamps = false; // Không sử dụng timestamps
 
-    // order_id là khóa chính và tự động tăng
-    protected $primaryKey = 'order_id';
+    // Các trạng thái đơn hàng
+    const STATUS_PENDING   = 'chờ xác nhận';
+    const STATUS_CONFIRMED = 'đã xác nhận';
+    const STATUS_CANCELLED = 'đã hủy';
 
-    // Tắt timestamps
-    public $timestamps = false;
-
-    // Các thuộc tính có thể gán đại trà
-    protected $fillable = [
-        'order_id',
-        'name',
-        'phone',
-        'date',
-        'time',
-        'price',
-        'notes',
-        'status',
-        'san_id',
-        'user_id',
-        'image'
+    protected $casts = [
+        'status' => 'integer',
     ];
 
-    // Định nghĩa mối quan hệ với San
-    public function san()
+    protected $fillable = [
+        'date', // Ngày tạo đơn, kiểu dữ liệu datetime
+        'user_id',
+        'name', // Tên người đặt
+        'phone',   // Số điện thoại người đặt
+        'image', // Ảnh thanh toán người đặt up lên
+        'status', // Trạng thái đơn (mặc định là 0: chờ xác nhận, 1: đã xác nhận, 2: đã hủy)
+    ]; // Các cột có thể gán
+
+    // Quan hệ: Một đơn hàng thuộc về một người dùng
+    
+    public function user()
     {
-        return $this->belongsTo(Yard::class, 'san_id'); // Đảm bảo rằng 'san_id' là tên khóa ngoại trong bảng tbl_order
+        return $this->belongsTo(User::class, 'user_id', 'user_id');
     }
 
-    // Định nghĩa mối quan hệ với Users
-    public function users()
+    // Quan hệ: Một đơn hàng có nhiều chi tiết đơn hàng
+    public function orderDetails()
     {
-        return $this->belongsTo(User::class, 'user_id'); // Đảm bảo rằng 'user_id' là tên khóa ngoại trong bảng tbl_order
+        return $this->hasMany(OrderDetail::class, 'order_id', 'order_id');
     }
 }

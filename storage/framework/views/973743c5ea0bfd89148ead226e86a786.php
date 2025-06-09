@@ -17,54 +17,51 @@
         </script>
     <?php endif; ?>
 
-    <h3>Danh sách hình ảnh sân</h3>
+    <h3>
+        Quản lý hình ảnh 
+        <?php if(isset($selectedYard)): ?>
+            - <?php echo e($selectedYard->name); ?>
 
-    <!-- Hiển thị bảng dữ liệu -->
+        <?php endif; ?>
+    </h3>
+
+    <div class="admin-top-bar">
+        <div class="admin-search"></div>
+
+        <div class="admin-add-btn">
+            <a href="<?php echo e(route('them-hinh-anh-san')); ?>">Thêm hình ảnh sân</a>
+        </div>
+    </div>
+
+    <!-- Hiển thị bảng hình ảnh khi đã chọn sân -->
     <table id='ListCustomers'>
         <thead>
             <tr>
                 <th>STT</th>
-                <th>Tên sân</th>
-                <th>Số sân</th>
                 <th>Hình ảnh</th>
-                <th>Cập nhật</th>
-                <th>Xóa</th>
+                <th colspan="2">Tùy chọn</th>
             </tr>
         </thead>
         <tbody>
-            <?php $__currentLoopData = $sans; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $san): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                <?php if($san->images->isEmpty()): ?>
-                    <tr>
-                        <td><?php echo e($loop->iteration); ?></td>
-                        <td><?php echo e($san->tensan); ?></td>
-                        <td><?php echo e($san->sosan); ?></td>
-                        <td colspan="3">Chưa có ảnh sân</td>
-                    </tr>
-                <?php else: ?>
-                    <?php $__currentLoopData = $san->images; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $image): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                        <tr>
-                            <!-- Sử dụng $loop->parent để lấy chỉ số của sân -->
-                            <td><?php echo e($loop->parent->iteration); ?></td>
-                            <td><?php echo e($san->tensan); ?></td>
-                            <td><?php echo e($san->sosan); ?></td>
-                            <td>
-                                <img src="<?php echo e(asset(Storage::url($image->image))); ?>" alt="Hình ảnh" class="admin-image">
-                            </td>
-                            <td>
-                                <form action="<?php echo e(route('sua-hinh-anh-san', ['image_id' => $image->image_id])); ?>" method="GET">
-                                    <button type="submit" class="btn btn-primary">Sửa</button>
-                                </form>
-                            </td>                            
-                            <td>
-                                <form action="<?php echo e(route('xoa-hinh-anh-san', ['image_id' => $image->image_id])); ?>" method="POST" onsubmit="return confirm('Bạn có chắc chắn muốn xóa hình ảnh này?');">
-                                    <?php echo csrf_field(); ?>
-                                    <?php echo method_field('DELETE'); ?>
-                                    <button type="submit" class="btn btn-danger">Xóa</button>
-                                </form>                                
-                            </td>
-                        </tr>
-                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                <?php endif; ?>
+            <?php $__currentLoopData = $selectedYard->images; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $image): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                <tr>
+                    <td><?php echo e($index + 1); ?></td>
+                    <td>
+                        <img src="<?php echo e(asset('storage/' . $image->image)); ?>" alt="Hình ảnh" class="admin-image">
+                    </td>
+                    <td>
+                        <form action="<?php echo e(route('cap-nhat-hinh-anh-san', ['image_id' => $image->image_id])); ?>" method="GET">
+                            <button type="submit" class="update-btn">Sửa</button>
+                        </form>
+                    </td>
+                    <td>
+                        <form action="<?php echo e(route('xoa-hinh-anh-san', ['image_id' => $image->image_id])); ?>" method="POST" onsubmit="return confirm('Bạn có chắc chắn muốn xóa hình ảnh này?');">
+                            <?php echo csrf_field(); ?>
+                            <?php echo method_field('DELETE'); ?>
+                            <button type="submit" class="update-btn">Xóa</button>
+                        </form>                                
+                    </td>
+                </tr>
             <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
         </tbody>
     </table>

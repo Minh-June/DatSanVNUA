@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Đặt lịch sân thể thao - <?php echo $__env->yieldContent('title'); ?></title>
+    <title>Đặt sân thể thao - <?php echo $__env->yieldContent('title'); ?></title>
     <link rel="stylesheet" href="<?php echo e(asset('css/style.css')); ?>">
     <link rel="stylesheet" href="<?php echo e(asset('fonts/fontawesome-free-6.5.2/css/all.min.css')); ?>">
 </head>
@@ -13,7 +13,7 @@
 
         <!-- Begin: Header -->
         <div id="header">
-            <a class="home-heading" href="<?php echo e(route('trang-chu')); ?>" target="_top">Đặt lịch sân thể thao</a>
+            <a class="home-heading" href="<?php echo e(route('trang-chu')); ?>" target="_top">Đặt sân thể thao</a>
             
             <div class="header-login">
                 <form action="<?php echo e(route('dang-xuat')); ?>" method="post" style="display:inline;" onsubmit="return confirm('Bạn có chắc chắn muốn đăng xuất?');">
@@ -65,7 +65,7 @@
 
         <!-- Begin: Footer -->
         <div id="footer">
-            <p class="copyright">Powered by Group 7</p>
+            <p class="copyright">Powered by Group 48</p>
         </div>
         <!-- End: Footer -->
 

@@ -7,8 +7,7 @@
         <h1 class="form-title">Đăng Nhập</h1>
 
         @if ($errors->any())
-            <div class="alert alert-danger" role="alert">
-                <strong>Có lỗi xảy ra !</strong>
+            <div class="alert alert-danger">
                 <ul>
                     @foreach ($errors->all() as $error)
                         <li>{{ $error }}</li>
