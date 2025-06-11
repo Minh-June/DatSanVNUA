@@ -50,10 +50,17 @@
             <input type="hidden" name="price" id="price"><br>
 
             <label>Họ và tên:</label>
+<<<<<<< HEAD
             <input type="text" name="name" value="{{ old('name') }}" required><br>
 
             <label>Số điện thoại:</label>
             <input type="text" name="phone" value="{{ old('phone') }}" required><br>
+=======
+            <input type="text" name="name" value="{{ old('name') }}" required pattern="^[\p{L}\s]+$" title="Chỉ nhập chữ cái và khoảng trắng"><br>
+
+            <label>Số điện thoại:</label>
+            <input type="text" name="phone" value="{{ old('phone') }}" required pattern="^[0-9]+$" title="Chỉ nhập số"><br>
+>>>>>>> 80d6e7c (Cập nhật giao diện)
 
             <label>Ghi chú:</label><br><br>
             <textarea name="notes" rows="3">{{ old('notes') }}</textarea><br>

@@ -22,8 +22,22 @@ class StoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'san_id' => 'required|exists:yard,san_id',
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048', // Kiểm tra định dạng và kích thước hình ảnh
+            'yard_id' => 'required|exists:yards,yard_id', // sửa lại nếu trước đó ghi sai
+            'image' => 'required|image|mimes:jpeg,png,jpg|max:2048',
         ];
     }
+
+    public function messages(): array
+    {
+        return [
+            'yard_id.required' => 'Vui lòng chọn sân thể thao.',
+            'yard_id.exists' => 'Sân thể thao không hợp lệ.',
+            'image.required' => 'Hình ảnh sân không được để trống.',
+            'image.image' => 'Tệp tải lên phải là hình ảnh.',
+            'image.mimes' => 'Hình ảnh phải có định dạng jpeg, png, jpg.',
+            'image.max' => 'Kích thước hình ảnh không được vượt quá 2MB.',
+        ];
+    }
+
+
 }

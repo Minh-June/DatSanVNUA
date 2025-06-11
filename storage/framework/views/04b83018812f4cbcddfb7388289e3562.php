@@ -10,7 +10,11 @@
         <form method="GET" action="<?php echo e(route('thong-tin-tai-khoan')); ?>">
             <label for="date">Chọn ngày:</label>
             <input type="date" id="date" name="date" value="<?php echo e(request('date', date('Y-m-d'))); ?>">
+<<<<<<< HEAD
             <button class="admin-search-btn" type="submit">Tìm kiếm</button>
+=======
+            <button class="update-btn" type="submit">Tìm kiếm</button>
+>>>>>>> 80d6e7c (Cập nhật giao diện)
         </form>
     </div>        
     <!-- End: Date Filter -->
@@ -64,9 +68,15 @@
 
                         <?php if($loop->parent->first): ?>
                             <td rowspan="<?php echo e($orderRowspan); ?>">
+<<<<<<< HEAD
                                 <?php echo e(number_format($order->orderDetails->sum('price'), 0, ',', '.')); ?> VND
                             </td>
                             <td rowspan="<?php echo e($orderRowspan); ?>"><?php echo e($firstDetail->notes ?? 'Không có ghi chú'); ?></td>
+=======
+                                <?php echo e(number_format($order->orderDetails->sum('price'), 0, ',', '.')); ?>đ
+                            </td>
+                            <td rowspan="<?php echo e($orderRowspan); ?>"><?php echo e($firstDetail->notes ?? 'Không có'); ?></td>
+>>>>>>> 80d6e7c (Cập nhật giao diện)
                             <td rowspan="<?php echo e($orderRowspan); ?>">
                                 <?php
                                     $images = json_decode($order->image) ?: [];
@@ -93,7 +103,11 @@
             <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
         </table>
     <?php else: ?>
+<<<<<<< HEAD
         <h3 style="font-weight: normal; font-size: 17px;">Hiện tại bạn chưa có đơn đặt sân nào.</h3>
+=======
+        <h3 style="font-weight: normal; font-size: 18px;">Hiện tại bạn chưa có đơn đặt sân nào</h3>
+>>>>>>> 80d6e7c (Cập nhật giao diện)
     <?php endif; ?>
     <!-- End: Display Orders -->
 <?php $__env->stopSection(); ?>

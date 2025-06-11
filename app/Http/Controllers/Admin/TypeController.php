@@ -35,7 +35,18 @@ class TypeController extends Controller
     public function store(Request $request)
     {
         $request->validate([
+<<<<<<< HEAD
             'name' => 'required|string|max:255',
+=======
+            'name' => [
+                'required',
+                'string',
+                'max:255',
+                'regex:/^[^\d\W_]+(?:\s[^\d\W_]+)*$/u',
+            ],
+        ], [
+            'name.regex' => 'Tên loại sân không được chứa số hoặc ký tự đặc biệt.',
+>>>>>>> 80d6e7c (Cập nhật giao diện)
         ]);
     
         // Kiểm tra tên loại sân đã tồn tại chưa
@@ -70,8 +81,21 @@ class TypeController extends Controller
         }
     
         $request->validate([
+<<<<<<< HEAD
             'name' => 'required|string|max:255',
         ]);
+=======
+            'name' => [
+                'required',
+                'string',
+                'max:255',
+                'regex:/^[\p{L}\s]+$/u', // Chỉ cho chữ và khoảng trắng
+            ],
+        ], [
+            'name.regex' => 'Tên loại sân không được chứa số hoặc ký tự đặc biệt.',
+        ]);
+
+>>>>>>> 80d6e7c (Cập nhật giao diện)
     
         // Kiểm tra tên loại sân đã tồn tại (ngoại trừ chính nó)
         $exists = Type::where('name', $request->name)

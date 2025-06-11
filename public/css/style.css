@@ -1,3 +1,12 @@
+:root {
+    --primary-color: #37bd74;
+    --primary-color-hover: #2E9F74;
+    --primary-color-hover-text: #C8E6C9;
+    --primary-font-size: 20px;
+    --primary-font-size-admin: 17px;
+    --primary-box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
 * {
     padding: o;
     margin: 0;
@@ -56,8 +65,8 @@ html {
     padding: 15px;
     margin: 50px auto;
     border-radius: 10px;
-    border: 8px solid #388E3C;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    border: 8px solid #37bd74;
+    box-shadow: var(--primary-box-shadow);
 }
 
 .form-title {
@@ -139,7 +148,7 @@ html {
     padding: 4px;
     border: 1px solid #ddd;
     border-radius: 5px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.08);
+    box-shadow: var(--primary-box-shadow);
 }
 
 .recover {
@@ -165,17 +174,16 @@ html {
     outline: none;
     border: none;
     width: 100%;
-    background-color: #388E3C;
+    background-color: var(--primary-color);
     color: #fff;
     cursor: pointer;
     transition: 0.1s;
     margin-top: 20px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    box-shadow: var(--primary-box-shadow);
 }
 
 .index-btn:hover {
-    color: #000;
-    background-color: #C8E6C9;
+    background-color: var(--primary-color-hover)
 }
 
 .or {
@@ -197,11 +205,11 @@ html {
     border: 1px solid #ccc;
     margin: 0 15px;
     transition: 0.1s;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
 }
 
 .icons a:hover {
-    color: #C8E6C9;
+    color: var(--primary-color-hover-text);
     border: 2px solid;
 }
 
@@ -214,7 +222,7 @@ html {
 }
 
 #signUpButton {
-    color: #388E3C;
+    color: var(--primary-color);
     border: none;
     background-color: transparent;
     font-size: 17px;
@@ -222,7 +230,7 @@ html {
 }
 
 #signUpButton:hover {
-    color: #C8E6C9;
+    color: var(--primary-color-hover);
 }
 
 /* Trang chủ */
@@ -232,29 +240,43 @@ html {
     top: 0;
     left: 0;
     right: 0;
-    height: 60px;
-    background-color: #388E3C;
-    color: #fff;
+    height: 56px;
+    background-color: var(--primary-color);
     z-index: 1; /* Header nổi trên ảnh */
     display: flex;
     justify-content: space-between;
     line-height: 60px;
-    padding-left: 40px;
-    padding-right: 40px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    padding-left: 70px;
+    padding-right: 70px;
+    box-shadow: var(--primary-box-shadow);
 }
 
 .home-heading {
     text-decoration: none;
     color: #fff;
     text-transform: uppercase;
-    font-size: 20px;
+    font-size: var(--primary-font-size);
 }
 
-#header p {
+/* Carlender */
+.header__carlender {
+
+}
+
+.header__cart-wrap {
+    position: relative;
+    display: inline-block;
+    padding-right: 12px;
+    padding-top: 4px;
+    cursor: pointer;
+    color: #fff;
+}
+
+.header__cart-icon {
     font-size: 25px;
 }
 
+<<<<<<< HEAD
 /* Carlender */
 .header__carlender {
 
@@ -431,6 +453,168 @@ html {
     font-size: 20px;
 }
 
+=======
+.header__cart-wrap:hover .header__cart-list {
+    display: block;
+}
+
+.header__cart-list {
+    position: absolute;
+    right: 1px;
+    background-color:#fff;
+    width: 400px;
+    border-radius: 10px;
+    box-shadow: var(--primary-box-shadow);
+    cursor: default;
+    display: none;
+    z-index: 1;
+}
+
+.header__cart-list--no-cart{
+    font-size: 17px;
+    text-align: center;
+    color: #000;
+}
+
+.header__cart-heading {
+    text-align: center;
+    color: #000;
+    font-size: var(--primary-font-size);
+    color: var(--primary-color);
+}
+
+.header__cart-list-item {
+    font-size: var(--primary-font-size-admin);
+    height: 200px; /* Chiều cao cố định cho danh sách giỏ hàng */
+    padding-left: 0;
+    overflow-y: auto;     /* Khi thằng con vượt quá chiều dọc của thằng cha thì hiện thanh cuộn dọc */
+}
+
+.header__cart-item {
+    display: flex;
+    align-items: center;
+}
+
+.header__cart-item:hover {
+    background-color: #f8f8f8;
+}
+
+.header__cart-img {
+    width: 150px;
+    height: 130px;
+    margin: 12px;
+    border-radius: 10px;
+    box-shadow: var(--primary-box-shadow);
+}
+
+.header__cart-item-info {
+    width: 100%;
+    margin-right: 12px;
+}
+
+.header__cart-item-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.header__cart-item-name {
+    max-height: 64px;     /* Đề phòng nội dung ngắn quá (1 dòng) sẽ bị đẩy cao lên so với "phân loại" */
+    color: #000;
+    word-wrap: break-word;      /* Tự xuống dòng khi chạm đến chiều rộng */
+    display: -webkit-box;       /* Hỗ trợ ellipsis cho nhiều dòng */
+    -webkit-line-clamp: 3;      /* Giới hạn tối đa 3 dòng (64px ~ 3 dòng) */
+    -webkit-box-orient: vertical;
+    text-overflow: ellipsis;    /* Hiện dấu ... */
+}
+
+.header__cart-item-price {
+    color: #000;
+}
+
+.header__cart-item-multiply {
+    margin: 0 4px;
+    color: #757575;
+}
+
+.header__cart-item-qnt {
+    color: #757575;
+}
+
+.header__cart-item-body {
+    display: flex;
+    justify-content: space-between;
+}
+
+.header__cart-item-description {
+    color: #757575;
+}
+
+.header__cart-item-remove {
+    color: #000;
+}
+
+.header__cart-view-cart {
+    background-color: var(--primary-color);
+    color: #fff;
+    padding: 4px 12px;    
+    border: none;
+    border-radius: 10px;
+    box-shadow: var(--primary-box-shadow);
+    margin: 12px;
+    float: right;
+    font-size: var(--primary-font-size-admin);
+}
+
+.header__cart-view-cart:hover {
+    cursor: pointer;
+    background-color: var(--primary-color-hover);
+}
+
+.header__cart-list::after {
+    cursor: pointer;
+    content: "";
+    position: absolute;
+    right: 3px;
+    top: -26px;
+    border-width: 16px 20px;
+    border-style: solid;
+    border-color: transparent transparent #fff transparent;
+}
+
+.header__cart-list--no-cart {
+    padding: 24px 0;
+}
+
+.header__cart-list--no-cart .header__cart-no-cart-img,
+.header__cart-list--no-cart .header__cart-list-no-cart-msg {
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+}
+
+.header__cart-list-no-cart-msg {
+    font-size: var(--primary-font-size);
+}
+
+.header__cart-notice {
+    font-size: 14px;
+    position: absolute;
+    right: 11px;
+    padding-top: 1px;
+    padding-right: 8px;
+    color: #388E3C;
+}
+
+#header .avatar {
+    margin-top: 19px;
+    font-size: 21px;
+    color: #fff;
+    padding-right: 10px;
+    padding-left: 6px;
+}
+
+>>>>>>> 80d6e7c (Cập nhật giao diện)
 .login-btn{
     margin-right: 12px;
 }
@@ -438,9 +622,13 @@ html {
 .login-btn,
 .signup-btn {
     color: #fff;
-    background-color: #388E3C;
+    background-color: var(--primary-color);
     border: none;
+<<<<<<< HEAD
     font-size: 20px;
+=======
+    font-size: var(--primary-font-size);
+>>>>>>> 80d6e7c (Cập nhật giao diện)
     text-decoration: none;
     position: relative;
 }
@@ -450,10 +638,10 @@ html {
     display: block;
     position: absolute;
     border-left: 2px solid #fff;
-    height: 18px;
+    height: 26px;
     right: -6px;
     top: 50%;
-    transform: translateY(-50%);
+    transform: translateY(-40%);
 }
 
 .login-btn:hover,
@@ -465,63 +653,73 @@ html {
 /* Slider */
 #slider {
     position: relative;
-    padding-top: 60px;
+    padding-top: 56px;
+    padding-bottom: 40px;
 }
 
 /* Content */
 .content-section {
     width: 90%;
-    padding-bottom: 12px;
-    margin-top: 48px;
     margin-left: auto;
     margin-right: auto;
 }
 
 .content-heading {
-    font-size: 30px;
+    font-weight: bolder;
+    font-size: 26px;
     text-align: center;
     letter-spacing: 4px;
-    text-align: center;
 }
 
 .content-list {
-    margin-top: 48px;
+    margin-top: 40px;
 }
 
 .content-item {
     float: left;
     width: 25%;
     text-align: center;
+    padding-bottom: 40px;
+}
+
+.content-body {
+    height: 100%;
 }
 
 .content-body-name {
-    padding-top: 16px;
-    padding-bottom: 16px;
+    font-size: var(--primary-font-size);
+    font-weight: bolder;
+    padding: 14px 0;
 }
 
 .football-img {
     width: 300px;
     height: 400px;
     border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    box-shadow: var(--primary-box-shadow);
 }
 
 .order-football-btn {
+<<<<<<< HEAD
     background-color: #388E3C;
     color: #fff;
     font-size: 17px;
+=======
+    background-color: var(--primary-color);
+>>>>>>> 80d6e7c (Cập nhật giao diện)
     text-decoration: none;
-    padding: 5px 20px;
+    color: #fff;
+    font-size: var(--primary-font-size-admin);
+    padding: 4px 10px;
     border-radius: 10px;
     border: none;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    box-shadow: var(--primary-box-shadow);
     text-align: center;
 }
 
 .order-football-btn:hover {
     cursor: pointer;
-    color: #000;
-    background-color: #C8E6C9;
+    background-color: var(--primary-color-hover);
 }
 
 /* Contact form */
@@ -532,6 +730,24 @@ html {
 .contact-infor {
     font-size: 17px;
     line-height: 1.5;
+}
+
+.contact-infor-header {
+    display: flex;
+    padding-bottom: 12px;
+}
+
+.contact-infor-header > img {
+    width: 50px;
+    height: 50px;
+}
+
+.contact-infor-text {
+    padding-left: 10px;
+}
+
+.contact-infor-text h3 {
+    letter-spacing: 0.5px;
 }
 
 .contact-infor i[class*="fa-"] {
@@ -545,28 +761,31 @@ html {
 
 .contact-form .form-control {
     padding: 10px;
-    border: 1px solid #C8E6C9;
+    border: 1px solid var(--primary-color);
     width: 100%;
-    border-radius: 5px;
+    border-radius: 10px;
     margin-bottom: 5px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.08);
 }
 
 .contact-btn {
-    background-color: #388E3C;
+    background-color: var(--primary-color);
     color: #fff;
+<<<<<<< HEAD
     font-size: 17px;
+=======
+    font-size: var(--primary-font-size-admin);
+>>>>>>> 80d6e7c (Cập nhật giao diện)
     text-decoration: none;
     padding: 5px 10%;
     border-radius: 10px;
     border: none;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    box-shadow: var(--primary-box-shadow);
 }
 
 .contact-btn:hover {
     cursor: pointer;
-    color: #000;
-    background-color: #C8E6C9;
+    background-color: var(--primary-color-hover);
 }
 
 .pull-right {
@@ -575,7 +794,16 @@ html {
 
 /* Footer section */
 #footer {
+<<<<<<< HEAD
     padding: 3% 0;
+=======
+    background-color: var(--primary-color);
+    margin-top: 40px;
+    height: 60px;
+    line-height: 60px;
+    font-size: var(--primary-font-size-admin);
+    color: #fff;
+>>>>>>> 80d6e7c (Cập nhật giao diện)
     text-align: center;
 }
 
@@ -658,7 +886,11 @@ html {
     padding: 20px;
     border: 2px solid #388E3C;
     border-radius: 10px;
+<<<<<<< HEAD
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+=======
+    box-shadow: var(--primary-box-shadow);
+>>>>>>> 80d6e7c (Cập nhật giao diện)
 }
 
 .container > p {
@@ -753,7 +985,7 @@ html {
     font-size: 17px;
     border-radius: 10px;
     border: 2px solid #388E3C;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    box-shadow: var(--primary-box-shadow);
 }
 
 .order-successfully-infor {
@@ -838,7 +1070,7 @@ html {
 
 /* Admin */
 .admin-section {
-    margin-top: 4.5%;
+    margin-top: 70px;
 }
 
 .admin {
@@ -846,41 +1078,62 @@ html {
 }
 
 .admin-section-left {
-    width: 280px;
+    width: 210px;
 }
 
 .header-section-left {
     background-color: #C8E6C9;
     padding: 15px 0px;
+<<<<<<< HEAD
     padding-left: 60px;
     font-size: 20px;
     margin: 5px 0;
     border-top-right-radius: 10px;
     border-bottom-right-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+=======
+    text-align: center;
+    margin-bottom: 10px;
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+    box-shadow: var(--primary-box-shadow);
+    font-size: var(--primary-font-size);
+>>>>>>> 80d6e7c (Cập nhật giao diện)
 }
 
 .header-login {
     display: flex;
+<<<<<<< HEAD
 }
 
 .avatar {
     font-size: 30px;
     padding-right: 10px;
     padding-left: 15px;
+=======
+>>>>>>> 80d6e7c (Cập nhật giao diện)
 }
 
 .avatar-name {
     text-decoration: none;
     color: #000;
+    margin-left: 5px;
 }
 
 .admin-manage {
+<<<<<<< HEAD
     height: 473px;
     background-color: #388E3C;
     border-top-right-radius: 10px;
     border-bottom-right-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+=======
+    height: 496px;
+    background-color: var(--primary-color);
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+    box-shadow: var(--primary-box-shadow);
+>>>>>>> 80d6e7c (Cập nhật giao diện)
     overflow-y: auto;
 }
 
@@ -889,12 +1142,16 @@ html {
     color: #fff;
     line-height: 50px;
     padding-left: 20px;
+<<<<<<< HEAD
     font-size: 19px;  
     list-style: none;
 }
 
 .admin-manage > li:first-child > a:first-child {
     border-top-right-radius: 5px;
+=======
+    font-size: var(--primary-font-size);  
+>>>>>>> 80d6e7c (Cập nhật giao diện)
 }
 
 .admin-manage li {
@@ -903,8 +1160,8 @@ html {
 }
 
 .admin-manage li a:hover {
-    color: #000;
-    background-color: #C8E6C9;
+    color: #fff;
+    background-color: var(--primary-color-hover);
     display: block;
 }
 
@@ -950,20 +1207,25 @@ html {
 }
 
 .admin-section-right {
+<<<<<<< HEAD
     width: 1230px;
     height: 540px;
     margin-top: 5px;
+=======
+    width: 1300px;
+    height: 559px;
+>>>>>>> 80d6e7c (Cập nhật giao diện)
     margin-left: 10px;
     border-radius: 10px;
     overflow-y: auto;
-    border: 2px solid #388E3C;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border: 2px solid var(--primary-color);
+    box-shadow: var(--primary-box-shadow);
 }
 
 .admin-section-right h3 {
     text-align: center;
     margin: 20px 0;
-    font-size: 20px;
+    font-size: var(--primary-font-size);
 }
 
 .admin-top-bar {
@@ -973,6 +1235,7 @@ html {
 }
 
 .admin-search {
+<<<<<<< HEAD
     margin-left: 3%;
     margin-bottom: 20px;
     font-size: 17px;
@@ -980,6 +1243,16 @@ html {
 }
 
 .admin-search input {   
+=======
+    margin-left: 40px;
+    margin-bottom: 20px;
+    font-size: var(--primary-font-size-admin);
+    width: 420px;
+}
+
+.admin-search input {  
+    font-size: 14px; 
+>>>>>>> 80d6e7c (Cập nhật giao diện)
     padding: 5px;
     margin-left: 5px;
     border: 1px solid #ddd;
@@ -1022,7 +1295,7 @@ html {
     padding: 5px 12px;
     border-radius: 10px;
     border: none;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    box-shadow: var(--primary-box-shadow);
     text-align: center;
 }
 
@@ -1033,13 +1306,20 @@ html {
 }
 
 #ListCustomers {
+<<<<<<< HEAD
     font-size: 17px;
+=======
+    font-size: var(--primary-font-size-admin);
+>>>>>>> 80d6e7c (Cập nhật giao diện)
     margin-left: 3%;
-    margin-right: 3%;
     margin-bottom: 30px;
     width: 94%;
     border-collapse: collapse;
+<<<<<<< HEAD
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.8);
+=======
+    box-shadow: var(--primary-box-shadow);
+>>>>>>> 80d6e7c (Cập nhật giao diện)
     border-radius: 10px;
     overflow: hidden;
 }
@@ -1071,7 +1351,10 @@ th {
 }
 
 form select {
+<<<<<<< HEAD
     margin-bottom: 10px;
+=======
+>>>>>>> 80d6e7c (Cập nhật giao diện)
     padding: 4px;
     border: 1px solid #ddd;
     border-radius: 5px;
@@ -1112,19 +1395,26 @@ form select {
 }
 
 .update-btn {
-    background-color: #388E3C;
+    background-color: var(--primary-color);
     color: #fff;
-    font-size: 15px;
+    font-size: var(--primary-font-size-admin);
     text-decoration: none;
+<<<<<<< HEAD
     padding: 4px 8px;
     border-radius: 10px;
     border: none;
+=======
+    padding: 2px 5px;
+    border-radius: 10px;
+    border: none;
+    box-shadow: var(--primary-box-shadow);
+>>>>>>> 80d6e7c (Cập nhật giao diện)
 }
 
 .update-btn:hover {
     cursor: pointer;
-    color: #000;
-    background-color: #C8E6C9;
+    color: #fff;
+    background-color: var(--primary-color-hover);
 }
 
 .order-update select {   
@@ -1143,7 +1433,7 @@ form select {
     padding: 4px 12px;
     border-radius: 10px;
     border: none;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    box-shadow: var(--primary-box-shadow);
     text-align: center;
 }
 
@@ -1181,7 +1471,11 @@ form select {
     padding: 5px 20px;
     border-radius: 10px;
     border: none;
+<<<<<<< HEAD
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+=======
+    box-shadow: var(--primary-box-shadow);
+>>>>>>> 80d6e7c (Cập nhật giao diện)
 }
 
 .admin-add-btn > a:hover {

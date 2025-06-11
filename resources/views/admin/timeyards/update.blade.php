@@ -34,8 +34,12 @@
             <br>
 
             <label for="time">Khung giờ:</label>
+<<<<<<< HEAD
             <input type="text" id="time" name="time" value="{{ $time->time }}" required>
             <br>
+=======
+            <input type="text" id="time" name="time" required pattern="\d{2}:\d{2}\s*-\s*\d{2}:\d{2}" title="Định dạng phải là HH:MM - HH:MM">            <br>
+>>>>>>> 80d6e7c (Cập nhật giao diện)
 
             <label for="price">Giá (VNĐ):</label>
             <input type="number" id="price" name="price" value="{{ $time->price }}" required min="0">

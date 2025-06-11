@@ -95,7 +95,11 @@
 
             <form action="<?php echo e(route('pay.upload')); ?>" method="post" enctype="multipart/form-data">
                 <?php echo csrf_field(); ?>
+<<<<<<< HEAD
                 <input type="file" name="images[]" multiple accept="image/*"><br><br>
+=======
+                <input type="file" name="images[]" multiple accept=".jpg,.jpeg,.png"><br><br>
+>>>>>>> 80d6e7c (Cập nhật giao diện)
                 <div class="pay-btn">
                     <button type="submit" class="order-football-btn">Xác nhận đặt sân</button>
                 </div>

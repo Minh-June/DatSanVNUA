@@ -47,11 +47,19 @@
 
                         <?php if(empty($groupedOrders)): ?>
                             <div class="header__cart-list header__cart-list--no-cart">
+<<<<<<< HEAD
                                 <div class="header__cart-list-no-cart-msg">Chưa có sân và khung giờ được đặt</div>
                             </div>
                         <?php else: ?>
                             <div class="header__cart-list">
                                 <div class="header__cart-heading">Các sân và khung giờ đã đặt</div>
+=======
+                                <div class="header__cart-list-no-cart-msg">Hiện chưa có đơn đặt sân nào</div>
+                            </div>
+                        <?php else: ?>
+                            <div class="header__cart-list">
+                                <div class="header__cart-heading">Danh sách đơn đặt sân</div>
+>>>>>>> 80d6e7c (Cập nhật giao diện)
                                 <ul class="header__cart-list-item">
                                     <?php $__currentLoopData = $groupedOrders; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $order): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                         <li class="header__cart-item">
@@ -71,6 +79,7 @@
                                                     </div>
                                                 </div>
                                                 <div class="header__cart-item-body">
+<<<<<<< HEAD
                                                     <span class="header__cart-item-remove">
                                                         <?php echo e(\Carbon\Carbon::parse($order['date'])->format('d/m/Y')); ?>
 
@@ -79,13 +88,30 @@
                                                         <?php echo implode('<br>', $order['times']); ?>
 
                                                     </span>
+=======
+                                                    <p class="header__cart-item-remove">
+                                                        Ngày: <?php echo e(\Carbon\Carbon::parse($order['date'])->format('d/m/Y')); ?>
+
+                                                    </p>
+                                                    <p class="header__cart-item-description">
+                                                        <?php echo implode('<br>', $order['times']); ?>
+
+                                                    </p>
+>>>>>>> 80d6e7c (Cập nhật giao diện)
                                                 </div>
                                             </div>
                                         </li>
                                     <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                 </ul>
+<<<<<<< HEAD
 
                                 <a href="<?php echo e(route('xac-nhan-dat-san')); ?>" class="header__cart-view-cart">Xác nhận đặt sân</a>
+=======
+                                <button class="header__cart-view-cart"
+                                        onclick="window.location='<?php echo e(route('xac-nhan-dat-san')); ?>'">
+                                    Xác nhận đặt sân
+                                </button>
+>>>>>>> 80d6e7c (Cập nhật giao diện)
                             </div>
                         <?php endif; ?>
 

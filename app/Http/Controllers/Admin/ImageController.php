@@ -7,6 +7,10 @@ use Illuminate\Http\Request;
 use App\Models\Image;
 use App\Models\Yard;
 use Illuminate\Support\Facades\Storage;
+<<<<<<< HEAD
+=======
+use App\Http\Requests\Admin\ImageYard\UpdateRequest;
+>>>>>>> 80d6e7c (Cập nhật giao diện)
 
 class ImageController extends Controller
 {
@@ -55,7 +59,11 @@ class ImageController extends Controller
         return view('admin.imgyards.update', compact('image'));
     }
 
+<<<<<<< HEAD
     public function update(Request $request, $image_id)
+=======
+    public function update(UpdateRequest $request, $image_id)
+>>>>>>> 80d6e7c (Cập nhật giao diện)
     {
         $request->validate([
             'image' => 'required|image|max:2048',

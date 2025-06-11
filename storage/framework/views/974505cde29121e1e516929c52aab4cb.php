@@ -11,12 +11,21 @@
     <?php endif; ?>
 
     <!-- Hiển thị thông báo lỗi -->
+<<<<<<< HEAD
     <?php if(session('error')): ?>
         <script>
             alert("<?php echo e(session('error')); ?>");
         </script>
     <?php endif; ?>
     
+=======
+    <?php if($errors->any()): ?>
+        <script>
+            alert("<?php echo e($errors->first()); ?>");
+        </script>
+    <?php endif; ?>
+
+>>>>>>> 80d6e7c (Cập nhật giao diện)
     <h3>Thêm sân mới</h3>
 
     <!-- Form thêm sân mới -->

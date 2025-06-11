@@ -23,15 +23,21 @@
         <!-- End: Header -->
 
         <div id="slider">
-            <img src="{{ asset('./image/slider/slider1.jpg') }}" alt="Slider Image" style="width: 100%; height: auto;">
+            <img src="{{ asset('./image/slider/slider1.jpg') }}" alt="Slider Image" style="max-width: 100%; max-height: 50%;">
         </div>
         
         <!-- Begin: Content -->
         @foreach ($groupedYards as $typeName => $yards)
             <div id="content" class="content-section">
+<<<<<<< HEAD
                 <h2 class="content-heading">
                     {{ $typeName }}
                 </h2>
+=======
+                <p class="content-heading">
+                    {{ $typeName }}
+                </p>
+>>>>>>> 80d6e7c (Cập nhật giao diện)
                 <div class="content-list">
                     @foreach ($yards as $yard)
                         <div class="content-item">
@@ -47,6 +53,7 @@
                                 }
                             ?>
                             <div class="content-body">
+<<<<<<< HEAD
                                 <h3 class="content-body-name">
                                     {{ $yard->name }}
                                 </h3>
@@ -54,14 +61,27 @@
                                 href="{{ route('dang-nhap') }}" 
                                 onclick="alert('Vui lòng đăng nhập để đặt sân')">
                                 Chọn sân
+=======
+                                <p class="content-body-name">
+                                    {{ $yard->name }}
+                                </p>
+                                <a href="{{ route('dang-nhap') }}"
+                                onclick="alert('Vui lòng đăng nhập để đặt sân');"
+                                class="order-football-btn">
+                                    Chọn sân
+>>>>>>> 80d6e7c (Cập nhật giao diện)
                                 </a>
                             </div>
                         </div>
                     @endforeach
+<<<<<<< HEAD
                     <div class="clear"></div>
+=======
+>>>>>>> 80d6e7c (Cập nhật giao diện)
                 </div>
             </div>
-        @endforeach
+            <div class="clear"></div>
+            @endforeach
         <!-- End: Content -->
 
         <!-- Begin: Contact section -->
@@ -70,9 +90,16 @@
 
             <div class="row contact-content">
                 <div class="col col-half contact-infor">
-                    <p><i class="fa-solid fa-location-dot"></i>Hà Nội, Việt Nam</p>
-                    <p><i class="fa-solid fa-phone"></i>Điện thoại: <a href="tel:+00 151515">+84 356645445</a></p>
-                    <p><i class="fa-solid fa-envelope"></i>Email: <a href="mailto:mail@mail.com">minhjune18@gmail.com</a></p>
+                    <div class="contact-infor-header">  
+                        <img src="/image/logo.png" alt="Logo mặc định">
+                        <div class="contact-infor-text">  
+                            <h3>HỌC VIỆN NÔNG NGHIỆP VIỆT NAM</h3>
+                            <h5>VIETNAM NATIONAL UNIVERSITY OF AGRICULTURE</h5>
+                        </div>
+                    </div>
+                    <p><i class="fa-solid fa-location-dot"></i>Trâu Quỳ, Gia Lâm, Hà Nội, Việt Nam</p>
+                    <p><i class="fa-solid fa-phone"></i>Điện thoại: 84.024.62617586</p>
+                    <p><i class="fa-solid fa-envelope"></i>Email: webmaster@vnua.edu.vn</p>
                 </div>
 
                 <div class="col col-half contact-form">

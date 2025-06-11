@@ -22,6 +22,7 @@ class UpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
+<<<<<<< HEAD
             'san_id' => 'required|exists:yard,san_id', // Kiểm tra san_id tồn tại trong bảng yard
             'name' => 'required|string|max:255', // Tên phải có giá trị, là chuỗi và không vượt quá 255 ký tự
             'phone' => 'required|string|max:15', // Số điện thoại phải có giá trị, là chuỗi và không vượt quá 15 ký tự
@@ -29,6 +30,23 @@ class UpdateRequest extends FormRequest
             'time' => 'required|string', // Thời gian phải có giá trị và là chuỗi
             'price' => 'required|numeric', // Giá phải có giá trị và là số
             'notes' => 'nullable|string', // Ghi chú là tùy chọn và có thể là chuỗi
+=======
+            'san_id' => 'required|exists:yard,san_id',
+            'name' => ['required', 'string', 'max:255', 'regex:/^[\pL\s]+$/u'], // Chỉ cho chữ cái và khoảng trắng
+            'phone' => ['required', 'regex:/^[0-9]+$/', 'max:15'], // Chỉ số, không ký tự khác
+            'date' => 'required|date',
+            'time' => 'required|string',
+            'price' => 'required|numeric',
+            'notes' => 'nullable|string',
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'name.regex' => 'Họ và tên chỉ được chứa chữ cái và khoảng trắng.',
+            'phone.regex' => 'Số điện thoại chỉ được chứa chữ số.',
+>>>>>>> 80d6e7c (Cập nhật giao diện)
         ];
     }
 }

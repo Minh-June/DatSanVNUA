@@ -3,6 +3,17 @@
 <?php $__env->startSection('title', 'Quản lý thông tin cá nhân'); ?>
 
 <?php $__env->startSection('content'); ?>  
+<<<<<<< HEAD
+=======
+    <?php if($errors->any()): ?>
+        <script>
+            <?php $__currentLoopData = $errors->all(); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $error): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                alert("<?php echo e($error); ?>");
+            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+        </script>
+    <?php endif; ?>
+
+>>>>>>> 80d6e7c (Cập nhật giao diện)
     <?php if(session('success')): ?>
         <script>
             alert("<?php echo e(session('success')); ?>");
@@ -14,8 +25,14 @@
     <div class="adminedit">
         <form method="post" action="<?php echo e(route('cap-nhat-thong-tin-ca-nhan')); ?>">
             <?php echo csrf_field(); ?> <!-- Thêm token CSRF -->
+<<<<<<< HEAD
             <label for="fullname">Họ và tên:</label>
             <input type="text" name="fullname" value="<?php echo e($user->fullname ?? ''); ?>" required><br>
+=======
+            
+            <label for="fullname">Họ và tên:</label>
+            <input type="text" name="fullname" value="<?php echo e($user->fullname); ?>" required><br>
+>>>>>>> 80d6e7c (Cập nhật giao diện)
             
             <label for="gender">Giới tính:</label>
             <select class="admin-time-select" name="gender" required>
@@ -25,6 +42,7 @@
             </select><br>
             
             <label for="birthdate">Ngày sinh:</label>
+<<<<<<< HEAD
             <input type="date" name="birthdate" value="<?php echo e($user->birthdate ?? ''); ?>" required><br>
             
             <label for="phonenb">Số điện thoại:</label>
@@ -32,6 +50,15 @@
             
             <label for="email">Email:</label>
             <input type="email" name="email" value="<?php echo e($user->email ?? ''); ?>" required><br>
+=======
+            <input type="date" name="birthdate" value="<?php echo e($user->birthdate); ?>" required><br>
+            
+            <label for="phonenb">Số điện thoại:</label>
+            <input type="text" name="phonenb" value="<?php echo e($user->phonenb); ?>" required><br>
+            
+            <label for="email">Email:</label>
+            <input type="email" name="email" value="<?php echo e($user->email); ?>" required><br>
+>>>>>>> 80d6e7c (Cập nhật giao diện)
             
             <button class="update-btn" type="submit">Cập nhật thông tin cá nhân</button>
         </form>                          

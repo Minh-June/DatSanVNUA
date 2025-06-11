@@ -11,6 +11,17 @@
         <script>alert("{{ session('error') }}");</script>
     @endif
 
+<<<<<<< HEAD
+=======
+    @if ($errors->any())
+        <script>
+            @foreach ($errors->all() as $error)
+                alert("{{ $error }}");
+            @endforeach
+        </script>
+    @endif
+
+>>>>>>> 80d6e7c (Cập nhật giao diện)
     <h3>Thay đổi mật khẩu</h3> 
 
     <div class="adminedit">

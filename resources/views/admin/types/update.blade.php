@@ -11,12 +11,22 @@
     @endif
 
     <!-- Hiển thị thông báo lỗi -->
+<<<<<<< HEAD
     @if(session('error'))
         <script>
             alert("{{ session('error') }}");
         </script>
     @endif
 
+=======
+    @if ($errors->any())
+        <script>
+            alert("{{ $errors->first() }}");
+        </script>
+    @endif
+
+
+>>>>>>> 80d6e7c (Cập nhật giao diện)
     <h3>Sửa thông tin loại sân</h3>
 
     <!-- Form chỉnh sửa thông tin loại sân -->

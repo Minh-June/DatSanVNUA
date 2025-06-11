@@ -11,9 +11,15 @@
     @endif
 
     <!-- Hiển thị thông báo lỗi -->
+<<<<<<< HEAD
     @if(session('error'))
         <script>
             alert("{{ session('error') }}");
+=======
+    @if ($errors->any())
+        <script>
+            alert("{{ $errors->first() }}");
+>>>>>>> 80d6e7c (Cập nhật giao diện)
         </script>
     @endif
 

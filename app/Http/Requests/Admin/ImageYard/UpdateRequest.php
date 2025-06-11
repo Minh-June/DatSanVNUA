@@ -22,7 +22,18 @@ class UpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048', // Thay đổi nếu cần
+            'image' => 'required|image|mimes:jpeg,png,jpg|max:2048', // Thay đổi nếu cần
         ];
     }
+
+    public function messages(): array
+    {
+        return [
+            'image.required' => 'Vui lòng chọn hình ảnh.',
+            'image.image' => 'Tệp tải lên phải là hình ảnh.',
+            'image.mimes' => 'Hình ảnh phải có định dạng: jpeg, png, jpg.',
+            'image.max' => 'Kích thước hình ảnh tối đa là 2MB.',
+        ];
+    }
+
 }

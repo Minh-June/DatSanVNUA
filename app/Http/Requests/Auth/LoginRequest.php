@@ -3,22 +3,16 @@
 namespace App\Http\Requests\Auth;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\ValidationException;
 
 class LoginRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
     public function authorize(): bool
     {
-        return true; // Cho phép tất cả người dùng
+        return true;
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
-     */
     public function rules(): array
     {
         return [
@@ -27,7 +21,7 @@ class LoginRequest extends FormRequest
         ];
     }
 
-    public function messages()
+    public function messages(): array
     {
         return [
             'username.required' => 'Tên người dùng là bắt buộc.',
@@ -37,5 +31,20 @@ class LoginRequest extends FormRequest
             'password.string' => 'Mật khẩu phải là một chuỗi.',
             'password.min' => 'Mật khẩu phải có ít nhất 6 ký tự.',
         ];
+    }
+
+    /**
+     * Xử lý xác thực trong request.
+     */
+    public function authenticate(): void
+    {
+        if (!Auth::attempt([
+            'username' => $this->input('username'),
+            'password' => $this->input('password'),
+        ])) {
+            throw ValidationException::withMessages([
+                'login_failed' => 'Tên đăng nhập và mật khẩu không đúng.',
+            ]);
+        }
     }
 }

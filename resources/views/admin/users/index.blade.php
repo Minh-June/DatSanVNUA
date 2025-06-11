@@ -10,12 +10,22 @@
         </script>
     @endif
 
+<<<<<<< HEAD
     @if(session('error'))
         <script>
             alert("{{ session('error') }}");
         </script>
     @endif
 
+=======
+    @if ($errors->any())
+        <script>
+            alert("{{ $errors->first('keyword') }}");
+        </script>
+    @endif
+
+
+>>>>>>> 80d6e7c (Cập nhật giao diện)
     <h3>{{ isset($xem_user) ? 'Thông tin người dùng' : 'Danh sách người dùng' }}</h3>
 
     <!-- Thanh top-bar luôn hiển thị -->
@@ -24,7 +34,11 @@
             @if(!isset($xem_user))
             <form method="GET" action="{{ route('quan-ly-nguoi-dung') }}">
                 <label for="type_id">Tìm người dùng:</label>
+<<<<<<< HEAD
                 <input type="text" name="keyword" placeholder="Nhập thông tin cần tìm" value="{{ request('keyword') }}">
+=======
+                <input type="text" name="keyword" placeholder="Nhập thông tin cần tìm" value="{{ request('keyword') }}" required pattern="^[\p{L}\s]+$" title="Chỉ nhập chữ cái và khoảng trắng">
+>>>>>>> 80d6e7c (Cập nhật giao diện)
                 <button class="admin-search-btn" type="submit">Tìm kiếm</button>
             </form>
             @endif

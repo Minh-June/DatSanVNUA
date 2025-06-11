@@ -23,16 +23,27 @@
         <!-- End: Header -->
 
         <div id="slider">
+<<<<<<< HEAD
             <img src="<?php echo e(asset('./image/slider/slider1.jpg')); ?>" alt="Slider Image" style="width: 100%; height: auto;">
+=======
+            <img src="<?php echo e(asset('./image/slider/slider1.jpg')); ?>" alt="Slider Image" style="max-width: 100%; max-height: 50%;">
+>>>>>>> 80d6e7c (Cập nhật giao diện)
         </div>
         
         <!-- Begin: Content -->
         <?php $__currentLoopData = $groupedYards; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $typeName => $yards): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
             <div id="content" class="content-section">
+<<<<<<< HEAD
                 <h2 class="content-heading">
                     <?php echo e($typeName); ?>
 
                 </h2>
+=======
+                <p class="content-heading">
+                    <?php echo e($typeName); ?>
+
+                </p>
+>>>>>>> 80d6e7c (Cập nhật giao diện)
                 <div class="content-list">
                     <?php $__currentLoopData = $yards; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $yard): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                         <div class="content-item">
@@ -48,6 +59,7 @@
                                 }
                             ?>
                             <div class="content-body">
+<<<<<<< HEAD
                                 <h3 class="content-body-name">
                                     <?php echo e($yard->name); ?>
 
@@ -56,14 +68,31 @@
                                 href="<?php echo e(route('dang-nhap')); ?>" 
                                 onclick="alert('Vui lòng đăng nhập để đặt sân')">
                                 Chọn sân
+=======
+                                <p class="content-body-name">
+                                    <?php echo e($yard->name); ?>
+
+                                </p>
+                                <a href="<?php echo e(route('dang-nhap')); ?>"
+                                onclick="alert('Vui lòng đăng nhập để đặt sân');"
+                                class="order-football-btn">
+                                    Chọn sân
+>>>>>>> 80d6e7c (Cập nhật giao diện)
                                 </a>
                             </div>
                         </div>
                     <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+<<<<<<< HEAD
                     <div class="clear"></div>
                 </div>
             </div>
         <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+=======
+                </div>
+            </div>
+            <div class="clear"></div>
+            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+>>>>>>> 80d6e7c (Cập nhật giao diện)
         <!-- End: Content -->
 
         <!-- Begin: Contact section -->
@@ -72,9 +101,22 @@
 
             <div class="row contact-content">
                 <div class="col col-half contact-infor">
+<<<<<<< HEAD
                     <p><i class="fa-solid fa-location-dot"></i>Hà Nội, Việt Nam</p>
                     <p><i class="fa-solid fa-phone"></i>Điện thoại: <a href="tel:+00 151515">+84 356645445</a></p>
                     <p><i class="fa-solid fa-envelope"></i>Email: <a href="mailto:mail@mail.com">minhjune18@gmail.com</a></p>
+=======
+                    <div class="contact-infor-header">  
+                        <img src="/image/logo.png" alt="Logo mặc định">
+                        <div class="contact-infor-text">  
+                            <h3>HỌC VIỆN NÔNG NGHIỆP VIỆT NAM</h3>
+                            <h5>VIETNAM NATIONAL UNIVERSITY OF AGRICULTURE</h5>
+                        </div>
+                    </div>
+                    <p><i class="fa-solid fa-location-dot"></i>Trâu Quỳ, Gia Lâm, Hà Nội, Việt Nam</p>
+                    <p><i class="fa-solid fa-phone"></i>Điện thoại: 84.024.62617586</p>
+                    <p><i class="fa-solid fa-envelope"></i>Email: webmaster@vnua.edu.vn</p>
+>>>>>>> 80d6e7c (Cập nhật giao diện)
                 </div>
 
                 <div class="col col-half contact-form">
@@ -110,4 +152,12 @@
     </div>
 </body>
 </html>
+<<<<<<< HEAD
+<<<<<<<< HEAD:storage/framework/views/a5ff918bebcb149227f9ef19fbabe5bf.php
 <?php /**PATH D:\Workspace\laragon\www\qldatsan\resources\views/view.blade.php ENDPATH**/ ?>
+========
+<?php /**PATH D:\laragon\www\qldatsan\resources\views/view.blade.php ENDPATH**/ ?>
+>>>>>>>> 80d6e7c (Cập nhật giao diện):storage/framework/views/686831f9cf9cfe343b6b894f9d79d771.php
+=======
+<?php /**PATH D:\Workspace\laragon\www\qldatsan\resources\views/view.blade.php ENDPATH**/ ?>
+>>>>>>> 80d6e7c (Cập nhật giao diện)

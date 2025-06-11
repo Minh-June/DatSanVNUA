@@ -22,8 +22,11 @@ class UpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'new_time_slot' => 'required|string|max:255',
-            'price' => 'required|numeric',
+            'price' => 'required|numeric|min:0',
+            'time' => [
+                'required',
+                'regex:/^\d{2}:\d{2}\s*-\s*\d{2}:\d{2}$/'
+            ],
         ];
     }
 }

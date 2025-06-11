@@ -17,8 +17,9 @@ class LoginController extends Controller
 
     public function login(LoginRequest $request)
     {
-        $request->validated();
+        $request->authenticate();
 
+<<<<<<< HEAD
         if (Auth::attempt(['username' => $request->username, 'password' => $request->password])) {
            
             $user = Auth::user();
@@ -29,14 +30,17 @@ class LoginController extends Controller
             } else {
                 return redirect()->route('thong-ke-bao-cao'); // Điều hướng đến trang quản trị
             }
+=======
+        $user = Auth::user();
+
+        // Điều hướng người dùng theo vai trò
+        if ($user->role == 1) {
+            return redirect()->route('trang-chu');
+        } else {
+            return redirect()->route('thong-ke-bao-cao');
+>>>>>>> 80d6e7c (Cập nhật giao diện)
         }
-        
-        // Đăng nhập thất bại
-        return redirect()->route('dang-nhap')->withErrors([
-            'message' => 'Tên người dùng hoặc mật khẩu không đúng.',
-        ]);
-            
-    }   
+    }  
 
     public function logout(Request $request)
     {

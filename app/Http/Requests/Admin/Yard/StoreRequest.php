@@ -6,24 +6,31 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class StoreRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
     public function authorize(): bool
     {
-        return true;
+        return true; // Có thể kiểm tra quyền ở đây nếu cần
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
-     */
     public function rules(): array
     {
         return [
-            'tensan' => 'required|string|max:255',
-            'sosan' => 'required|string|max:255',
+            'type_id' => 'required|exists:types,type_id',
+            'name' => [
+                'required',
+                'string',
+                'max:255',
+                'regex:/^[\p{L}0-9\s]+$/u', // Cho phép chữ, số, khoảng trắng
+            ],
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'name.required' => 'Tên sân không được để trống.',
+            'name.regex' => 'Tên sân không được chứa ký tự đặc biệt.',
+            'type_id.required' => 'Vui lòng chọn thể loại sân.',
+            'type_id.exists' => 'Thể loại sân không hợp lệ.',
         ];
     }
 }

@@ -37,7 +37,11 @@
                 <div class="admin">
                     <div class="admin-section-left">
                         <div class="header-section-left">
+<<<<<<< HEAD
                             <i class="avatar fa-solid fa-user-tie"></i>
+=======
+                            <i class="fa-solid fa-user-tie"></i>
+>>>>>>> 80d6e7c (Cập nhật giao diện)
                             <?php if(Auth::check()): ?>
                                 <?php
                                     $user = Auth::user();

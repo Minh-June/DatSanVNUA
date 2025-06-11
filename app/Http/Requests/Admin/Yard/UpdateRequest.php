@@ -6,24 +6,31 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
     public function authorize(): bool
     {
         return true;
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
-     */
     public function rules(): array
     {
         return [
-            'tensan' => 'required|string|max:255',
-            'sosan' => 'required|string|max:255',
+            'type_id' => 'required|exists:types,type_id',
+            'name' => [
+                'required',
+                'string',
+                'max:255',
+                'regex:/^[\p{L}0-9\s]+$/u',
+            ],
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'name.required' => 'Tên sân không được để trống.',
+            'name.regex' => 'Tên sân không được chứa ký tự đặc biệt.',
+            'type_id.required' => 'Vui lòng chọn thể loại sân.',
+            'type_id.exists' => 'Thể loại sân không hợp lệ.',
         ];
     }
 }

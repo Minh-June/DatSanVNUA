@@ -10,7 +10,11 @@
         <form method="GET" action="{{ route('thong-tin-tai-khoan') }}">
             <label for="date">Chọn ngày:</label>
             <input type="date" id="date" name="date" value="{{ request('date', date('Y-m-d')) }}">
+<<<<<<< HEAD
             <button class="admin-search-btn" type="submit">Tìm kiếm</button>
+=======
+            <button class="update-btn" type="submit">Tìm kiếm</button>
+>>>>>>> 80d6e7c (Cập nhật giao diện)
         </form>
     </div>        
     <!-- End: Date Filter -->
@@ -63,9 +67,15 @@
 
                         @if ($loop->parent->first)
                             <td rowspan="{{ $orderRowspan }}">
+<<<<<<< HEAD
                                 {{ number_format($order->orderDetails->sum('price'), 0, ',', '.') }} VND
                             </td>
                             <td rowspan="{{ $orderRowspan }}">{{ $firstDetail->notes ?? 'Không có ghi chú' }}</td>
+=======
+                                {{ number_format($order->orderDetails->sum('price'), 0, ',', '.') }}đ
+                            </td>
+                            <td rowspan="{{ $orderRowspan }}">{{ $firstDetail->notes ?? 'Không có' }}</td>
+>>>>>>> 80d6e7c (Cập nhật giao diện)
                             <td rowspan="{{ $orderRowspan }}">
                                 @php
                                     $images = json_decode($order->image) ?: [];
@@ -92,7 +102,11 @@
             @endforeach
         </table>
     @else
+<<<<<<< HEAD
         <h3 style="font-weight: normal; font-size: 17px;">Hiện tại bạn chưa có đơn đặt sân nào.</h3>
+=======
+        <h3 style="font-weight: normal; font-size: 18px;">Hiện tại bạn chưa có đơn đặt sân nào</h3>
+>>>>>>> 80d6e7c (Cập nhật giao diện)
     @endif
     <!-- End: Display Orders -->
 @endsection

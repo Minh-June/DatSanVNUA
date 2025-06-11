@@ -64,7 +64,11 @@ function confirmBooking(event) {
     event.preventDefault();
 
     if (selectedTimes.length === 0) {
+<<<<<<< HEAD
         alert('Vui lòng chọn ít nhất một khung giờ để đặt sân.');
+=======
+        alert('Vui lòng chọn ngày khác. Hiện tại không có khung giờ khả dụng.');
+>>>>>>> 80d6e7c (Cập nhật giao diện)
         return false;
     }
 

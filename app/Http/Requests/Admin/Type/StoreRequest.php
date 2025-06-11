@@ -14,7 +14,17 @@ class StoreRequest extends FormRequest
     public function rules()
     {
         return [
+<<<<<<< HEAD
             'name' => 'required|string|max:255|unique:types,name',
+=======
+            'name' => [
+                'required',
+                'string',
+                'max:255',
+                'regex:/^[\p{L}\s]+$/u', // Không cho phép số & ký tự đặc biệt
+                'unique:types,name,' . $this->route('type_id'), // Cho UpdateRequest
+            ],
+>>>>>>> 80d6e7c (Cập nhật giao diện)
         ];
     }
 }

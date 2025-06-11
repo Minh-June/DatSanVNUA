@@ -3,7 +3,12 @@
 namespace App\Http\Controllers\Client;
 
 use App\Http\Controllers\Controller;
+<<<<<<< HEAD
 use App\Http\Requests\Client\AccountRequest;
+=======
+use App\Http\Requests\Client\InforRequest;
+use App\Http\Requests\Client\PasswordRequest;
+>>>>>>> 80d6e7c (Cập nhật giao diện)
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
@@ -42,7 +47,11 @@ class AccountController extends Controller
     }
 
     // Cập nhật thông tin cá nhân
+<<<<<<< HEAD
     public function updateInfor(AccountRequest $request)
+=======
+    public function updateInfor(InforRequest  $request)
+>>>>>>> 80d6e7c (Cập nhật giao diện)
     {
         $user = Auth::user(); // Lấy thông tin người dùng hiện tại
 
@@ -64,20 +73,29 @@ class AccountController extends Controller
     }
 
     // Cập nhật mật khẩu
+<<<<<<< HEAD
     public function updatePassword(Request $request)
     {
         $user = Auth::user(); // Lấy thông tin người dùng hiện tại
+=======
+    public function updatePassword(PasswordRequest $request)
+    {
+        $user = Auth::user();
+>>>>>>> 80d6e7c (Cập nhật giao diện)
 
         // Kiểm tra mật khẩu hiện tại
         if (!Hash::check($request->matkhau_hientai, $user->password)) {
             return back()->with('error', 'Mật khẩu hiện tại không đúng.');
         }
 
+<<<<<<< HEAD
         // Kiểm tra mật khẩu mới và xác nhận mật khẩu mới
         if ($request->matkhau_moi !== $request->xacnhan_matkhau) {
             return back()->with('error', 'Mật khẩu mới và xác nhận mật khẩu không khớp.');
         }
 
+=======
+>>>>>>> 80d6e7c (Cập nhật giao diện)
         // Cập nhật mật khẩu mới
         $user->password = Hash::make($request->matkhau_moi);
         $user->save();
