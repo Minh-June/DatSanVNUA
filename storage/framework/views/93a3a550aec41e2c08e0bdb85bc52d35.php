@@ -1,16 +1,16 @@
 
 
-<?php $__env->startSection('title', 'Lịch sử đặt sân'); ?>
+<?php $__env->startSection('title', 'Lá»‹ch sá»­ Ä‘áº·t sĂ¢n'); ?>
 
 <?php $__env->startSection('content'); ?> 
-    <h3>Danh sách sân đã đặt</h3>  
+    <h3>Danh sĂ¡ch sĂ¢n Ä‘Ă£ Ä‘áº·t</h3>  
     
     <!-- Begin: Date Filter -->
     <div class="admin-time">
         <form method="GET" action="<?php echo e(route('thong-tin-tai-khoan')); ?>">
-            <label for="selected_date">Chọn ngày:</label>
+            <label for="selected_date">Chá»n ngĂ y:</label>
             <input type="date" id="selected_date" name="selected_date" value="<?php echo e(request('selected_date')); ?>" required>
-            <button class="admin-time-btn" type="submit" name="filter_date">Tìm kiếm</button>
+            <button class="admin-time-btn" type="submit" name="filter_date">TĂ¬m kiáº¿m</button>
         </form>
     </div>        
     <!-- End: Date Filter -->
@@ -20,23 +20,23 @@
         <table id="ListCustomers">
             <tr>
                 <th>STT</th>
-                <th>Họ và tên</th>
-                <th>Số điện thoại</th>
-                <th>Tên sân</th>
-                <th>Số sân</th>
-                <th>Ngày</th>
-                <th>Thời gian</th>
-                <th>Thành tiền</th>
-                <th>Ghi chú</th>
-                <th>Trạng thái</th>
+                <th>Há» vĂ  tĂªn</th>
+                <th>Sá»‘ Ä‘iá»‡n thoáº¡i</th>
+                <th>TĂªn sĂ¢n</th>
+                <th>Sá»‘ sĂ¢n</th>
+                <th>NgĂ y</th>
+                <th>Thá»i gian</th>
+                <th>ThĂ nh tiá»n</th>
+                <th>Ghi chĂº</th>
+                <th>Tráº¡ng thĂ¡i</th>
             </tr>
             <?php $__currentLoopData = $orders; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $order): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                 <tr>
                     <td><?php echo e($key + 1); ?></td>
                     <td><?php echo e($order->name); ?></td>
                     <td><?php echo e($order->phone); ?></td>
-                    <td><?php echo e($order->san ? $order->san->tensan : 'Không xác định'); ?></td>
-                    <td><?php echo e($order->san ? $order->san->sosan : 'Không xác định'); ?></td>
+                    <td><?php echo e($order->san ? $order->san->tensan : 'KhĂ´ng xĂ¡c Ä‘á»‹nh'); ?></td>
+                    <td><?php echo e($order->san ? $order->san->sosan : 'KhĂ´ng xĂ¡c Ä‘á»‹nh'); ?></td>
                     <td><?php echo e($order->date); ?></td>
                     <td>
                         <?php $__currentLoopData = explode(',', $order->time); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $timeSlot): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
@@ -48,23 +48,23 @@
                     <td>
                         <?php switch($order->status):
                             case ('choxacnhan'): ?>
-                                Chờ xác nhận
+                                Chá» xĂ¡c nháº­n
                                 <?php break; ?>
                             <?php case ('xacnhan'): ?>
-                                Đã xác nhận
+                                ÄĂ£ xĂ¡c nháº­n
                                 <?php break; ?>
                             <?php case ('huydon'): ?>
-                                Đơn đã bị hủy
+                                ÄÆ¡n Ä‘Ă£ bá»‹ há»§y
                                 <?php break; ?>
                             <?php default: ?>
-                                Không xác định
+                                KhĂ´ng xĂ¡c Ä‘á»‹nh
                         <?php endswitch; ?>
                     </td>                                        
                 </tr>
             <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
         </table>
     <?php else: ?>
-        <p>Không có kết quả</p>
+        <p>KhĂ´ng cĂ³ káº¿t quáº£</p>
     <?php endif; ?>
     <!-- End: Display Orders -->
 <?php $__env->stopSection(); ?>

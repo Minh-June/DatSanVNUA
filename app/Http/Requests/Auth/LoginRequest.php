@@ -24,17 +24,17 @@ class LoginRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'username.required' => 'Tên người dùng là bắt buộc.',
-            'username.string' => 'Tên người dùng phải là một chuỗi.',
-            'username.max' => 'Tên người dùng không được vượt quá 255 ký tự.',
-            'password.required' => 'Mật khẩu là bắt buộc.',
-            'password.string' => 'Mật khẩu phải là một chuỗi.',
-            'password.min' => 'Mật khẩu phải có ít nhất 6 ký tự.',
+            'username.required' => 'TĂªn ngÆ°á»i dĂ¹ng lĂ  báº¯t buá»™c.',
+            'username.string' => 'TĂªn ngÆ°á»i dĂ¹ng pháº£i lĂ  má»™t chuá»—i.',
+            'username.max' => 'TĂªn ngÆ°á»i dĂ¹ng khĂ´ng Ä‘Æ°á»£c vÆ°á»£t quĂ¡ 255 kĂ½ tá»±.',
+            'password.required' => 'Máº­t kháº©u lĂ  báº¯t buá»™c.',
+            'password.string' => 'Máº­t kháº©u pháº£i lĂ  má»™t chuá»—i.',
+            'password.min' => 'Máº­t kháº©u pháº£i cĂ³ Ă­t nháº¥t 6 kĂ½ tá»±.',
         ];
     }
 
     /**
-     * Xử lý xác thực trong request.
+     * Xá»­ lĂ½ xĂ¡c thá»±c trong request.
      */
     public function authenticate(): void
     {
@@ -43,7 +43,7 @@ class LoginRequest extends FormRequest
             'password' => $this->input('password'),
         ])) {
             throw ValidationException::withMessages([
-                'login_failed' => 'Tên đăng nhập và mật khẩu không đúng.',
+                'login_failed' => 'TĂªn Ä‘Äƒng nháº­p vĂ  máº­t kháº©u khĂ´ng Ä‘Ăºng.',
             ]);
         }
     }

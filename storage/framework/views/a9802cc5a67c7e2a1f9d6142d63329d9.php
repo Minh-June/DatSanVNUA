@@ -1,36 +1,23 @@
 
 
-<?php $__env->startSection('title', 'Đăng Nhập'); ?>
+<?php $__env->startSection('title', 'ÄÄƒng Nháº­p'); ?>
 
 <?php $__env->startSection('content'); ?>
     <div class="container-access" id="signIn">
-        <h1 class="form-title">Đăng Nhập</h1>
+        <h1 class="form-title">ÄÄƒng Nháº­p</h1>
 
-<<<<<<< HEAD
-        <?php if($errors->any()): ?>
-            <div class="alert alert-danger">
-                <ul>
-                    <?php $__currentLoopData = $errors->all(); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $error): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                        <li><?php echo e($error); ?></li>
-                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                </ul>
-            </div>
-        <?php endif; ?>
-
-=======
->>>>>>> 80d6e7c (Cập nhật giao diện)
         <form method="post" action="<?php echo e(route('dang-nhap')); ?>">
             <?php echo csrf_field(); ?>
             <?php echo method_field('post'); ?>
 
             <div class="input-group">
                 <i class="fa-solid fa-envelope"></i>
-                <input type="text" name="username" id="username" placeholder="Tên người dùng" required>
+                <input type="text" name="username" id="username" placeholder="TĂªn ngÆ°á»i dĂ¹ng" required>
             </div>
 
             <div class="input-group">
                 <i class="fa-solid fa-lock"></i>
-                <input type="password" name="password" id="password" placeholder="Mật khẩu" required>
+                <input type="password" name="password" id="password" placeholder="Máº­t kháº©u" required>
             </div>
 
             
@@ -44,12 +31,12 @@
                 </div>
             <?php endif; ?>
 
-            <input type="submit" class="index-btn" value="Đăng Nhập">
+            <input type="submit" class="index-btn" value="ÄÄƒng Nháº­p">
         </form>
 
         <div class="links">
-            <p>Bạn chưa có tài khoản?</p>
-            <a href="<?php echo e(route('dang-ky')); ?>"><button id="signUpButton">Đăng Ký</button></a>
+            <p>Báº¡n chÆ°a cĂ³ tĂ i khoáº£n?</p>
+            <a href="<?php echo e(route('dang-ky')); ?>"><button id="signUpButton">ÄÄƒng KĂ½</button></a>
         </div>
     </div>
 <?php $__env->stopSection(); ?>

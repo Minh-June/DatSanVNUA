@@ -93,7 +93,7 @@ class OrderController extends Controller
             'notes' => $request->notes,
         ]);
 
-        return redirect()->route('quan-ly-don-dat-san')->with('success', 'Thêm đơn đặt sân mới thành công!');
+        return redirect()->route('quan-ly-don-dat-san')->with('success', 'ThĂªm Ä‘Æ¡n Ä‘áº·t sĂ¢n má»›i thĂ nh cĂ´ng!');
     }
 
     public function edit($order_id)
@@ -118,7 +118,7 @@ class OrderController extends Controller
         ]);
 
         return redirect()->route('cap-nhat-don-dat-san', $order_id)
-            ->with('success', 'Cập nhật thông tin đơn hàng thành công!');
+            ->with('success', 'Cáº­p nháº­t thĂ´ng tin Ä‘Æ¡n hĂ ng thĂ nh cĂ´ng!');
     }
 
     public function updateStatus(Request $request, $order_id)
@@ -131,7 +131,7 @@ class OrderController extends Controller
         $order->status = (int) $request->status;
         $order->save();
 
-        return redirect()->route('quan-ly-don-dat-san')->with('success', 'Đã cập nhật trạng thái đơn hàng!');
+        return redirect()->route('quan-ly-don-dat-san')->with('success', 'ÄĂ£ cáº­p nháº­t tráº¡ng thĂ¡i Ä‘Æ¡n hĂ ng!');
     }
 
     public function delete($order_id)
@@ -139,8 +139,8 @@ class OrderController extends Controller
         $order = Order::find($order_id);
         if ($order) {
             $order->delete();
-            return redirect()->route('quan-ly-don-dat-san')->with('success', 'Xóa đơn hàng thành công.');
+            return redirect()->route('quan-ly-don-dat-san')->with('success', 'XĂ³a Ä‘Æ¡n hĂ ng thĂ nh cĂ´ng.');
         }
-        return redirect()->route('quan-ly-don-dat-san')->with('error', 'Không tìm thấy đơn hàng.');
+        return redirect()->route('quan-ly-don-dat-san')->with('error', 'KhĂ´ng tĂ¬m tháº¥y Ä‘Æ¡n hĂ ng.');
     }
 }

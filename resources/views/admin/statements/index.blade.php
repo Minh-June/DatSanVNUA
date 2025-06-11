@@ -1,33 +1,33 @@
 @extends('layouts.admin')
 
-@section('title', 'Quản lý thống kê, báo cáo')
+@section('title', 'Quáº£n lĂ½ thá»‘ng kĂª, bĂ¡o cĂ¡o')
 
 @section('content')
-    <h3>Thống kê doanh thu</h3>
+    <h3>Thá»‘ng kĂª doanh thu</h3>
 
     <div class="admin-top-bar">
         <div class="admin-search">
             <form method="GET" action="{{ route('thong-ke-bao-cao') }}">
-                <label for="filter_type">Chọn kiểu thống kê:</label>
+                <label for="filter_type">Chá»n kiá»ƒu thá»‘ng kĂª:</label>
                 <select name="filter_type" id="filter_type" onchange="toggleInputs()" required style="width: 100px;">
-                    <option value="date" {{ request('filter_type') == 'date' ? 'selected' : '' }}>Theo ngày</option>
-                    <option value="month" {{ request('filter_type') == 'month' ? 'selected' : '' }}>Theo tháng</option>
-                    <option value="year" {{ request('filter_type') == 'year' ? 'selected' : '' }}>Theo năm</option>
+                    <option value="date" {{ request('filter_type') == 'date' ? 'selected' : '' }}>Theo ngĂ y</option>
+                    <option value="month" {{ request('filter_type') == 'month' ? 'selected' : '' }}>Theo thĂ¡ng</option>
+                    <option value="year" {{ request('filter_type') == 'year' ? 'selected' : '' }}>Theo nÄƒm</option>
                 </select>
-                <button type="submit" class="admin-search-btn">Xem báo cáo</button>
+                <button type="submit" class="admin-search-btn">Xem bĂ¡o cĂ¡o</button>
             
                 <div id="input-date" style="{{ request('filter_type') != 'date' ? 'display:none;' : '' }}">
-                    <label for="date">Chọn ngày:</label>
+                    <label for="date">Chá»n ngĂ y:</label>
                     <input type="date" style="width: 165px;" name="date" id="date" value="{{ request('date', date('Y-m-d')) }}">
                 </div>
 
                 <div id="input-month" style="{{ request('filter_type') != 'month' ? 'display:none;' : '' }}">
-                    <label for="month">Chọn tháng:</label>
+                    <label for="month">Chá»n thĂ¡ng:</label>
                     <input type="month" style="width: 160px;" name="month" id="month" value="{{ request('month', date('Y-m')) }}">
                 </div>
                 
                 <div id="input-year" style="{{ request('filter_type') != 'year' ? 'display:none;' : '' }}">
-                    <label for="year">Chọn năm:</label>
+                    <label for="year">Chá»n nÄƒm:</label>
                     <input type="number" name="year" id="year" min="2000" max="{{ date('Y') }}" value="{{ request('year', date('Y')) }}">
                 </div>
             </form>
@@ -39,16 +39,16 @@
                 <input type="hidden" name="date" value="{{ request('date') }}">
                 <input type="hidden" name="month" value="{{ request('month') }}">
                 <input type="hidden" name="year" value="{{ request('year') }}">
-                <button type="submit" class="update-btn">Xuất file excel</button>
+                <button type="submit" class="update-btn">Xuáº¥t file excel</button>
             </form>
         </div>
     </div>
 
     @if(isset($totalRevenue))
-        <h3>Tổng doanh thu: {{ number_format($totalRevenue, 0, ',', '.') }} VNĐ</h3>
+        <h3>Tá»•ng doanh thu: {{ number_format($totalRevenue, 0, ',', '.') }} VNÄ</h3>
 
         @if($totalRevenue > 0)
-            <h3>Doanh thu từng sân</h3>
+            <h3>Doanh thu tá»«ng sĂ¢n</h3>
 
             <div class="admin-top-bar">
                 <div class="admin-search">
@@ -58,9 +58,9 @@
                         <input type="hidden" name="month" value="{{ request('month') }}">
                         <input type="hidden" name="year" value="{{ request('year') }}">
 
-                        <label for="keyword">Tìm sân:</label>
-                        <input type="text" id="keyword" name="keyword" placeholder="Nhập tên sân cần tìm" value="{{ request('keyword') }}">
-                        <button class="admin-search-btn" type="submit">Tìm kiếm</button>
+                        <label for="keyword">TĂ¬m sĂ¢n:</label>
+                        <input type="text" id="keyword" name="keyword" placeholder="Nháº­p tĂªn sĂ¢n cáº§n tĂ¬m" value="{{ request('keyword') }}">
+                        <button class="admin-search-btn" type="submit">TĂ¬m kiáº¿m</button>
                     </form>
                 </div>
             </div>
@@ -69,8 +69,8 @@
                 <thead>
                     <tr>
                         <th>STT</th>
-                        <th>Tên sân</th>
-                        <th>Doanh thu (VNĐ)</th>
+                        <th>TĂªn sĂ¢n</th>
+                        <th>Doanh thu (VNÄ)</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -84,7 +84,7 @@
                 </tbody>
             </table>
         @else
-            <h3 style="font-weight: normal; font-size: 17px;">Hiện tại chưa có dữ liệu báo cáo.</h3>
+            <h3 style="font-weight: normal; font-size: 17px;">Hiá»‡n táº¡i chÆ°a cĂ³ dá»¯ liá»‡u bĂ¡o cĂ¡o.</h3>
         @endif
     @endif
 

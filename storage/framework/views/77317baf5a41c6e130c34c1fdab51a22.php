@@ -1,31 +1,31 @@
 
 
-<?php $__env->startSection('title', 'Sửa thông tin sân'); ?>
+<?php $__env->startSection('title', 'SÃ¡Â»Â­a thÄ‚Â´ng tin sÄ‚Â¢n'); ?>
 
 <?php $__env->startSection('content'); ?>
-    <!-- Hiển thị thông báo -->
+    <!-- HiÃ¡Â»Æ’n thÃ¡Â»â€¹ thÄ‚Â´ng bÄ‚Â¡o -->
     <?php if(session('success')): ?>
         <script>
             alert("<?php echo e(session('success')); ?>");
         </script>
     <?php endif; ?>
 
-    <!-- Hiển thị thông báo lỗi -->
+    <!-- HiÃ¡Â»Æ’n thÃ¡Â»â€¹ thÄ‚Â´ng bÄ‚Â¡o lÃ¡Â»â€”i -->
     <?php if(session('error')): ?>
         <script>
             alert("<?php echo e(session('error')); ?>");
         </script>
     <?php endif; ?>
 
-    <h3>Sửa thông tin sân</h3>
+    <h3>SÃ¡Â»Â­a thÄ‚Â´ng tin sÄ‚Â¢n</h3>
 
-    <!-- Form chỉnh sửa thông tin sân -->
+    <!-- Form chÃ¡Â»â€°nh sÃ¡Â»Â­a thÄ‚Â´ng tin sÄ‚Â¢n -->
     <div class="adminedit">
         <form method="POST" action="<?php echo e(route('update.yard', $yard->yard_id)); ?>">
             <?php echo csrf_field(); ?>
             <input type="hidden" name="_method" value="POST">
 
-            <label for="type_id">Thể loại sân:</label>
+            <label for="type_id">ThÃ¡Â»Æ’ loÃ¡ÂºÂ¡i sÄ‚Â¢n:</label>
             <select id="type_id" name="type_id" required>
                 <?php $__currentLoopData = $types; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $type): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                     <option value="<?php echo e($type->type_id); ?>" <?php echo e($yard->type_id == $type->type_id ? 'selected' : ''); ?>>
@@ -36,11 +36,11 @@
             </select>
             <br>
 
-            <label for="name">Tên sân:</label>
+            <label for="name">TÄ‚Âªn sÄ‚Â¢n:</label>
             <input type="text" id="name" name="name" value="<?php echo e(old('name', $yard->name)); ?>" required>
             <br>
 
-            <button class="update-btn" type="submit">Cập nhật thông tin sân</button>
+            <button class="update-btn" type="submit">CÃ¡ÂºÂ­p nhÃ¡ÂºÂ­t thÄ‚Â´ng tin sÄ‚Â¢n</button>
         </form>
     </div>
 <?php $__env->stopSection(); ?>

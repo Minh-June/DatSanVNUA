@@ -56,11 +56,11 @@ class OrderDetailController extends Controller
 
         $orderDetail = OrderDetail::findOrFail($order_detail_id);
 
-        // Tổng tiền cũ của đơn
+        // Tá»•ng tiá»n cÅ© cá»§a Ä‘Æ¡n
         $order = $orderDetail->order;
         $oldTotal = $order->orderDetails->sum('price');
 
-        // Cập nhật chi tiết đơn
+        // Cáº­p nháº­t chi tiáº¿t Ä‘Æ¡n
         $orderDetail->update([
             'yard_id' => $request->yard_id,
             'date' => $request->date,
@@ -69,18 +69,18 @@ class OrderDetailController extends Controller
             'notes' => $request->notes,
         ]);
 
-        // Tính lại tổng tiền mới
+        // TĂ­nh láº¡i tá»•ng tiá»n má»›i
         $order->refresh();
         $newTotal = $order->orderDetails->sum('price');
 
         $diff = $newTotal - $oldTotal;
 
         if ($diff > 0) {
-            $message = "Cập nhật chi tiết đơn thành công. Tổng tiền tăng thêm " . number_format($diff, 0, ',', '.') . " VND.";
+            $message = "Cáº­p nháº­t chi tiáº¿t Ä‘Æ¡n thĂ nh cĂ´ng. Tá»•ng tiá»n tÄƒng thĂªm " . number_format($diff, 0, ',', '.') . " VND.";
         } elseif ($diff < 0) {
-            $message = "Cập nhật chi tiết đơn thành công. Tổng tiền giảm " . number_format(abs($diff), 0, ',', '.') . " VND.";
+            $message = "Cáº­p nháº­t chi tiáº¿t Ä‘Æ¡n thĂ nh cĂ´ng. Tá»•ng tiá»n giáº£m " . number_format(abs($diff), 0, ',', '.') . " VND.";
         } else {
-            $message = "Cập nhật chi tiết đơn thành công. Tổng tiền không thay đổi.";
+            $message = "Cáº­p nháº­t chi tiáº¿t Ä‘Æ¡n thĂ nh cĂ´ng. Tá»•ng tiá»n khĂ´ng thay Ä‘á»•i.";
         }
 
         return redirect()->route('cap-nhat-chi-tiet-don', $order_detail_id)
@@ -94,6 +94,6 @@ class OrderDetailController extends Controller
         $detail->delete();
 
         return redirect()->route('cap-nhat-don-dat-san', $order_id)
-            ->with('success', 'Đã xóa chi tiết đơn thành công.');
+            ->with('success', 'ÄĂ£ xĂ³a chi tiáº¿t Ä‘Æ¡n thĂ nh cĂ´ng.');
     }
 }

@@ -19,32 +19,19 @@ class LoginController extends Controller
     {
         $request->authenticate();
 
-<<<<<<< HEAD
-        if (Auth::attempt(['username' => $request->username, 'password' => $request->password])) {
-           
-            $user = Auth::user();
-            
-            // Điều hướng người dùng theo vai trò
-            if ($user->role == 1) {
-                return redirect()->route('trang-chu'); // Điều hướng đến trang chủ
-            } else {
-                return redirect()->route('thong-ke-bao-cao'); // Điều hướng đến trang quản trị
-            }
-=======
         $user = Auth::user();
 
-        // Điều hướng người dùng theo vai trò
+        // Äiá»u hÆ°á»›ng ngÆ°á»i dĂ¹ng theo vai trĂ²
         if ($user->role == 1) {
             return redirect()->route('trang-chu');
         } else {
             return redirect()->route('thong-ke-bao-cao');
->>>>>>> 80d6e7c (Cập nhật giao diện)
         }
     }  
 
     public function logout(Request $request)
     {
-        Auth::logout(); // Đăng xuất người dùng
+        Auth::logout(); // ÄÄƒng xuáº¥t ngÆ°á»i dĂ¹ng
 
         return redirect()->route('view');
     }

@@ -21,7 +21,7 @@ class UserController extends Controller
 
                 if (str_contains($keyword, 'admin')) {
                     $q->orWhere('role', 0);
-                } elseif (str_contains($keyword, 'khách') || str_contains($keyword, 'user')) {
+                } elseif (str_contains($keyword, 'khĂ¡ch') || str_contains($keyword, 'user')) {
                     $q->orWhere('role', 1);
                 }
             });
@@ -53,24 +53,24 @@ class UserController extends Controller
         $user->role = (int) $request->role;
         $user->save();
 
-        return redirect()->route('quan-ly-nguoi-dung')->with('success', 'Đã cập nhật vai trò người dùng!');
+        return redirect()->route('quan-ly-nguoi-dung')->with('success', 'ÄĂ£ cáº­p nháº­t vai trĂ² ngÆ°á»i dĂ¹ng!');
     }
 
     public function delete($user_id)
     {
         $user = User::find($user_id);
         if (!$user) {
-            return redirect()->route('quan-ly-nguoi-dung')->with('error', 'Người dùng không tồn tại.');
+            return redirect()->route('quan-ly-nguoi-dung')->with('error', 'NgÆ°á»i dĂ¹ng khĂ´ng tá»“n táº¡i.');
         }
 
-        // Không cho xóa admin
+        // KhĂ´ng cho xĂ³a admin
         if ($user->role == 0) {
-            return redirect()->route('quan-ly-nguoi-dung')->with('error', 'Không thể xóa tài khoản admin.');
+            return redirect()->route('quan-ly-nguoi-dung')->with('error', 'KhĂ´ng thá»ƒ xĂ³a tĂ i khoáº£n admin.');
         }
 
         $user->delete();
 
-        return redirect()->route('quan-ly-nguoi-dung')->with('success', 'Xóa người dùng thành công.');
+        return redirect()->route('quan-ly-nguoi-dung')->with('success', 'XĂ³a ngÆ°á»i dĂ¹ng thĂ nh cĂ´ng.');
     }
 
 

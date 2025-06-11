@@ -34,7 +34,7 @@ class RevenueExport implements FromCollection, WithHeadings, WithEvents, ShouldA
             ->groupBy('yard.name')
             ->map(function ($group, $yardName) {
                 return [
-                    $yardName, '', '', number_format($group->sum('price'), 0, ',', '.') . ' VNĐ', '', ''
+                    $yardName, '', '', number_format($group->sum('price'), 0, ',', '.') . ' VNÄ', '', ''
                 ];
             })->values();
 
@@ -44,7 +44,7 @@ class RevenueExport implements FromCollection, WithHeadings, WithEvents, ShouldA
     public function headings(): array
     {
         return [
-            'Tên sân', '', '', 'Doanh thu từng sân', '', ''
+            'TĂªn sĂ¢n', '', '', 'Doanh thu tá»«ng sĂ¢n', '', ''
         ];
     }
 
@@ -54,18 +54,18 @@ class RevenueExport implements FromCollection, WithHeadings, WithEvents, ShouldA
             AfterSheet::class => function (AfterSheet $event) {
                 $sheet = $event->sheet;
 
-                // Gộp ô dòng 1
+                // Gá»™p Ă´ dĂ²ng 1
                 $sheet->mergeCells('A1:C1');
-                $sheet->setCellValue('A1', "Tổng doanh thu {$this->filterLabel}");
+                $sheet->setCellValue('A1', "Tá»•ng doanh thu {$this->filterLabel}");
 
                 $sheet->mergeCells('D1:F1');
-                $sheet->setCellValue('D1', number_format($this->totalRevenue, 0, ',', '.') . ' VNĐ');
+                $sheet->setCellValue('D1', number_format($this->totalRevenue, 0, ',', '.') . ' VNÄ');
 
-                // Gộp tiêu đề dòng 2
+                // Gá»™p tiĂªu Ä‘á» dĂ²ng 2
                 $sheet->mergeCells('A2:C2');
                 $sheet->mergeCells('D2:F2');
 
-                // Căn giữa, in đậm
+                // CÄƒn giá»¯a, in Ä‘áº­m
                 $sheet->getStyle('A1:F2')->getFont()->setBold(true);
                 $sheet->getStyle('A1:F2')->getAlignment()->setHorizontal('center');
                 $sheet->getStyle('A1:F2')->getAlignment()->setVertical('center');

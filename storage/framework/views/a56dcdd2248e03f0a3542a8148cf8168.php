@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Đặt sân thể thao - <?php echo $__env->yieldContent('title'); ?></title>
+    <title>Äáº·t sĂ¢n thá»ƒ thao - <?php echo $__env->yieldContent('title'); ?></title>
     <link rel="stylesheet" href="<?php echo e(asset('css/style.css')); ?>">
     <link rel="stylesheet" href="<?php echo e(asset('fonts/fontawesome-free-6.5.2/css/all.min.css')); ?>">
 </head>
@@ -13,12 +13,12 @@
 
         <!-- Begin: Header -->
         <div id="header">
-            <a class="home-heading" href="<?php echo e(route('trang-chu')); ?>" target="_top">Đặt sân thể thao</a>
+            <a class="home-heading" href="<?php echo e(route('trang-chu')); ?>" target="_top">Äáº·t sĂ¢n thá»ƒ thao</a>
             
             <div class="header-login">
-                <form action="<?php echo e(route('dang-xuat')); ?>" method="post" style="display:inline;" onsubmit="return confirm('Bạn có chắc chắn muốn đăng xuất?');">
+                <form action="<?php echo e(route('dang-xuat')); ?>" method="post" style="display:inline;" onsubmit="return confirm('Báº¡n cĂ³ cháº¯c cháº¯n muá»‘n Ä‘Äƒng xuáº¥t?');">
                     <?php echo csrf_field(); ?>
-                    <button type="submit" class="signup-btn">Đăng xuất</button>
+                    <button type="submit" class="signup-btn">ÄÄƒng xuáº¥t</button>
                 </form>
             </div>
         </div>
@@ -37,16 +37,16 @@
 
                                 </a>
                             <?php else: ?>
-                                <a class="avatar-name" href="<?php echo e(route('dang-nhap')); ?>" target="_self">Đăng Nhập</a>
+                                <a class="avatar-name" href="<?php echo e(route('dang-nhap')); ?>" target="_self">ÄÄƒng Nháº­p</a>
                             <?php endif; ?>
                         </div>
                         
                         <div class="admin-manage">
                             <li>
                                 <ul class="section-left">
-                                    <li><a href="<?php echo e(route('thong-tin-tai-khoan')); ?>" target="">Lịch sử đặt sân</a></li>
-                                    <li><a href="<?php echo e(route('thong-tin-ca-nhan')); ?>" target="">Thông tin cá nhân</a></li>
-                                    <li><a href="<?php echo e(route('thay-doi-mat-khau')); ?>" target="">Thay đổi mật khẩu</a></li>
+                                    <li><a href="<?php echo e(route('thong-tin-tai-khoan')); ?>" target="">Lá»‹ch sá»­ Ä‘áº·t sĂ¢n</a></li>
+                                    <li><a href="<?php echo e(route('thong-tin-ca-nhan')); ?>" target="">ThĂ´ng tin cĂ¡ nhĂ¢n</a></li>
+                                    <li><a href="<?php echo e(route('thay-doi-mat-khau')); ?>" target="">Thay Ä‘á»•i máº­t kháº©u</a></li>
                                 </ul>
                             </li>
                         </div>  
@@ -55,7 +55,7 @@
 
                 <div class="admin">
                     <div class="admin-section-right"> 
-                        <?php echo $__env->yieldContent('content'); ?> <!-- Phần nội dung chính sẽ được hiển thị ở đây -->
+                        <?php echo $__env->yieldContent('content'); ?> <!-- Pháº§n ná»™i dung chĂ­nh sáº½ Ä‘Æ°á»£c hiá»ƒn thá»‹ á»Ÿ Ä‘Ă¢y -->
                     </div>
                 </div>
             </div>

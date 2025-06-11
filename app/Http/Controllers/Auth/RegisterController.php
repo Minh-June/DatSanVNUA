@@ -17,14 +17,14 @@ class RegisterController extends Controller
 
     public function register(RegisterRequest $request)
     {
-        // Xác thực dữ liệu đầu vào
+        // XĂ¡c thá»±c dá»¯ liá»‡u Ä‘áº§u vĂ o
         $validated = $request->validated();
 
-        // Tạo người dùng mới vào bảng 'users'
+        // Táº¡o ngÆ°á»i dĂ¹ng má»›i vĂ o báº£ng 'users'
         User::create([
             'username'  => $validated['username'],
             'password'  => Hash::make($validated['password']),
-            'role'      => 1, // Mặc định là người dùng thường
+            'role'      => 1, // Máº·c Ä‘á»‹nh lĂ  ngÆ°á»i dĂ¹ng thÆ°á»ng
             'fullname'  => $validated['fullname'],
             'gender'    => $validated['gender'],
             'birthdate' => $validated['birthdate'],
@@ -32,12 +32,12 @@ class RegisterController extends Controller
             'email'     => $validated['email'],
         ]);
 
-        // Kiểm tra nếu user hiện tại là admin (role = 0)
+        // Kiá»ƒm tra náº¿u user hiá»‡n táº¡i lĂ  admin (role = 0)
         if (Auth::check() && Auth::user()->role == 0) {
-            return redirect()->route('quan-ly-nguoi-dung')->with('success', 'Thêm người dùng thành công!');
+            return redirect()->route('quan-ly-nguoi-dung')->with('success', 'ThĂªm ngÆ°á»i dĂ¹ng thĂ nh cĂ´ng!');
         }
 
-        // Nếu không phải admin thì redirect về đăng nhập
-        return redirect()->route('dang-nhap')->with('success', 'Đăng ký thành công!');
+        // Náº¿u khĂ´ng pháº£i admin thĂ¬ redirect vá» Ä‘Äƒng nháº­p
+        return redirect()->route('dang-nhap')->with('success', 'ÄÄƒng kĂ½ thĂ nh cĂ´ng!');
     }
 }

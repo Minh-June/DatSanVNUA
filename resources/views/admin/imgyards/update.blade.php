@@ -1,9 +1,9 @@
 @extends('layouts.admin')
 
-@section('title', 'Cập nhật hình ảnh sân')
+@section('title', 'Cáº­p nháº­t hĂ¬nh áº£nh sĂ¢n')
 
 @section('content')
-    <h3>Cập nhật hình ảnh</h3>
+    <h3>Cáº­p nháº­t hĂ¬nh áº£nh</h3>
 
     @if (session('success'))
         <script>
@@ -15,8 +15,8 @@
         @csrf
         <div class="pay-information">
             <div class="admin-img">
-                <!-- Hiển thị ảnh hiện tại -->
-                <img src="{{ asset('storage/' . $image->image) }}" alt="Hình ảnh" class="admin-image">
+                <!-- Hiá»ƒn thá»‹ áº£nh hiá»‡n táº¡i -->
+                <img src="{{ asset('storage/' . $image->image) }}" alt="HĂ¬nh áº£nh" class="admin-image">
             </div>
         </div>
 
@@ -24,14 +24,14 @@
             <div class="admin-img">
                 <h3>{{ $image->yard->name }}</h3>
 
-                <label for="image">Chọn hình ảnh mới:</label><br><br>
+                <label for="image">Chá»n hĂ¬nh áº£nh má»›i:</label><br><br>
                 <input type="file" name="image" id="image"><br>
 
                 @error('image')
                     <div class="error">{{ $message }}</div>
                 @enderror
 
-                <button type="submit" class="update-btn">Cập nhật</button>
+                <button type="submit" class="update-btn">Cáº­p nháº­t</button>
             </div>
         </div>
     </form>                        

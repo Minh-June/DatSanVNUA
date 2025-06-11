@@ -12,10 +12,10 @@ class PayController extends Controller
 {
     public function index()
     {
-        // Lấy danh sách đơn hàng từ session
+        // Láº¥y danh sĂ¡ch Ä‘Æ¡n hĂ ng tá»« session
         $orders = session('orders', []);
 
-        // Truyền danh sách này sang view
+        // Truyá»n danh sĂ¡ch nĂ y sang view
         return view('client.pay', compact('orders'));
     }
     
@@ -25,14 +25,14 @@ class PayController extends Controller
         $userId = auth()->id();
 
         if (!$userId) {
-            return redirect()->route('login')->with('error', 'Vui lòng đăng nhập trước khi thanh toán.');
+            return redirect()->route('login')->with('error', 'Vui lĂ²ng Ä‘Äƒng nháº­p trÆ°á»›c khi thanh toĂ¡n.');
         }
 
         if (empty($orders)) {
-            return redirect()->back()->with('error', 'Không có đơn đặt sân nào để thanh toán.');
+            return redirect()->back()->with('error', 'KhĂ´ng cĂ³ Ä‘Æ¡n Ä‘áº·t sĂ¢n nĂ o Ä‘á»ƒ thanh toĂ¡n.');
         }
 
-        // Lưu ảnh thanh toán
+        // LÆ°u áº£nh thanh toĂ¡n
         $imagePaths = [];
         if ($request->hasfile('images')) {
             foreach ($request->file('images') as $image) {
@@ -41,7 +41,7 @@ class PayController extends Controller
             }
         }
 
-        // Tạo đơn hàng tổng
+        // Táº¡o Ä‘Æ¡n hĂ ng tá»•ng
         $order = new Order();
         $order->user_id = $userId;
         $order->name = $orders[0]['name'];
@@ -51,16 +51,16 @@ class PayController extends Controller
         $order->image = json_encode($imagePaths);
         $order->save();
 
-        // Lưu chi tiết từng sân, mỗi khung giờ 1 dòng order_detail riêng
+        // LÆ°u chi tiáº¿t tá»«ng sĂ¢n, má»—i khung giá» 1 dĂ²ng order_detail riĂªng
         foreach ($orders as $item) {
             foreach ($item['times'] as $index => $time) {
                 $orderDetail = new OrderDetail();
                 $orderDetail->order_id = $order->order_id;
                 $orderDetail->yard_id = $item['yard_id'];
                 $orderDetail->date = $item['date'];
-                $orderDetail->time = $time;   // Mỗi dòng chỉ lưu 1 khung giờ
+                $orderDetail->time = $time;   // Má»—i dĂ²ng chá»‰ lÆ°u 1 khung giá»
 
-                // Lấy đúng giá cho từng khung giờ theo index
+                // Láº¥y Ä‘Ăºng giĂ¡ cho tá»«ng khung giá» theo index
                 $pricePerTime = $item['price_per_slot'][$index] ?? 0;
                 $orderDetail->price = $pricePerTime;
 
@@ -71,7 +71,7 @@ class PayController extends Controller
 
         session()->forget('orders');
 
-        return redirect()->route('trang-chu')->with('success', 'Bạn đã đặt sân thành công !');
+        return redirect()->route('trang-chu')->with('success', 'Báº¡n Ä‘Ă£ Ä‘áº·t sĂ¢n thĂ nh cĂ´ng !');
     }
 
 }

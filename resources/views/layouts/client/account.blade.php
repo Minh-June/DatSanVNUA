@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Đặt sân thể thao - @yield('title')</title>
+    <title>Äáº·t sĂ¢n thá»ƒ thao - @yield('title')</title>
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
     <link rel="stylesheet" href="{{ asset('fonts/fontawesome-free-6.5.2/css/all.min.css') }}">
 </head>
@@ -19,11 +19,11 @@
                 @else
                     {{ route('trang-chu') }}
                 @endif
-            " target="_top">Đặt sân thể thao</a>            
+            " target="_top">Äáº·t sĂ¢n thá»ƒ thao</a>            
             <div class="header-login">
-                <form action="{{ route('dang-xuat') }}" method="post" style="display:inline;" onsubmit="return confirm('Bạn có chắc chắn muốn đăng xuất?');">
+                <form action="{{ route('dang-xuat') }}" method="post" style="display:inline;" onsubmit="return confirm('Báº¡n cĂ³ cháº¯c cháº¯n muá»‘n Ä‘Äƒng xuáº¥t?');">
                     @csrf
-                    <button type="submit" class="signup-btn">Đăng xuất</button>
+                    <button type="submit" class="signup-btn">ÄÄƒng xuáº¥t</button>
                 </form>
             </div>
         </div>
@@ -35,11 +35,7 @@
                 <div class="admin">
                     <div class="admin-section-left">
                         <div class="header-section-left">
-<<<<<<< HEAD
-                            <i class="avatar fa-solid fa-user-tie"></i>
-=======
                             <i class="fa-solid fa-user-tie"></i>
->>>>>>> 80d6e7c (Cập nhật giao diện)
                             @if (Auth::check())
                                 @php
                                     $user = Auth::user();
@@ -49,26 +45,26 @@
                                 </a>
                             @else
                                 <a class="avatar-name" href="{{ route('dang-nhap') }}" target="_self">
-                                    Đăng Nhập
+                                    ÄÄƒng Nháº­p
                                 </a>
                             @endif
                         </div>
 
                         <div class="admin-manage">
                             <li>
-                                <a href="{{ route('thong-tin-tai-khoan') }}" target="">Lịch sử đặt sân</a>
+                                <a href="{{ route('thong-tin-tai-khoan') }}" target="">Lá»‹ch sá»­ Ä‘áº·t sĂ¢n</a>
                             </li>
                             <li>
-                                <a href="{{ route('thong-tin-ca-nhan') }}" target="">Thông tin cá nhân</a>
+                                <a href="{{ route('thong-tin-ca-nhan') }}" target="">ThĂ´ng tin cĂ¡ nhĂ¢n</a>
                             </li>
                             <li>
-                                <a href="{{ route('thay-doi-mat-khau') }}" target="">Thay đổi mật khẩu</a>
+                                <a href="{{ route('thay-doi-mat-khau') }}" target="">Thay Ä‘á»•i máº­t kháº©u</a>
                             </li>
                             <li>
-                                <a href="#" onclick="event.preventDefault(); handleAccountDelete();">Xóa tài khoản</a>
+                                <a href="#" onclick="event.preventDefault(); handleAccountDelete();">XĂ³a tĂ i khoáº£n</a>
                             </li>
 
-                            <!-- Form ẩn -->
+                            <!-- Form áº©n -->
                             <form id="delete-account-form" action="{{ route('xoa-tai-khoan') }}" method="POST" style="display: none;">
                                 @csrf
                                 <input type="hidden" name="password" id="delete-password">
@@ -79,7 +75,7 @@
 
                 <div class="admin">
                     <div class="admin-section-right"> 
-                        @yield('content') <!-- Phần nội dung chính sẽ được hiển thị ở đây -->
+                        @yield('content') <!-- Pháº§n ná»™i dung chĂ­nh sáº½ Ä‘Æ°á»£c hiá»ƒn thá»‹ á»Ÿ Ä‘Ă¢y -->
                     </div>
                 </div>
             </div>
@@ -94,7 +90,7 @@
         <!-- End: Footer -->
     </div>
 
-    <!-- Lightbox hiển thị ảnh lớn -->
+    <!-- Lightbox hiá»ƒn thá»‹ áº£nh lá»›n -->
     <div id="image-popup" onclick="hideImage()" style="
         display: none;
         position: fixed;
@@ -107,25 +103,25 @@
         <img id="popup-img" src="" style="max-width:90%; max-height:90%; box-shadow: 0 0 10px #000;">
     </div>
     <script>
-        // Hàm hiển thị ảnh trong popup
+        // HĂ m hiá»ƒn thá»‹ áº£nh trong popup
         function showImage(src) {
             document.getElementById('popup-img').src = src;
             document.getElementById('image-popup').style.display = 'flex';
         }
 
-        // Hàm ẩn popup khi click vào vùng tối
+        // HĂ m áº©n popup khi click vĂ o vĂ¹ng tá»‘i
         function hideImage() {
             document.getElementById('image-popup').style.display = 'none';
         }
 
         function handleAccountDelete() {
-            if (confirm('Bạn có chắc chắn muốn xóa tài khoản này không?')) {
-                const password = prompt('Vui lòng nhập mật khẩu để xác nhận:');
+            if (confirm('Báº¡n cĂ³ cháº¯c cháº¯n muá»‘n xĂ³a tĂ i khoáº£n nĂ y khĂ´ng?')) {
+                const password = prompt('Vui lĂ²ng nháº­p máº­t kháº©u Ä‘á»ƒ xĂ¡c nháº­n:');
                 if (password) {
                     document.getElementById('delete-password').value = password;
                     document.getElementById('delete-account-form').submit();
                 } else {
-                    alert('Bạn chưa nhập mật khẩu. Hủy thao tác xóa tài khoản.');
+                    alert('Báº¡n chÆ°a nháº­p máº­t kháº©u. Há»§y thao tĂ¡c xĂ³a tĂ i khoáº£n.');
                 }
             }
         }

@@ -7,26 +7,26 @@ use Illuminate\Database\Eloquent\Model;
 
 class OrderDetail extends Model
 {
-    protected $table = 'order_details'; // Tên bảng 
-    protected $primaryKey = 'order_detail_id'; // Khóa chính
-    public $timestamps = false; // Không sử dụng timestamps
+    protected $table = 'order_details'; // TĂªn báº£ng 
+    protected $primaryKey = 'order_detail_id'; // KhĂ³a chĂ­nh
+    public $timestamps = false; // KhĂ´ng sá»­ dá»¥ng timestamps
 
     protected $fillable = [
         'order_id',
-        'date', // Ngày đặt sân
-        'time', // Khung giờ của sân
+        'date', // NgĂ y Ä‘áº·t sĂ¢n
+        'time', // Khung giá» cá»§a sĂ¢n
         'yard_id',
-        'price', // Giá của khung giờ
-        'notes', // Ghi chú của người dùng
-    ]; // Các cột có thể gán
+        'price', // GiĂ¡ cá»§a khung giá»
+        'notes', // Ghi chĂº cá»§a ngÆ°á»i dĂ¹ng
+    ]; // CĂ¡c cá»™t cĂ³ thá»ƒ gĂ¡n
 
-    // Quan hệ: Một chi tiết đơn hàng thuộc về một đơn hàng
+    // Quan há»‡: Má»™t chi tiáº¿t Ä‘Æ¡n hĂ ng thuá»™c vá» má»™t Ä‘Æ¡n hĂ ng
     public function order()
     {
         return $this->belongsTo(Order::class, 'order_id', 'order_id');
     }
 
-    // Quan hệ: Một chi tiết đơn hàng thuộc về một sân
+    // Quan há»‡: Má»™t chi tiáº¿t Ä‘Æ¡n hĂ ng thuá»™c vá» má»™t sĂ¢n
     public function yard()
     {
         return $this->belongsTo(Yard::class, 'yard_id', 'yard_id');

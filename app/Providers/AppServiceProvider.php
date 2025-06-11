@@ -22,15 +22,15 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // View composer truyền biến cho layout client
+        // View composer truyá»n biáº¿n cho layout client
         View::composer('layouts.client.client', function ($view) {
-            // Lấy đơn hàng từ session
+            // Láº¥y Ä‘Æ¡n hĂ ng tá»« session
             $orders = Session::get('orders', []);
 
-            // Lấy mảng yard_id duy nhất từ đơn hàng
+            // Láº¥y máº£ng yard_id duy nháº¥t tá»« Ä‘Æ¡n hĂ ng
             $yardIds = collect($orders)->pluck('yard_id')->unique()->toArray();
 
-            // Lấy ảnh đầu tiên của từng sân trong đơn hàng
+            // Láº¥y áº£nh Ä‘áº§u tiĂªn cá»§a tá»«ng sĂ¢n trong Ä‘Æ¡n hĂ ng
             $yardFirstImages = [];
 
             if (!empty($yardIds)) {
@@ -45,7 +45,7 @@ class AppServiceProvider extends ServiceProvider
                 }
             }
 
-            // Truyền biến cho view
+            // Truyá»n biáº¿n cho view
             $view->with('yardFirstImages', $yardFirstImages);
         });
     }

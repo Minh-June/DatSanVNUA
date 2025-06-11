@@ -1,6 +1,6 @@
 @extends('layouts.client.client')
 
-@section('title', 'Thanh toán')
+@section('title', 'Thanh toĂ¡n')
 
 @section('content')
     @if(session('success'))
@@ -12,38 +12,38 @@
     @endif
 
 <div id="content" class="order-section">
-    <h2 class="order-heading">THANH TOÁN</h2>
+    <h2 class="order-heading">THANH TOĂN</h2>
 
     <div class="pay-content">
         <div class="pay-information">
-            <div class="bank-account">Tài khoản ngân hàng</div>
-            <div class="bank-account">Tên tài khoản: Nguyễn Hữu Quang Minh</div>
-            <div class="bank-account">Số tài khoản: 1903 6786 8800 12</div>
-            <div class="bank-account">Ngân hàng: Techcombank</div>
+            <div class="bank-account">TĂ i khoáº£n ngĂ¢n hĂ ng</div>
+            <div class="bank-account">TĂªn tĂ i khoáº£n: Nguyá»…n Há»¯u Quang Minh</div>
+            <div class="bank-account">Sá»‘ tĂ i khoáº£n: 1903 6786 8800 12</div>
+            <div class="bank-account">NgĂ¢n hĂ ng: Techcombank</div>
         </div>
         <div class="pay-information">
             <div class="bank-qr">
-                Mã QR <br>
-                <img class="bank-qr-img" src="{{ asset('image/qr/qr.jpg') }}" alt="Mã QR">
+                MĂ£ QR <br>
+                <img class="bank-qr-img" src="{{ asset('image/qr/qr.jpg') }}" alt="MĂ£ QR">
             </div>
         </div>
     </div>
     <div class="clear"></div>
 
     <div class="pay-customer">
-        <h3>Thông tin đơn đặt sân</h3><br>
+        <h3>ThĂ´ng tin Ä‘Æ¡n Ä‘áº·t sĂ¢n</h3><br>
 
         <table id="ListCustomers">
             <thead>
                 <tr>
                     <th>STT</th>
-                    <th>Ngày đặt</th>
-                    <th>Họ và tên</th>
-                    <th>SĐT</th>
-                    <th>Tên sân</th>
-                    <th>Thời gian thuê</th>
-                    <th>Giá từng khung giờ</th>
-                    <th>Ghi chú</th>
+                    <th>NgĂ y Ä‘áº·t</th>
+                    <th>Há» vĂ  tĂªn</th>
+                    <th>SÄT</th>
+                    <th>TĂªn sĂ¢n</th>
+                    <th>Thá»i gian thuĂª</th>
+                    <th>GiĂ¡ tá»«ng khung giá»</th>
+                    <th>Ghi chĂº</th>
                 </tr>
             </thead>
             <tbody>
@@ -69,19 +69,19 @@
                             {{ number_format($price) }} VND<br>
                             @endforeach
                             @else
-                            Không có dữ liệu
+                            KhĂ´ng cĂ³ dá»¯ liá»‡u
                             @endif
                         </td>
-                        <td>{{ $order['notes'] ?? 'Không có ghi chú' }}</td>
+                        <td>{{ $order['notes'] ?? 'KhĂ´ng cĂ³ ghi chĂº' }}</td>
                     </tr>
                 @empty
-                    <tr><td colspan="8">Không có đơn đặt sân nào.</td></tr>
+                    <tr><td colspan="8">KhĂ´ng cĂ³ Ä‘Æ¡n Ä‘áº·t sĂ¢n nĂ o.</td></tr>
                 @endforelse
             </tbody>
             @if(count($orders) > 0)
             <tfoot>
                 <tr>
-                    <td colspan="6" style="text-align: right;"><strong>Tổng tiền:</strong></td>
+                    <td colspan="6" style="text-align: right;"><strong>Tá»•ng tiá»n:</strong></td>
                     <td colspan="2"><strong>{{ number_format($totalAmount) }} VND</strong></td>
                 </tr>
             </tfoot>
@@ -90,20 +90,16 @@
 
         @if (count($orders) > 0)
         <div class="pay-upload">
-            <p>* LƯU Ý: Nếu bạn muốn thanh toán trước<br><br>
-                Chuyển khoản ĐÚNG số tiền ở phần "Tổng tiền"<br><br>
-                Nội dung chuyển khoản: TÊN + SĐT<br><br>
-                Sau khi hoàn tất, chụp lại màn hình giao dịch và gửi ảnh bên dưới.</p>
+            <p>* LÆ¯U Ă: Náº¿u báº¡n muá»‘n thanh toĂ¡n trÆ°á»›c<br><br>
+                Chuyá»ƒn khoáº£n ÄĂNG sá»‘ tiá»n á»Ÿ pháº§n "Tá»•ng tiá»n"<br><br>
+                Ná»™i dung chuyá»ƒn khoáº£n: TĂN + SÄT<br><br>
+                Sau khi hoĂ n táº¥t, chá»¥p láº¡i mĂ n hĂ¬nh giao dá»‹ch vĂ  gá»­i áº£nh bĂªn dÆ°á»›i.</p>
 
             <form action="{{ route('pay.upload') }}" method="post" enctype="multipart/form-data">
                 @csrf
-<<<<<<< HEAD
-                <input type="file" name="images[]" multiple accept="image/*"><br><br>
-=======
                 <input type="file" name="images[]" multiple accept=".jpg,.jpeg,.png"><br><br>
->>>>>>> 80d6e7c (Cập nhật giao diện)
                 <div class="pay-btn">
-                    <button type="submit" class="order-football-btn">Xác nhận đặt sân</button>
+                    <button type="submit" class="order-football-btn">XĂ¡c nháº­n Ä‘áº·t sĂ¢n</button>
                 </div>
             </form>
         </div>

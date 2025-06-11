@@ -6,7 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Đặt sân thể thao</title>
+    <title>Äáº·t sĂ¢n thá»ƒ thao</title>
     <link rel="stylesheet" href="<?php echo e(asset('css/style.css')); ?>">
     <link rel="stylesheet" href="<?php echo e(asset('fonts/fontawesome-free-6.5.2/css/all.min.css')); ?>">
     <?php echo $__env->yieldPushContent('styles'); ?>
@@ -16,10 +16,10 @@
         
         <!-- Begin: Header -->
         <div id="header">
-            <a class="home-heading" href="<?php echo e(route('admin')); ?>" target="_self">Đặt sân thể thao</a>
+            <a class="home-heading" href="<?php echo e(route('admin')); ?>" target="_self">Äáº·t sĂ¢n thá»ƒ thao</a>
             
             <div class="header-login">
-                <a class="signup-btn" href="<?php echo e(route('dang-nhap')); ?>" target="_self">Đăng xuất</a>
+                <a class="signup-btn" href="<?php echo e(route('dang-nhap')); ?>" target="_self">ÄÄƒng xuáº¥t</a>
             </div>
         </div>
         <!-- End: Header -->
@@ -41,29 +41,29 @@
                                 </a>
                             <?php else: ?>
                                 <a class="avatar-name" href="<?php echo e(route('dang-nhap')); ?>" target="_self">
-                                    Đăng Nhập
+                                    ÄÄƒng Nháº­p
                                 </a>
                             <?php endif; ?>
                         </div>
                         
                         <div class="admin-manage">
                             <li>
-                                <a href="<?php echo e(route('quan-ly-nguoi-dung')); ?>">Quản lý người dùng</a>
+                                <a href="<?php echo e(route('quan-ly-nguoi-dung')); ?>">Quáº£n lĂ½ ngÆ°á»i dĂ¹ng</a>
                             </li>
                             <li>
-                                <a href="<?php echo e(route('quan-ly-loai-san')); ?>">Quản lý loại sân</a>
+                                <a href="<?php echo e(route('quan-ly-loai-san')); ?>">Quáº£n lĂ½ loáº¡i sĂ¢n</a>
                             </li>
                             <li>
-                                <a href="<?php echo e(route('quan-ly-san')); ?>">Quản lý sân</a>
+                                <a href="<?php echo e(route('quan-ly-san')); ?>">Quáº£n lĂ½ sĂ¢n</a>
                             </li>
                             <li>
-                                <a href="<?php echo e(route('quan-ly-don-dat-san')); ?>">Quản lý đơn đặt sân</a>
+                                <a href="<?php echo e(route('quan-ly-don-dat-san')); ?>">Quáº£n lĂ½ Ä‘Æ¡n Ä‘áº·t sĂ¢n</a>
                             </li>
                             <li>
-                                <a href="<?php echo e(route('thong-ke-bao-cao')); ?>">Thống kê, báo cáo</a>
+                                <a href="<?php echo e(route('thong-ke-bao-cao')); ?>">Thá»‘ng kĂª, bĂ¡o cĂ¡o</a>
                             </li>
                             <li>
-                                <a href="<?php echo e(route('thong-tin-tai-khoan')); ?>">Quản lý tài khoản</a>
+                                <a href="<?php echo e(route('thong-tin-tai-khoan')); ?>">Quáº£n lĂ½ tĂ i khoáº£n</a>
                             </li>
                         </div>
                     </div>
@@ -71,7 +71,7 @@
 
                 <div class="admin">
                     <div class="admin-section-right">
-                        <!-- Nội dung chính sẽ được chèn ở đây -->
+                        <!-- Ná»™i dung chĂ­nh sáº½ Ä‘Æ°á»£c chĂ¨n á»Ÿ Ä‘Ă¢y -->
                         <?php echo $__env->yieldContent('content'); ?>
                     </div>
                 </div>
@@ -89,7 +89,7 @@
     </div>
     <?php echo $__env->yieldPushContent('scripts'); ?>
 
-    <!-- Khung popup hiển thị ảnh -->
+    <!-- Khung popup hiá»ƒn thá»‹ áº£nh -->
     <div id="image-popup" onclick="hideImage()" style="
         display: none;
         position: fixed;

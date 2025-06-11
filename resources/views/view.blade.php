@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Đặt sân thể thao</title>
+    <title>Äáº·t sĂ¢n thá»ƒ thao</title>
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
     <link rel="stylesheet" href="{{ asset('fonts/fontawesome-free-6.5.2/css/all.min.css') }}">
 </head>
@@ -13,11 +13,11 @@
 
         <!-- Begin: Header -->
         <div id="header">
-            <a class="home-heading" href="#" target="_top">Đặt sân thể thao</a>
+            <a class="home-heading" href="#" target="_top">Äáº·t sĂ¢n thá»ƒ thao</a>
             
             <div class="header-login">
-                <a class="login-btn dash" href="{{ route('dang-nhap') }}">Đăng Nhập</a>
-                <a class="signup-btn" href="{{ route('dang-ky') }}">Đăng Ký</a>
+                <a class="login-btn dash" href="{{ route('dang-nhap') }}">ÄÄƒng Nháº­p</a>
+                <a class="signup-btn" href="{{ route('dang-ky') }}">ÄÄƒng KĂ½</a>
             </div>
         </div>
         <!-- End: Header -->
@@ -29,55 +29,35 @@
         <!-- Begin: Content -->
         @foreach ($groupedYards as $typeName => $yards)
             <div id="content" class="content-section">
-<<<<<<< HEAD
-                <h2 class="content-heading">
-                    {{ $typeName }}
-                </h2>
-=======
                 <p class="content-heading">
                     {{ $typeName }}
                 </p>
->>>>>>> 80d6e7c (Cập nhật giao diện)
                 <div class="content-list">
                     @foreach ($yards as $yard)
                         <div class="content-item">
                             <?php
-                                // Lấy hình ảnh từ mảng $yard->images theo yard_id
-                                $imageData = $yard->images->first(); // Lấy hình ảnh đầu tiên nếu có
+                                // Láº¥y hĂ¬nh áº£nh tá»« máº£ng $yard->images theo yard_id
+                                $imageData = $yard->images->first(); // Láº¥y hĂ¬nh áº£nh Ä‘áº§u tiĂªn náº¿u cĂ³
                                 if ($imageData) {
-                                    // Hiển thị hình ảnh dưới dạng base64
-                                    echo '<img src="' . $imageData->url . '" alt="" class="football-img">'; // Sử dụng phương thức getUrlAttribute
+                                    // Hiá»ƒn thá»‹ hĂ¬nh áº£nh dÆ°á»›i dáº¡ng base64
+                                    echo '<img src="' . $imageData->url . '" alt="" class="football-img">'; // Sá»­ dá»¥ng phÆ°Æ¡ng thá»©c getUrlAttribute
                                 } else {
-                                    // Hiển thị hình ảnh mặc định nếu không có hình ảnh
+                                    // Hiá»ƒn thá»‹ hĂ¬nh áº£nh máº·c Ä‘á»‹nh náº¿u khĂ´ng cĂ³ hĂ¬nh áº£nh
                                     echo '<img src="' . asset('image/football.jpg') . '" alt="" class="football-img">';
                                 }
                             ?>
                             <div class="content-body">
-<<<<<<< HEAD
-                                <h3 class="content-body-name">
-                                    {{ $yard->name }}
-                                </h3>
-                                <a class="order-football-btn" 
-                                href="{{ route('dang-nhap') }}" 
-                                onclick="alert('Vui lòng đăng nhập để đặt sân')">
-                                Chọn sân
-=======
                                 <p class="content-body-name">
                                     {{ $yard->name }}
                                 </p>
                                 <a href="{{ route('dang-nhap') }}"
-                                onclick="alert('Vui lòng đăng nhập để đặt sân');"
+                                onclick="alert('Vui lĂ²ng Ä‘Äƒng nháº­p Ä‘á»ƒ Ä‘áº·t sĂ¢n');"
                                 class="order-football-btn">
-                                    Chọn sân
->>>>>>> 80d6e7c (Cập nhật giao diện)
+                                    Chá»n sĂ¢n
                                 </a>
                             </div>
                         </div>
                     @endforeach
-<<<<<<< HEAD
-                    <div class="clear"></div>
-=======
->>>>>>> 80d6e7c (Cập nhật giao diện)
                 </div>
             </div>
             <div class="clear"></div>
@@ -86,19 +66,19 @@
 
         <!-- Begin: Contact section -->
         <div id="contact" class="content-section">
-            <h2 class="content-heading">LIÊN HỆ</h2>
+            <h2 class="content-heading">LIĂN Há»†</h2>
 
             <div class="row contact-content">
                 <div class="col col-half contact-infor">
                     <div class="contact-infor-header">  
-                        <img src="/image/logo.png" alt="Logo mặc định">
+                        <img src="/image/logo.png" alt="Logo máº·c Ä‘á»‹nh">
                         <div class="contact-infor-text">  
-                            <h3>HỌC VIỆN NÔNG NGHIỆP VIỆT NAM</h3>
+                            <h3>Há»ŒC VIá»†N NĂ”NG NGHIá»†P VIá»†T NAM</h3>
                             <h5>VIETNAM NATIONAL UNIVERSITY OF AGRICULTURE</h5>
                         </div>
                     </div>
-                    <p><i class="fa-solid fa-location-dot"></i>Trâu Quỳ, Gia Lâm, Hà Nội, Việt Nam</p>
-                    <p><i class="fa-solid fa-phone"></i>Điện thoại: 84.024.62617586</p>
+                    <p><i class="fa-solid fa-location-dot"></i>TrĂ¢u Quá»³, Gia LĂ¢m, HĂ  Ná»™i, Viá»‡t Nam</p>
+                    <p><i class="fa-solid fa-phone"></i>Äiá»‡n thoáº¡i: 84.024.62617586</p>
                     <p><i class="fa-solid fa-envelope"></i>Email: webmaster@vnua.edu.vn</p>
                 </div>
 
@@ -106,7 +86,7 @@
                     <form action="">
                         <div class="row">
                             <div class="col col-half">
-                                <input type="text" name="" placeholder="Tên" required id="" class="form-control">
+                                <input type="text" name="" placeholder="TĂªn" required id="" class="form-control">
                             </div>
                             <div class="col col-half s-mt-8">
                                 <input type="email" name="" placeholder="Email" required id="" class="form-control">
@@ -114,10 +94,10 @@
                         </div>
                         <div class="row mt-8">
                             <div class="col col-full">
-                                <input type="text" name="" placeholder="Ghi chú" required id="" class="form-control">
+                                <input type="text" name="" placeholder="Ghi chĂº" required id="" class="form-control">
                             </div>
                         </div>
-                        <input class="contact-btn pull-right mt-16" type="submit" value="Gửi">
+                        <input class="contact-btn pull-right mt-16" type="submit" value="Gá»­i">
                     </form>
 
                 </div>

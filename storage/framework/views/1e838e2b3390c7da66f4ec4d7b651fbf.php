@@ -1,6 +1,6 @@
 
 
-<?php $__env->startSection('title', 'Quản lý thông tin cá nhân'); ?>
+<?php $__env->startSection('title', 'Quáº£n lĂ½ thĂ´ng tin cĂ¡ nhĂ¢n'); ?>
 
 <?php $__env->startSection('content'); ?>  
     <?php if(session('success')): ?>
@@ -9,31 +9,31 @@
         </script>
     <?php endif; ?>
 
-    <h3>Quản lý thông tin cá nhân</h3>
+    <h3>Quáº£n lĂ½ thĂ´ng tin cĂ¡ nhĂ¢n</h3>
 
     <div class="adminedit">
         <form method="post" action="<?php echo e(route('cap-nhat-thong-tin-ca-nhan')); ?>">
-            <?php echo csrf_field(); ?> <!-- Thêm token CSRF -->
-            <label for="fullname">Họ và tên:</label>
+            <?php echo csrf_field(); ?> <!-- ThĂªm token CSRF -->
+            <label for="fullname">Há» vĂ  tĂªn:</label>
             <input type="text" name="fullname" value="<?php echo e($user->fullname ?? ''); ?>" required><br>
             
-            <label for="gender">Giới tính:</label>
+            <label for="gender">Giá»›i tĂ­nh:</label>
             <select class="admin-time-select" name="gender" required>
                 <option value="Nam" <?php echo e($user->gender == 'Nam' ? 'selected' : ''); ?>>Nam</option>
-                <option value="Nữ" <?php echo e($user->gender == 'Nữ' ? 'selected' : ''); ?>>Nữ</option>
-                <option value="Khác" <?php echo e($user->gender == 'Khác' ? 'selected' : ''); ?>>Khác</option>
+                <option value="Ná»¯" <?php echo e($user->gender == 'Ná»¯' ? 'selected' : ''); ?>>Ná»¯</option>
+                <option value="KhĂ¡c" <?php echo e($user->gender == 'KhĂ¡c' ? 'selected' : ''); ?>>KhĂ¡c</option>
             </select><br>
             
-            <label for="birthdate">Ngày sinh:</label>
+            <label for="birthdate">NgĂ y sinh:</label>
             <input type="date" name="birthdate" value="<?php echo e($user->birthdate ?? ''); ?>" required><br>
             
-            <label for="phonenb">Số điện thoại:</label>
+            <label for="phonenb">Sá»‘ Ä‘iá»‡n thoáº¡i:</label>
             <input type="text" name="phonenb" value="<?php echo e($user->phonenb ?? ''); ?>" required><br>
             
             <label for="email">Email:</label>
             <input type="email" name="email" value="<?php echo e($user->email ?? ''); ?>" required><br>
             
-            <button class="update-btn" type="submit">Cập nhật thông tin cá nhân</button>
+            <button class="update-btn" type="submit">Cáº­p nháº­t thĂ´ng tin cĂ¡ nhĂ¢n</button>
         </form>                          
     </div>
 <?php $__env->stopSection(); ?>

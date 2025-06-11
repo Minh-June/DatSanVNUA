@@ -8,7 +8,7 @@ class PasswordRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return true; // Cho phép thực hiện request
+        return true; // Cho phÄ‚Â©p thÃ¡Â»Â±c hiÃ¡Â»â€¡n request
     }
 
     public function rules(): array
@@ -23,11 +23,11 @@ class PasswordRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'matkhau_hientai.required'  => 'Vui lòng nhập mật khẩu hiện tại.',
-            'matkhau_moi.required'      => 'Vui lòng nhập mật khẩu mới.',
-            'matkhau_moi.min'           => 'Mật khẩu mới phải có ít nhất 6 ký tự.',
-            'xacnhan_matkhau.required'  => 'Vui lòng xác nhận mật khẩu mới.',
-            'xacnhan_matkhau.same'      => 'Mật khẩu xác nhận không khớp.',
+            'matkhau_hientai.required'  => 'Vui lÄ‚Â²ng nhÃ¡ÂºÂ­p mÃ¡ÂºÂ­t khÃ¡ÂºÂ©u hiÃ¡Â»â€¡n tÃ¡ÂºÂ¡i.',
+            'matkhau_moi.required'      => 'Vui lÄ‚Â²ng nhÃ¡ÂºÂ­p mÃ¡ÂºÂ­t khÃ¡ÂºÂ©u mÃ¡Â»â€ºi.',
+            'matkhau_moi.min'           => 'MÃ¡ÂºÂ­t khÃ¡ÂºÂ©u mÃ¡Â»â€ºi phÃ¡ÂºÂ£i cÄ‚Â³ Ä‚Â­t nhÃ¡ÂºÂ¥t 6 kÄ‚Â½ tÃ¡Â»Â±.',
+            'xacnhan_matkhau.required'  => 'Vui lÄ‚Â²ng xÄ‚Â¡c nhÃ¡ÂºÂ­n mÃ¡ÂºÂ­t khÃ¡ÂºÂ©u mÃ¡Â»â€ºi.',
+            'xacnhan_matkhau.same'      => 'MÃ¡ÂºÂ­t khÃ¡ÂºÂ©u xÄ‚Â¡c nhÃ¡ÂºÂ­n khÄ‚Â´ng khÃ¡Â»â€ºp.',
         ];
     }
 }

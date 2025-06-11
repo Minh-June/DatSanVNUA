@@ -1,9 +1,9 @@
 
 
-<?php $__env->startSection('title', 'Cập nhật hình ảnh sân'); ?>
+<?php $__env->startSection('title', 'Cáº­p nháº­t hĂ¬nh áº£nh sĂ¢n'); ?>
 
 <?php $__env->startSection('content'); ?>
-    <h3>Cập nhật hình ảnh</h3>
+    <h3>Cáº­p nháº­t hĂ¬nh áº£nh</h3>
 
     <?php if(session('success')): ?>
         <script>
@@ -15,8 +15,8 @@
         <?php echo csrf_field(); ?>
         <div class="pay-information">
             <div class="admin-img">
-                <!-- Hiển thị ảnh hiện tại -->
-                <img src="<?php echo e(asset('storage/' . $image->image)); ?>" alt="Hình ảnh" class="admin-image">
+                <!-- Hiá»ƒn thá»‹ áº£nh hiá»‡n táº¡i -->
+                <img src="<?php echo e(asset('storage/' . $image->image)); ?>" alt="HĂ¬nh áº£nh" class="admin-image">
             </div>
         </div>
 
@@ -24,7 +24,7 @@
             <div class="admin-img">
                 <h3><?php echo e($image->yard->name); ?></h3>
 
-                <label for="image">Chọn hình ảnh mới:</label><br><br>
+                <label for="image">Chá»n hĂ¬nh áº£nh má»›i:</label><br><br>
                 <input type="file" name="image" id="image"><br>
 
                 <?php $__errorArgs = ['image'];
@@ -38,7 +38,7 @@ if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>
 
-                <button type="submit" class="update-btn">Cập nhật</button>
+                <button type="submit" class="update-btn">Cáº­p nháº­t</button>
             </div>
         </div>
     </form>                        

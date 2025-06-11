@@ -1,17 +1,17 @@
 
 
-<?php $__env->startSection('title', 'Thêm hình ảnh sân'); ?>
+<?php $__env->startSection('title', 'ThĂªm hĂ¬nh áº£nh sĂ¢n'); ?>
 
 <?php $__env->startSection('content'); ?>
-    <h3>Thêm hình ảnh sân thể thao</h3>
+    <h3>ThĂªm hĂ¬nh áº£nh sĂ¢n thá»ƒ thao</h3>
 
     <div class="adminedit">
         <form action="<?php echo e(route('luu-hinh-anh-san')); ?>" method="POST" enctype="multipart/form-data">
             <?php echo csrf_field(); ?>
             <div>
-                <label for="yard_id">Sân thể thao:</label>
+                <label for="yard_id">SĂ¢n thá»ƒ thao:</label>
                 <select class="admin-time-select" name="yard_id" required>
-                    <option value="">Chọn sân</option>
+                    <option value="">Chá»n sĂ¢n</option>
                     <?php $__currentLoopData = $yards; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $yard): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                         <option value="<?php echo e($yard->yard_id); ?>" <?php echo e(old('yard_id', request('yard_id')) == $yard->yard_id ? 'selected' : ''); ?>>
                             <?php echo e($yard->name); ?>
@@ -31,7 +31,7 @@ endif;
 unset($__errorArgs, $__bag); ?>
             </div>
             <div>
-                <label for="image">Chọn hình ảnh:</label>
+                <label for="image">Chá»n hĂ¬nh áº£nh:</label>
                 <input type="file" name="image" id="image" required>
                 <?php $__errorArgs = ['image'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
@@ -45,7 +45,7 @@ endif;
 unset($__errorArgs, $__bag); ?>
             </div>
             <div>
-                <button type="submit" class="update-btn">Thêm ảnh</button>
+                <button type="submit" class="update-btn">ThĂªm áº£nh</button>
             </div>
         </form>
     </div>

@@ -33,13 +33,13 @@ class AccountRequest extends FormRequest
     public function messages()
     {
         return [
-            'fullname.required' => 'Họ và tên là bắt buộc.',
-            'gender.required' => 'Giới tính là bắt buộc.',
-            'birthdate.required' => 'Ngày sinh là bắt buộc.',
-            'phonenb.required' => 'Số điện thoại là bắt buộc.',
-            'phonenb.regex' => 'Số điện thoại chỉ được chứa các ký tự số.',
-            'email.required' => 'Email là bắt buộc.',
-            'email.unique' => 'Email đã được sử dụng.',
+            'fullname.required' => 'Há» vĂ  tĂªn lĂ  báº¯t buá»™c.',
+            'gender.required' => 'Giá»›i tĂ­nh lĂ  báº¯t buá»™c.',
+            'birthdate.required' => 'NgĂ y sinh lĂ  báº¯t buá»™c.',
+            'phonenb.required' => 'Sá»‘ Ä‘iá»‡n thoáº¡i lĂ  báº¯t buá»™c.',
+            'phonenb.regex' => 'Sá»‘ Ä‘iá»‡n thoáº¡i chá»‰ Ä‘Æ°á»£c chá»©a cĂ¡c kĂ½ tá»± sá»‘.',
+            'email.required' => 'Email lĂ  báº¯t buá»™c.',
+            'email.unique' => 'Email Ä‘Ă£ Ä‘Æ°á»£c sá»­ dá»¥ng.',
         ];
     }
 }

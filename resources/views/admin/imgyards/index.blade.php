@@ -1,16 +1,16 @@
 @extends('layouts.admin')
 
-@section('title', 'Quản lý hình ảnh sân')
+@section('title', 'Quáº£n lĂ½ hĂ¬nh áº£nh sĂ¢n')
 
 @section('content')
-    <!-- Hiển thị thông báo thành công -->
+    <!-- Hiá»ƒn thá»‹ thĂ´ng bĂ¡o thĂ nh cĂ´ng -->
     @if(session('success'))
         <script>
             alert("{{ session('success') }}");
         </script>
     @endif
 
-    <!-- Hiển thị thông báo lỗi -->
+    <!-- Hiá»ƒn thá»‹ thĂ´ng bĂ¡o lá»—i -->
     @if(session('error'))
         <script>
             alert("{{ session('error') }}");
@@ -18,7 +18,7 @@
     @endif
 
     <h3>
-        Quản lý hình ảnh 
+        Quáº£n lĂ½ hĂ¬nh áº£nh 
         @if(isset($selectedYard))
             - {{ $selectedYard->name }}
         @endif
@@ -28,17 +28,17 @@
         <div class="admin-search"></div>
 
         <div class="admin-add-btn">
-            <a href="{{ route('them-hinh-anh-san') }}">Thêm hình ảnh sân</a>
+            <a href="{{ route('them-hinh-anh-san') }}">ThĂªm hĂ¬nh áº£nh sĂ¢n</a>
         </div>
     </div>
 
-    <!-- Hiển thị bảng hình ảnh khi đã chọn sân -->
+    <!-- Hiá»ƒn thá»‹ báº£ng hĂ¬nh áº£nh khi Ä‘Ă£ chá»n sĂ¢n -->
     <table id='ListCustomers'>
         <thead>
             <tr>
                 <th>STT</th>
-                <th>Hình ảnh</th>
-                <th colspan="2">Tùy chọn</th>
+                <th>HĂ¬nh áº£nh</th>
+                <th colspan="2">TĂ¹y chá»n</th>
             </tr>
         </thead>
         <tbody>
@@ -46,18 +46,18 @@
                 <tr>
                     <td>{{ $index + 1 }}</td>
                     <td>
-                        <img src="{{ asset('storage/' . $image->image) }}" alt="Hình ảnh" class="admin-image">
+                        <img src="{{ asset('storage/' . $image->image) }}" alt="HĂ¬nh áº£nh" class="admin-image">
                     </td>
                     <td>
                         <form action="{{ route('cap-nhat-hinh-anh-san', ['image_id' => $image->image_id]) }}" method="GET">
-                            <button type="submit" class="update-btn">Sửa</button>
+                            <button type="submit" class="update-btn">Sá»­a</button>
                         </form>
                     </td>
                     <td>
-                        <form action="{{ route('xoa-hinh-anh-san', ['image_id' => $image->image_id]) }}" method="POST" onsubmit="return confirm('Bạn có chắc chắn muốn xóa hình ảnh này?');">
+                        <form action="{{ route('xoa-hinh-anh-san', ['image_id' => $image->image_id]) }}" method="POST" onsubmit="return confirm('Báº¡n cĂ³ cháº¯c cháº¯n muá»‘n xĂ³a hĂ¬nh áº£nh nĂ y?');">
                             @csrf
                             @method('DELETE')
-                            <button type="submit" class="update-btn">Xóa</button>
+                            <button type="submit" class="update-btn">XĂ³a</button>
                         </form>                                
                     </td>
                 </tr>

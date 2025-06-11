@@ -9,38 +9,38 @@ class Yard extends Model
 {
     use HasFactory;
 
-    protected $table = 'yards'; // Tên bảng trong cơ sở dữ liệu
-    protected $primaryKey = 'yard_id'; // Khóa chính
-    public $timestamps = false; // Không sử dụng timestamps (created_at, updated_at)
+    protected $table = 'yards'; // TĂªn báº£ng trong cÆ¡ sá»Ÿ dá»¯ liá»‡u
+    protected $primaryKey = 'yard_id'; // KhĂ³a chĂ­nh
+    public $timestamps = false; // KhĂ´ng sá»­ dá»¥ng timestamps (created_at, updated_at)
 
     protected $fillable = [
         'yard_id',
         'type_id',
-        'name' // Tên sân
-    ]; // Các cột có thể gán
+        'name' // TĂªn sĂ¢n
+    ]; // CĂ¡c cá»™t cĂ³ thá»ƒ gĂ¡n
 
-    // Quan hệ: Một sân có nhiều ảnh
+    // Quan há»‡: Má»™t sĂ¢n cĂ³ nhiá»u áº£nh
     public function images()
     {
         return $this->hasMany(Image::class, 'yard_id', 'yard_id');
     }
 
-    // Quan hệ: Một sân có nhiều đơn đặt
+    // Quan há»‡: Má»™t sĂ¢n cĂ³ nhiá»u Ä‘Æ¡n Ä‘áº·t
     public function orders()
     {
         return $this->hasMany(Order::class, 'yard_id', 'yard_id');
     }
 
-    // Quan hệ: Một sân có nhiều khung giờ
+    // Quan há»‡: Má»™t sĂ¢n cĂ³ nhiá»u khung giá»
     public function times()
     {
         return $this->hasMany(Time::class, 'yard_id', 'yard_id');
     }
 
-    // Quan hệ: Một sân thuộc một loại sân
+    // Quan há»‡: Má»™t sĂ¢n thuá»™c má»™t loáº¡i sĂ¢n
     public function type()
     {
-        return $this->belongsTo(Type::class, 'type_id', 'type_id'); // Sửa lại tham số khóa quan hệ
+        return $this->belongsTo(Type::class, 'type_id', 'type_id'); // Sá»­a láº¡i tham sá»‘ khĂ³a quan há»‡
     }
 
 }

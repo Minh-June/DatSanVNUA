@@ -1,12 +1,12 @@
 @extends('layouts.client.client')
 
-@section('title', 'Đặt sân')
+@section('title', 'Äáº·t sĂ¢n')
 
 @section('content')
 
 @if (session('success'))
     <script>
-        alert('Đặt sân thành công!');
+        alert('Äáº·t sĂ¢n thĂ nh cĂ´ng!');
     </script>
 @endif
 
@@ -16,9 +16,9 @@
         <div class="order">
             <div class="order-section-left">
                 @if ($yard_image)
-                    <img src="{{ asset(Storage::url($yard_image->image)) }}" alt="Sân {{ $yard_name }}" class="football-img" style="cursor: pointer;" onclick="showAllImages()">
+                    <img src="{{ asset(Storage::url($yard_image->image)) }}" alt="SĂ¢n {{ $yard_name }}" class="football-img" style="cursor: pointer;" onclick="showAllImages()">
                 @else
-                    <img src="{{ asset('image/football.jpg') }}" alt="Sân {{ $yard_name }}" class="football-img">
+                    <img src="{{ asset('image/football.jpg') }}" alt="SĂ¢n {{ $yard_name }}" class="football-img">
                 @endif
             </div>
         </div>
@@ -26,11 +26,11 @@
         <div class="order">
             <div class="order-section-right">
                 <div class="container">
-                    <p>* Lưu ý: Nếu bạn muốn đặt sân ngoài khung giờ có sẵn, vui lòng liên hệ chủ sân qua SĐT: 0356645445</p>
+                    <p>* LÆ°u Ă½: Náº¿u báº¡n muá»‘n Ä‘áº·t sĂ¢n ngoĂ i khung giá» cĂ³ sáºµn, vui lĂ²ng liĂªn há»‡ chá»§ sĂ¢n qua SÄT: 0356645445</p>
                     <form action="{{ route('luu-thong-tin-don-dat-san') }}" method="POST" id="orderForm" onsubmit="return confirmBooking(event)">
                         @csrf
                         <div class="form-order-left-days">
-                            <label for="date">Chọn ngày:</label>
+                            <label for="date">Chá»n ngĂ y:</label>
                             <input type="hidden" id="yard_id_input" value="{{ $yard_id }}">
                             <input type="date" id="date" name="date"
                                 value="{{ old('date', $selected_date ?? date('Y-m-d')) }}"
@@ -38,17 +38,17 @@
                                 onchange="onDateChange()">
                         </div>
 
-                        <label for="time">Chọn giờ:</label>
+                        <label for="time">Chá»n giá»:</label>
                         <div class="time-slots" id="time_slots_container">
                             @foreach ($times as $slot)
                                 @php
-                                    // Disable nếu đã được admin xác nhận
+                                    // Disable náº¿u Ä‘Ă£ Ä‘Æ°á»£c admin xĂ¡c nháº­n
                                     $isAdminBooked = in_array($slot->time, $adminBookedTimes);
 
-                                    // Disable nếu khung giờ có trong session user hiện tại
+                                    // Disable náº¿u khung giá» cĂ³ trong session user hiá»‡n táº¡i
                                     $isSessionBooked = in_array($slot->time, $sessionBookedTimes);
 
-                                    // Tổng hợp trạng thái disable
+                                    // Tá»•ng há»£p tráº¡ng thĂ¡i disable
                                     $disabled = $isAdminBooked || $isSessionBooked;
                                 @endphp
                                 <button type="button" class="btn-time {{ $disabled ? 'booked' : '' }}"
@@ -68,10 +68,10 @@
                             <input type="hidden" name="continue_booking" id="continue_booking">
                             <input type="hidden" name="name" value="{{ $user->fullname ?? '' }}">
                             <input type="hidden" name="phone" value="{{ $user->phonenb ?? '' }}">
-                            <label>Thành tiền: <span id="total_price">0 VND</span></label>
-                            <label for="notes">Ghi chú:</label>
+                            <label>ThĂ nh tiá»n: <span id="total_price">0 VND</span></label>
+                            <label for="notes">Ghi chĂº:</label>
                             <textarea id="notes" name="notes" rows="4">{{ old('notes') }}</textarea>
-                            <button type="submit" class="order-button">Đặt sân</button>
+                            <button type="submit" class="order-button">Äáº·t sĂ¢n</button>
                         </div>
                     </form>
 
@@ -83,7 +83,7 @@
     <div class="clear"></div>
 </div>
 
-    <!-- Lightbox hiện tất cả ảnh sân -->
+    <!-- Lightbox hiá»‡n táº¥t cáº£ áº£nh sĂ¢n -->
     <div id="multi-image-popup" onclick="hideAllImages()" style="
         display: none;
         position: fixed;
@@ -96,7 +96,7 @@
         <div onclick="event.stopPropagation()" style="display: flex; gap: 15px;">
             @foreach ($yard->images as $img)
                 <img src="{{ asset(Storage::url($img->image)) }}"
-                    alt="Ảnh sân"
+                    alt="áº¢nh sĂ¢n"
                     style="max-height: 700px; max-width: 525px; box-shadow: 0 0 10px #000;">
             @endforeach
         </div>
