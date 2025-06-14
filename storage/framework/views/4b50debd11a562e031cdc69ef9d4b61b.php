@@ -1,32 +1,34 @@
-
-
-<?php $__env->startSection('title', 'ThÄ‚Âªm loÃ¡ÂºÂ¡i sÄ‚Â¢n'); ?>
+<?php $__env->startSection('title', 'Thêm loại sân'); ?>
 
 <?php $__env->startSection('content'); ?>
-    <!-- HiÃ¡Â»Æ’n thÃ¡Â»â€¹ thÄ‚Â´ng bÄ‚Â¡o -->
+    <!-- Hiển thị thông báo -->
     <?php if(session('success')): ?>
         <script>
             alert("<?php echo e(session('success')); ?>");
         </script>
     <?php endif; ?>
 
-    <!-- HiÃ¡Â»Æ’n thÃ¡Â»â€¹ thÄ‚Â´ng bÄ‚Â¡o lÃ¡Â»â€”i -->
-    <?php if(session('error')): ?>
+    <!-- Hiển thị thông báo lỗi -->
+    <?php if($errors->any()): ?>
         <script>
-            alert("<?php echo e(session('error')); ?>");
+            alert("<?php echo e($errors->first()); ?>");
         </script>
     <?php endif; ?>
 
-    <h3>ThÄ‚Âªm loÃ¡ÂºÂ¡i sÄ‚Â¢n</h3>
+    <h2>Thêm loại sân</h2>
 
-    <!-- Form thÄ‚Âªm loÃ¡ÂºÂ¡i sÄ‚Â¢n mÃ¡Â»â€ºi -->
+    <!-- Form thêm loại sân mới -->
     <div class="adminedit">
         <form action="<?php echo e(route('luu-loai-san')); ?>" method="POST">
-            <?php echo csrf_field(); ?> <!-- ThÄ‚Âªm CSRF token -->
-            <label for="name">TÄ‚Âªn loÃ¡ÂºÂ¡i sÄ‚Â¢n:</label>
-            <input type="text" id="name" name="name" required>
-            <br>
-            <button class="update-btn" type="submit">LÃ†Â°u thÄ‚Â´ng tin loÃ¡ÂºÂ¡i sÄ‚Â¢n</button>
+            <?php echo csrf_field(); ?>
+            <div class="adminedit-form-group">
+                <label for="name">Tên loại sân:</label>
+                <input type="text" id="name" name="name" required>
+            </div>
+
+            <div class="adminedit-button">
+                <button class="update-btn" type="submit">Lưu thông tin</button>
+            </div>
         </form>
     </div>
 <?php $__env->stopSection(); ?>

@@ -1,6 +1,6 @@
 
 
-<?php $__env->startSection('title', 'Trang chá»§'); ?>
+<?php $__env->startSection('title', 'Trang chủ'); ?>
 
 <?php $__env->startSection('content'); ?>
         <div id="slider">
@@ -23,9 +23,7 @@
                                     <?php echo e($yard->name); ?>
 
                                 </h3>
-                                <a class="order-football-btn" href="<?php echo e(route('dat-san', ['yard_id' => $yard->yard_id])); ?>">
-                                    Chá»n sĂ¢n
-                                </a>
+                                <a href="<?php echo e(route('dat-san', ['yard_id' => $yard->yard_id])); ?>" class="order-football-btn">Chọn sân</a>
                             </div>
                         </div>
                     <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
@@ -37,20 +35,27 @@
             
         <!-- Begin: Contact section -->
         <div id="contact" class="content-section">
-            <h2 class="content-heading">LIĂN Há»†</h2>
+            <h2 class="content-heading">LIÊN HỆ</h2>
 
             <div class="row contact-content">
                 <div class="col col-half contact-infor">
-                    <p><i class="fa-solid fa-location-dot"></i>TrĂ¢u Quá»³, Gia LĂ¢m, HĂ  Ná»™i, Viá»‡t Nam</p>
-                    <p><i class="fa-solid fa-phone"></i>Äiá»‡n thoáº¡i: <a href="tel:+00 151515">+84 123456789</a></p>
-                    <p><i class="fa-solid fa-envelope"></i>Email: <a href="mailto:mail@mail.com">group48@gmail.com</a></p>
+                    <div class="contact-infor-header">  
+                        <img src="/image/logo.png" alt="Logo mặc định">
+                        <div class="contact-infor-text">  
+                            <h3>HỌC VIỆN NÔNG NGHIỆP VIỆT NAM</h3>
+                            <h5>VIETNAM NATIONAL UNIVERSITY OF AGRICULTURE</h5>
+                        </div>
+                    </div>
+                    <p><i class="fa-solid fa-location-dot"></i> Trâu Quỳ, Gia Lâm, Hà Nội, Việt Nam</p>
+                    <p><i class="fa-solid fa-phone"></i> Điện thoại: 84.024.62617586</p>
+                        <p><i class="fa-solid fa-envelope"></i> Email: webmaster@vnua.edu.vn</p>
                 </div>
 
                 <div class="col col-half contact-form">
                     <form action="">
                         <div class="row">
                             <div class="col col-half">
-                                <input type="text" name="" placeholder="TĂªn" required id="" class="form-control">
+                                <input type="text" name="" placeholder="Tên" required id="" class="form-control">
                             </div>
                             <div class="col col-half s-mt-8">
                                 <input type="email" name="" placeholder="Email" required id="" class="form-control">
@@ -58,10 +63,10 @@
                         </div>
                         <div class="row mt-8">
                             <div class="col col-full">
-                                <input type="text" name="" placeholder="Ghi chĂº" required id="" class="form-control">
+                                <input type="text" name="" placeholder="Ghi chú" required id="" class="form-control">
                             </div>
                         </div>
-                        <input class="contact-btn pull-right mt-16" type="submit" value="Gá»­i">
+                        <input class="contact-btn pull-right mt-16" type="submit" value="Gửi">
                     </form>
 
                 </div>
@@ -70,4 +75,5 @@
         </div>
         <!-- End: Contact section -->
 <?php $__env->stopSection(); ?>
+
 <?php echo $__env->make('layouts.client.client', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH D:\laragon\www\qldatsan\resources\views/client/home.blade.php ENDPATH**/ ?>

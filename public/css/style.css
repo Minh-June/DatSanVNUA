@@ -5,6 +5,9 @@
     --primary-font-size: 20px;
     --primary-font-size-admin: 17px;
     --primary-box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    --secondary-box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    --primary-border-radius: 10px;
+    --primary-transition: background-color 0.3s ease;
 }
 
 * {
@@ -15,7 +18,7 @@
 
 html {
     scroll-behavior: smooth;
-    font-family: Helvetica, Arial, sans-serif;
+    font-family: 'Roboto', sans-serif;
 }
 
 .clear {
@@ -59,21 +62,33 @@ html {
     margin-top: 16px !important; 
 }
 
-/* ÄÄƒng kĂ½ - ÄÄƒng nháº­p */
-.container-access {
+/* Đăng ký - Đăng nhập */
+.notice ul {
+    color: red;
+}
+
+.container-access-register {
     width: 550px;
     padding: 15px;
-    margin: 50px auto;
-    border-radius: 10px;
-    border: 8px solid #37bd74;
+    margin: 100px auto 0 auto;
+    border-radius: var(--primary-border-radius);
+    border: 4px solid var(--primary-color);
     box-shadow: var(--primary-box-shadow);
+    background-color: #fff;
+}
+
+.container-access-login {
+    width: 550px;
+    padding: 15px;
+    margin: 210px auto 0 auto;
+    border-radius: var(--primary-border-radius);
+    border: 4px solid var(--primary-color);
+    box-shadow: var(--primary-box-shadow);
+    background-color: #fff;
 }
 
 .form-title {
-    font-size: 20px;
-    font-weight: bold;
     text-align: center;
-    padding: 13px;
     margin-bottom: 4px;
 }
 
@@ -82,17 +97,15 @@ html {
 #email,
 #username,
 #password {
-    color: inherit;
     width: 100%;
-    background-color: transparent;
     border: none;
-    border-bottom: 1px solid #757575;
+    border-bottom: 1px solid var(--primary-color);
     padding-left: 25px;
-    font-size: 17px;
+    font-size: var(--primary-font-size-admin);
 }
 
 .input-group {
-    padding: 1%;
+    padding-top: 12px;
     position: relative;
     margin-bottom: 5px;
 }
@@ -100,6 +113,7 @@ html {
 .input-group i {
     position: absolute;
     color: black;
+    margin-top: 2px;
 }
 
 #fullname:focus ,
@@ -107,40 +121,12 @@ html {
 #email:focus ,
 #username:focus,
 #password:focus {
-    background-color: transparent;
     outline: transparent;
-    border-bottom: 2px solid hsl(327, 90%, 28%);
-}
-
-.label-access {
-    color: #757575;
-    position: relative;
-    left: 25px;
-    top: -20px;
-    cursor: auto;
-    transition: 0.3s ease all;
-}
-
-#fullname:focus~.label-access,
-#phonenb:focus~.label-access,
-#email:focus~.label-access,
-#username:focus~.label-access,
-#fullname:not(:placeholder-shown)~.label-access,
-#phonenb:not(:placeholder-shown)~.label-access,
-#email:not(:placeholder-shown)~.label-access,
-#username:not(:placeholder-shown)~.label-access,
-#password:not(:placeholder-shown)~.label-access {
-    top: -20px;
-    color: hsl(327, 90%, 28%);
-    font-size: 17px;
-}
-
-.input-group-icon {
-    margin-top: 4px;
+    border-bottom: 1px solid #000;
 }
 
 .input-group-select {
-    font-size: 17px;
+    font-size: var(--primary-font-size-admin);
     margin-left: 25px;
 }
 
@@ -151,25 +137,9 @@ html {
     box-shadow: var(--primary-box-shadow);
 }
 
-.recover {
-    text-align: right;
-    font-size: 17px;
-    margin-bottom: 10px;
-}
-
-.recover a {
-    color: #000;
-    text-decoration: none;
-}
-
-.recover a:hover {
-    opacity: 0.8;
-    text-decoration: none;
-}
-
 .index-btn {
-    font-size: 17px;
-    padding: 8px 0;
+    font-size: 18px;
+    padding: 6px 0;
     border-radius: 5px;
     outline: none;
     border: none;
@@ -177,40 +147,13 @@ html {
     background-color: var(--primary-color);
     color: #fff;
     cursor: pointer;
-    transition: 0.1s;
     margin-top: 20px;
     box-shadow: var(--primary-box-shadow);
 }
 
 .index-btn:hover {
-    background-color: var(--primary-color-hover)
-}
-
-.or {
-    font-size: 17px;
-    margin-top: 12px;
-    margin-bottom: 12px;
-    text-align: center;
-}
-
-.icons {
-    text-align: center;
-}
-
-.icons a {
-    color: #388E3C;
-    padding: 8px 15px;
-    border-radius: 10px;
-    cursor: pointer;
-    border: 1px solid #ccc;
-    margin: 0 15px;
-    transition: 0.1s;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-}
-
-.icons a:hover {
-    color: var(--primary-color-hover-text);
-    border: 2px solid;
+    background-color: var(--primary-color-hover);
+    transition: var(--primary-transition);
 }
 
 .links {
@@ -219,21 +162,23 @@ html {
     padding: 0 4px;
     margin-top: 20px;
     font-weight: bold;
+    font-size: var(--primary-font-size-admin);
 }
 
 #signUpButton {
     color: var(--primary-color);
     border: none;
     background-color: transparent;
-    font-size: 17px;
+    font-size: 18px;
     font-weight: bold;
 }
 
 #signUpButton:hover {
     color: var(--primary-color-hover);
+    transition: var(--primary-transition);
 }
 
-/* Trang chá»§ */
+/* Trang chủ */
 /* Header */
 #header {
     position: fixed;
@@ -242,7 +187,7 @@ html {
     right: 0;
     height: 56px;
     background-color: var(--primary-color);
-    z-index: 1; /* Header ná»•i trĂªn áº£nh */
+    z-index: 1;
     display: flex;
     justify-content: space-between;
     line-height: 60px;
@@ -251,18 +196,175 @@ html {
     box-shadow: var(--primary-box-shadow);
 }
 
+#header > ul {
+    padding: 0;
+}
+
+#nav > li {
+    display: inline-block;
+}
+
+#nav > li:first-child > a {
+    color: #fff;
+    text-transform: uppercase;
+}
+
+#nav > li:last-child > a {
+    color: var(--primary-color-hover-text);
+    text-transform: uppercase;
+}
+
+#nav li a {
+    text-decoration: none;
+    padding: 0 20px 0 0;
+    display: block;
+}
+
+#nav > li:first-child > a:hover {
+    color: var(--primary-color-hover-text);
+    transition: var(--primary-transition);
+}
+
+#nav > li:last-child > a:hover {
+    color: #fff;
+    transition: var(--primary-transition);
+}
+
 .home-heading {
     text-decoration: none;
     color: #fff;
-    text-transform: uppercase;
+    font-size: 21px;
+}
+
+.home-heading > i {
+    font-size: 19px;
+    margin-right: 6px;
+    position: relative;
+    top: -2px;
+}
+
+/* Modal */
+.modal {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background-color: rgba(0, 0, 0, 0.3);
+    align-items: center;
+    justify-content: center;
+    display: none;
+}
+
+.modal.open {
+    display: flex;
+}
+
+.modal-container {
+    background-color: #fff;
+    max-width: calc(100% - 40px);
+    position: relative;
+    animation: modaFadeIn ease 0.5s;
+    border-radius: var(--primary-border-radius);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.6);
+}
+
+.modal-header {
+    background-color: var(--primary-color);
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--primary-font-size);
+    color: #fff;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+
+}
+
+.modal-close {
+    position: absolute;
+    right: 0;
+    top: 0;
+    color: #fff;
+    padding: 12px;
+    cursor: pointer;
     font-size: var(--primary-font-size);
 }
 
-/* Carlender */
-.header__carlender {
-
+.modal-close:hover {
+    color: var(--primary-color-hover-text);
+    transition: var(--primary-transition);
 }
 
+.modal-body {
+    width: 500px;
+    padding: 20px;
+    font-size: var(--primary-font-size);
+    display: flex;
+    flex-direction: column;
+}
+
+.modal-body label {
+    font-weight: bold;
+    margin-bottom: 6px;
+    display: inline-block;
+    color: #333;
+}
+
+.modal-body input[type="date"],
+.modal-body select {
+    padding: 10px 12px;
+    border: 1px solid #ccc;
+    border-radius: var(--primary-border-radius);
+    box-shadow: var(--secondary-box-shadow);
+    font-size: 15px;
+    transition: border-color 0.3s ease;
+}
+
+.modal-body input:focus,
+.modal-body select:focus {
+    border-color: var(--primary-color);
+    outline: none;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+/* Khung giờ đặt sân: hiển thị theo hàng ngang */
+.form-group.time-range {
+    flex-direction: row;
+    align-items: center;
+    gap: 12px;
+}
+
+.form-group.time-range label {
+    margin-bottom: 0;
+    white-space: nowrap;
+}
+
+.modal-body > .order-football-btn {
+    align-self: flex-end;
+    padding: 10px 20px;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: var(--primary-border-radius);
+    box-shadow: var(--primary-box-shadow);
+    font-size: 15px;
+    cursor: pointer;
+    transition: var(--primary-transition);
+}
+
+.modal-body > .order-football-btn:hover {
+    background-color: var(--primary-color-hover);
+    transition: var(--primary-transition);
+}
+
+/* Carlender */
 .header__cart-wrap {
     position: relative;
     display: inline-block;
@@ -285,7 +387,7 @@ html {
     right: 1px;
     background-color:#fff;
     width: 400px;
-    border-radius: 10px;
+    border-radius: var(--primary-border-radius);
     box-shadow: var(--primary-box-shadow);
     cursor: default;
     display: none;
@@ -307,9 +409,9 @@ html {
 
 .header__cart-list-item {
     font-size: var(--primary-font-size-admin);
-    height: 200px; /* Chiá»u cao cá»‘ Ä‘á»‹nh cho danh sĂ¡ch giá» hĂ ng */
+    height: 200px;
     padding-left: 0;
-    overflow-y: auto;     /* Khi tháº±ng con vÆ°á»£t quĂ¡ chiá»u dá»c cá»§a tháº±ng cha thĂ¬ hiá»‡n thanh cuá»™n dá»c */
+    overflow-y: auto;     /* Khi thằng con vượt quá chiều dọc của thằng cha thì hiện thanh cuộn dọc */
 }
 
 .header__cart-item {
@@ -319,13 +421,14 @@ html {
 
 .header__cart-item:hover {
     background-color: #f8f8f8;
+    transition: var(--primary-transition);
 }
 
 .header__cart-img {
     width: 150px;
     height: 130px;
     margin: 12px;
-    border-radius: 10px;
+    border-radius: var(--primary-border-radius);
     box-shadow: var(--primary-box-shadow);
 }
 
@@ -341,13 +444,13 @@ html {
 }
 
 .header__cart-item-name {
-    max-height: 64px;     /* Äá» phĂ²ng ná»™i dung ngáº¯n quĂ¡ (1 dĂ²ng) sáº½ bá»‹ Ä‘áº©y cao lĂªn so vá»›i "phĂ¢n loáº¡i" */
+    max-height: 64px;     /* Đề phòng nội dung ngắn quá (1 dòng) sẽ bị đẩy cao lên so với "phân loại" */
     color: #000;
-    word-wrap: break-word;      /* Tá»± xuá»‘ng dĂ²ng khi cháº¡m Ä‘áº¿n chiá»u rá»™ng */
-    display: -webkit-box;       /* Há»— trá»£ ellipsis cho nhiá»u dĂ²ng */
-    -webkit-line-clamp: 3;      /* Giá»›i háº¡n tá»‘i Ä‘a 3 dĂ²ng (64px ~ 3 dĂ²ng) */
+    word-wrap: break-word;      /* Tự xuống dòng khi chạm đến chiều rộng */
+    display: -webkit-box;       /* Hỗ trợ ellipsis cho nhiều dòng */
+    /* -webkit-line-clamp: 3;      Giới hạn tối đa 3 dòng (64px ~ 3 dòng) */
     -webkit-box-orient: vertical;
-    text-overflow: ellipsis;    /* Hiá»‡n dáº¥u ... */
+    text-overflow: ellipsis;    /* Hiện dấu ... */
 }
 
 .header__cart-item-price {
@@ -381,7 +484,7 @@ html {
     color: #fff;
     padding: 4px 12px;    
     border: none;
-    border-radius: 10px;
+    border-radius: var(--primary-border-radius);
     box-shadow: var(--primary-box-shadow);
     margin: 12px;
     float: right;
@@ -391,6 +494,7 @@ html {
 .header__cart-view-cart:hover {
     cursor: pointer;
     background-color: var(--primary-color-hover);
+    transition: var(--primary-transition);
 }
 
 .header__cart-list::after {
@@ -423,7 +527,6 @@ html {
     font-size: 14px;
     position: absolute;
     right: 11px;
-    padding-top: 1px;
     padding-right: 8px;
     color: #388E3C;
 }
@@ -445,7 +548,7 @@ html {
     color: #fff;
     background-color: var(--primary-color);
     border: none;
-    font-size: var(--primary-font-size);
+    font-size: 22px;
     text-decoration: none;
     position: relative;
 }
@@ -465,6 +568,7 @@ html {
 .signup-btn:hover {
     cursor: pointer;
     color: #C8E6C9;
+    transition: var(--primary-transition);
 }
 
 /* Slider */
@@ -510,9 +614,9 @@ html {
 }
 
 .football-img {
-    width: 300px;
-    height: 400px;
-    border-radius: 10px;
+    width: 310px;
+    height: 410px;
+    border-radius: var(--primary-border-radius);
     box-shadow: var(--primary-box-shadow);
 }
 
@@ -520,9 +624,9 @@ html {
     background-color: var(--primary-color);
     text-decoration: none;
     color: #fff;
-    font-size: var(--primary-font-size-admin);
+    font-size: var(--primary-font-size);
     padding: 4px 10px;
-    border-radius: 10px;
+    border-radius: var(--primary-border-radius);
     border: none;
     box-shadow: var(--primary-box-shadow);
     text-align: center;
@@ -531,15 +635,17 @@ html {
 .order-football-btn:hover {
     cursor: pointer;
     background-color: var(--primary-color-hover);
+    transition: var(--primary-transition);
 }
 
 /* Contact form */
 .contact-content{
-    margin-top: 48px;
+    margin-top: 40px;
+    margin-bottom: 50px;
 }
 
 .contact-infor {
-    font-size: 17px;
+    font-size: 18px;
     line-height: 1.5;
 }
 
@@ -558,34 +664,49 @@ html {
 }
 
 .contact-infor-text h3 {
-    letter-spacing: 0.5px;
+    letter-spacing: 1.8px;
 }
 
 .contact-infor i[class*="fa-"] {
     width: 30px;
     display: inline-block;
+    margin-left: 17px;
 }
 
-.contact-form {
-    font-size: 17px;
+.contact-infor .website-label {
+    color: black;
+    margin-left: -4px;
+}
+
+.contact-infor .website-link {
+    color: green;
+}
+
+.contact-infor a {
+    text-decoration: none;
+}
+
+.contact-infor .website-link:hover {
+    color: var(--primary-color);
 }
 
 .contact-form .form-control {
     padding: 10px;
     border: 1px solid var(--primary-color);
     width: 100%;
-    border-radius: 10px;
+    border-radius: var(--primary-border-radius);
     margin-bottom: 5px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.08);
+    box-shadow: var(--secondary-box-shadow);
+    font-size: 14px;
 }
 
 .contact-btn {
     background-color: var(--primary-color);
     color: #fff;
-    font-size: var(--primary-font-size-admin);
+    font-size: var(--primary-font-size);
     text-decoration: none;
     padding: 5px 10%;
-    border-radius: 10px;
+    border-radius: var(--primary-border-radius);
     border: none;
     box-shadow: var(--primary-box-shadow);
 }
@@ -593,6 +714,7 @@ html {
 .contact-btn:hover {
     cursor: pointer;
     background-color: var(--primary-color-hover);
+    transition: var(--primary-transition);
 }
 
 .pull-right {
@@ -602,7 +724,7 @@ html {
 /* Footer section */
 #footer {
     background-color: var(--primary-color);
-    margin-top: 40px;
+    margin-top: 39px;
     height: 60px;
     line-height: 60px;
     font-size: var(--primary-font-size-admin);
@@ -610,18 +732,21 @@ html {
     text-align: center;
 }
 
-/* Thanh toĂ¡n */
+/* Thanh toán */
 .pay-content {
     margin-top: 30px;
     height: 290px;
-    border-radius: 10px;
-    border: 2px solid green;
-    font-size: 17px;
+    border-radius: var(--primary-border-radius);
+    border: 2px solid var(--primary-color);
+    box-shadow: var(--primary-box-shadow);
+    font-size: var(--primary-font-size);
+    font-weight: bold;
 }
 
 .pay-information {
     float: left;
     width: 50%;
+    margin-top: 10px;
 }
 
 .bank-account {
@@ -630,12 +755,11 @@ html {
 }
 
 .bank-qr {
-    margin-top: 20px;
     text-align: center;
 }
 
 .bank-qr-img {
-    padding-top: 20px;
+    padding-top: 10px;
     width: 250px;
 }
 
@@ -655,135 +779,146 @@ html {
     margin-left: 40%;
 }
 
-/* Chi tiáº¿t Ä‘áº·t sĂ¢n */
+/* Đặt sân */
 .order-section {
-    width: 90%;
-    padding-bottom: 12px;
-    margin-top: 7%;
+    width: 92%;
+    margin-top: 80px;
     margin-left: auto;
     margin-right: auto;
 }
 
 .order-heading {
-    font-size: 30px;
+    font-size: 28px;
+    margin-bottom: 20px;
     text-align: center;
     letter-spacing: 4px;
 }
 
 .order-content {
-    margin-top: 50px;
-}
-
-.order {
-    float: left;
-}
-
-.order-section-left {
-    margin-top: 10%;
-    margin-right: 60px;
-}
-
-/* Báº£ng Ä‘áº·t lá»‹ch */
-.container {
-    width: 1000px;
-    padding: 20px;
-    border: 2px solid #388E3C;
-    border-radius: 10px;
-    box-shadow: var(--primary-box-shadow);
-}
-
-.container > p {
-    color: red;
-    text-align: center;
-    margin-bottom: 20px;
-}
-
-
-.form-order-left-days {
     display: flex;
 }
 
-.form-order-left-days p {
-    margin-top: 2px;
-    margin-left: 10px;
+.order-section-left {
+    margin-top: 40px;
+    margin-right: 60px;
 }
 
-.form-order-left-days input{
-    margin-left: 12px;
+/* Bảng đặt lịch */
+.order-section-right {
+    width: 100%;
+    height: 497px;
+    border-radius: var(--primary-border-radius);
+    border: 2px solid var(--primary-color);
+    box-shadow: var(--primary-box-shadow);
 }
 
-#total_price {
-    margin-top: 2px;
-    margin-left: 5px;
+.container {
+    padding: 20px;
+}
+
+.container > p {
+    color: var(--primary-color);
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 19px;
+}
+
+.container > form > .order-football-btn {
+    width: 100%;
+}
+
+.form-order-days {
+    display: flex;
+}
+
+.form-order-days > input{
+    padding: 10px 12px;
+    border: 1px solid #ccc;
+    border-radius: var(--primary-border-radius);
+    box-shadow: var(--secondary-box-shadow);
+    font-size: 15px;
+    transition: border-color 0.3s ease;
+}
+
+.form-order-days > label {
+    margin-top: 8px;
+    margin-right: 10px;
 }
 
 .container label {
-    margin-bottom: 10px;
-    font-size: 17px;
-    display: block;
+    font-size: 19px;
     font-weight: bold;
 }
 
-.container input[type="text"], textarea {
-    width: calc(100% - 12px);
-    padding: 10px;
+.container > form > label[for="notes"] {
     margin-bottom: 20px;
+}
+
+.container textarea {
+    width: calc(100% - 12px);
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    margin-top: 10px;
     border: 1px solid #ddd;
-    border-radius: 5px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.08);
+    border-radius: var(--primary-border-radius);
+    box-shadow: var(--secondary-box-shadow);
 }
 
 .container input[type="date"] {
     padding: 10px;
     margin-bottom: 15px;
     border: 1px solid #ddd;
-    border-radius: 5px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.08);
+    border-radius: var(--primary-border-radius);
+    box-shadow: var(--secondary-box-shadow);
+}
+
+.form-order-times {
+    display: flex;
+    justify-content: space-between;
+}
+  
+.form-order-times > label[for="time"]  {
+    width: 100px;
+    margin-top: 5px;
+}
+
+.time-slots {
+    width: 97%;
+    height: 160px;
 }
 
 .btn-time {
-    margin: 0 0 16px 15px;
-    padding: 10px 40px;
+    margin: 0 0 15px 10px;
+    padding: 8px 36px;
     border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 15px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.08);
+    border-radius: var(--primary-border-radius);
+    font-size: var(--primary-font-size-admin);
+    box-shadow: var(--secondary-box-shadow);
+    width: 210px;
+}
+
+.btn-time:hover {
+    cursor: pointer;
+    background-color: #C8E6C9;
+    transition: var(--primary-transition)
 }
 
 .btn-time.selected {
     background-color: #C8E6C9;
-    color: #000;
 }
 
 .btn-time.booked {
-    background-color: red;
+    background-color: #C0C0C0;
     color: #070707;
-    border-color: #ccc;
     cursor: not-allowed;
 }
 
-.order-button {
-    width: 100%;
-    padding: 8px 0;
-    background-color: #388E3C;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 17px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.08);
-}
-
-.order-button:hover {
-    color: #000;
-    background-color: #C8E6C9;
-}
-
+/* Xác nhận đặt sân */
 .order-successfully {
-    margin-top: 30px;
-    font-size: 17px;
-    border-radius: 10px;
-    border: 2px solid #388E3C;
+    font-size: var(--primary-font-size);
+    border-radius: var(--primary-border-radius);
+    border: 2px solid var(--primary-color);
     box-shadow: var(--primary-box-shadow);
 }
 
@@ -791,42 +926,53 @@ html {
     margin: 0 60px 40px 60px;
 }
 
-.order-successfully-header {
-    text-align: center;
-    margin: 3% 0;
-    font-size: 24px;
+.order-successfully-infor > h4 {
+    margin-bottom: 5px;
 }
 
-.order-successfully li {
-    list-style: none;
+.order-successfully-infor > p {
+    margin-bottom: 10px;
+}
+
+.order-successfully-header {
+    text-align: center;
+    margin: 20px 0;
 }
 
 .order-successfully-day {
-    margin-left: 65%;
+    margin-left: 70%;
 }
 
 .signature {
     display: flex;
-    justify-content: space-between;
 }
 
 .signature-left {
     margin-left: 14%;
 }
 
+.signature-left > p:first-child {
+    margin: 10px 0 10px 20%;
+}
+
 .signature-right {
     margin-left: 30%;
 }
+.signature-right > p:first-child {
+    margin: 10px 0 10px 30%;
+}
+
+.signature-right > p:last-child {
+    margin-left: 26%;
+}
 
 .signature-left, .signature-right {
-    flex-basis: 50%; /* Chia Ä‘Ă´i khĂ´ng gian cho má»—i pháº§n */
+    flex-basis: 50%; /* Chia đôi không gian cho mỗi phần */
 }
 
 .footer-link {
     text-align: center;
-    margin-top: 5%;
-    margin-left: 15%;
-    margin-right: 15%;
+    margin-top: 40px;
 }
 
 .footer-links {
@@ -850,7 +996,7 @@ html {
     padding: 10px;
     border: 1px solid #ddd;
     border-radius: 5px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.08);
+    box-shadow: var(--secondary-box-shadow);
 }
 
 .pay-upload p {
@@ -861,7 +1007,7 @@ html {
     margin-bottom: 20px;
 }
 
-.pay-customer h3 {
+.pay-customer h2 {
     text-align: center;
     margin-top: 30px;
     margin-bottom: 10px;
@@ -882,7 +1028,7 @@ html {
 
 .header-section-left {
     background-color: #C8E6C9;
-    padding: 15px 0px;
+    padding: 12px 0px;
     text-align: center;
     margin-bottom: 10px;
     border-top-right-radius: 10px;
@@ -902,7 +1048,7 @@ html {
 }
 
 .admin-manage {
-    height: 496px;
+    height: 500px;
     background-color: var(--primary-color);
     border-top-right-radius: 10px;
     border-bottom-right-radius: 10px;
@@ -914,7 +1060,7 @@ html {
     text-decoration: none;
     color: #fff;
     line-height: 50px;
-    padding-left: 20px;
+    padding-left: 16px;
     font-size: var(--primary-font-size);  
 }
 
@@ -927,150 +1073,77 @@ html {
     color: #fff;
     background-color: var(--primary-color-hover);
     display: block;
-}
-
-/* áº¨n menu con ban Ä‘áº§u */
-.admin-manage ul.submenu {
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.3s ease;
-    padding-left: 20px; /* lĂ¹i vĂ o Ä‘á»ƒ phĂ¢n biá»‡t menu con */
-}
-
-/* Khi má»Ÿ submenu */
-.admin-manage ul.submenu.show {
-    max-height: 500px; /* Ä‘á»§ lá»›n Ä‘á»ƒ chá»©a ná»™i dung */
-}
-
-/* áº¨n icon fa-angle-up máº·c Ä‘á»‹nh */
-.admin-manage .toggle-submenu .fa-angle-up {
-    display: none;
-}
-
-/* Khi submenu má»Ÿ */
-.admin-manage .toggle-submenu.active .fa-angle-down {
-    display: none;
-}
-
-.admin-manage .toggle-submenu.active .fa-angle-up {
-    display: inline-block;
-}
-
-.section-left {
-    margin-left: -40px;
-}
-
-.section-left a {
-    padding-left: 50px;
-}
-
-.section-left li:hover a:hover {
-    color: #000;
-    background-color: #C8E6C9;
-    display: block;
+    transition: var(--primary-transition);
 }
 
 .admin-section-right {
     width: 1300px;
-    height: 559px;
+    height: 560px;
     margin-left: 10px;
-    border-radius: 10px;
+    border-radius: var(--primary-border-radius);
     overflow-y: auto;
     border: 2px solid var(--primary-color);
     box-shadow: var(--primary-box-shadow);
 }
 
-.admin-section-right h3 {
+.admin-section-right h2 {
     text-align: center;
     margin: 20px 0;
-    font-size: var(--primary-font-size);
 }
 
 .admin-top-bar {
     display: flex;
     justify-content: space-between;
-    align-items: center;
 }
 
 .admin-search {
     margin-left: 40px;
     margin-bottom: 20px;
-    font-size: var(--primary-font-size-admin);
-    width: 420px;
+    font-size: 18px;
+    width: 430px;
 }
 
 .admin-search input {  
-    font-size: 14px; 
+    font-size: 15px; 
     padding: 5px;
-    margin-left: 5px;
     border: 1px solid #ddd;
-    border-radius: 5px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.08);
-}
-
-.admin-search-select {
-    padding: 10px;
-    margin-left: 5px;
-    margin-bottom: 15px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.08);
-}
-
-.adminedit textarea {
-    width: 40%;
-    padding: 10px;
-    margin-bottom: 10px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.08);
+    border-radius: var(--primary-border-radius);
+    box-shadow: var(--secondary-box-shadow);
 }
 
 .admin-search select {
-    width: 34%;
+    font-size: 14px; 
     padding: 5px;
-    margin-left: 5px;
     border: 1px solid #ddd;
-    border-radius: 5px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.08);
-}
-
-.admin-search-btn {
-    background-color: #388E3C;
-    color: #fff;
-    font-size: 13px;
-    margin-left: 10px;
-    padding: 5px 12px;
-    border-radius: 10px;
-    border: none;
-    box-shadow: var(--primary-box-shadow);
-    text-align: center;
-}
-
-.admin-search-btn:hover {
-    cursor: pointer;
-    color: #000;
-    background-color: #C8E6C9;
+    border-radius: var(--primary-border-radius);
+    box-shadow: var(--secondary-box-shadow);
 }
 
 #ListCustomers {
-    font-size: var(--primary-font-size-admin);
+    font-size: 18px;
     margin-left: 3%;
     margin-bottom: 30px;
     width: 94%;
     border-collapse: collapse;
     box-shadow: var(--primary-box-shadow);
-    border-radius: 10px;
+    border-radius: var(--primary-border-radius);
     overflow: hidden;
 }
 
 #ListCustomers a {
     text-decoration: none;
-    color: blue;
+    color: var(--primary-color);
+}
+
+#ListCustomers select {
+    margin-bottom: 6px;
+    border-radius: var(--primary-border-radius);
+    font-size: 15px;
 }
 
 #ListCustomers a:hover {
     opacity: 0.8;
+    transition: var(--primary-transition);
 }
 
 #ListCustomers li {
@@ -1078,11 +1151,11 @@ html {
 }
 
 #ListCustomers, th, td {
-    border: 1px solid black;
+    border: 1px solid var(--primary-color);
 }
 
 th, td {
-    padding: 10px;
+    padding: 8px;
     text-align: center;
 }
 
@@ -1090,44 +1163,90 @@ th {
     background-color: #C8E6C9;
 }
 
+tr:hover {
+    background-color: #F5FAFA;
+    transition: var(--primary-transition);
+}
+
 form select {
     padding: 4px;
     border: 1px solid #ddd;
     border-radius: 5px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.08);
+    box-shadow: var(--secondary-box-shadow);
 }
 
 .adminedit {
-    margin-left: 35%;
-    font-size: 17px;
+    font-size: 18px;
+    padding: 0 450px;
 }
 
-.adminedit input {
-    width: 35%;
+.adminedit-form-group {
+    display: flex;
+}
+
+.adminedit-form-group label {
+    flex: 1;
+    margin-top: 10px;
+}
+
+.adminedit-form-group input[type="text"],
+.adminedit-form-group input[type="number"],
+.adminedit-form-group input[type="email"],
+.adminedit-form-group input[type="file"] {
+    width: 260px;
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-shadow: var(--secondary-box-shadow);
+    font-size: 15px;
+}
+
+.adminedit-form-group textarea {
+    width: 260px;
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-shadow: var(--secondary-box-shadow);
+    font-size: 15px;
+}
+
+.adminedit-form-group input[type="date"] {
+    width: 260px;
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-shadow: var(--secondary-box-shadow);
+    font-size: 15px;
+}
+
+.adminedit-form-group > select {
+    width: 260px;
     padding: 10px;
     margin-left: 5px;
     margin-bottom: 20px;
     border: 1px solid #ddd;
     border-radius: 5px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.08);
+    box-shadow: var(--secondary-box-shadow);
+    font-size: 15px;
 }
 
-.adminedit select {
-    width: 31%;
+.adminedit-form-group input[type="password"] {
+    width: 190px;
     padding: 10px;
-    margin-left: 5px;
     margin-bottom: 20px;
     border: 1px solid #ddd;
     border-radius: 5px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.08);
+    box-shadow: var(--secondary-box-shadow);
+    font-size: 15px;
 }
 
-.adminedit li {
-    list-style: none;
-}
-
-.adminedit button {
-    margin-left: 100px;
+.adminedit-button {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
 }
 
 .update-btn {
@@ -1135,8 +1254,8 @@ form select {
     color: #fff;
     font-size: var(--primary-font-size-admin);
     text-decoration: none;
-    padding: 2px 5px;
-    border-radius: 10px;
+    padding: 3px 6px;
+    border-radius: var(--primary-border-radius);
     border: none;
     box-shadow: var(--primary-box-shadow);
 }
@@ -1145,6 +1264,25 @@ form select {
     cursor: pointer;
     color: #fff;
     background-color: var(--primary-color-hover);
+    transition: var(--primary-transition);
+}
+
+.delete-btn {
+    background-color: #e8286b;
+    color: #fff;
+    font-size: var(--primary-font-size-admin);
+    text-decoration: none;
+    padding: 3px 6px;
+    border-radius: var(--primary-border-radius);
+    border: none;
+    box-shadow: var(--primary-box-shadow);
+}
+
+.delete-btn:hover {
+    cursor: pointer;
+    color: #fff;
+    background-color:#ad1457;
+    transition: var(--primary-transition);
 }
 
 .order-update select {   
@@ -1153,7 +1291,7 @@ form select {
     margin-bottom: 10px;
     border: 1px solid #ddd;
     border-radius: 5px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.08);
+    box-shadow: var(--secondary-box-shadow);
 }
 
 .order-update button {
@@ -1161,7 +1299,7 @@ form select {
     color: #fff;
     font-size: 13px;
     padding: 4px 12px;
-    border-radius: 10px;
+    border-radius: var(--primary-border-radius);
     border: none;
     box-shadow: var(--primary-box-shadow);
     text-align: center;
@@ -1171,6 +1309,7 @@ form select {
     cursor: pointer;
     color: #000;
     background-color: #C8E6C9;
+    transition: var(--primary-transition);
 }
 
 .admin-img {
@@ -1184,7 +1323,7 @@ form select {
     margin-bottom: 20px;
     border: 1px solid #ddd;
     border-radius: 5px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.08);
+    box-shadow: var(--secondary-box-shadow);
 }
 
 .admin-add-btn {
@@ -1193,80 +1332,14 @@ form select {
     margin-right: 3%;
 }
 
-.admin-add-btn > a { 
-    background-color: #388E3C;
-    color: #fff;
-    font-size: 15px;
-    text-decoration: none;
-    padding: 5px 20px;
-    border-radius: 10px;
-    border: none;
-    box-shadow: var(--primary-box-shadow);
-}
-
-.admin-add-btn > a:hover {
-    cursor: pointer;
-    color: #000;
-    background-color: #C8E6C9;
-}
-
-/* CSS áº£nh thanh toĂ¡n trong admin */
-.admin-image {
-    width: 200px;
-    height: 300px;
-    object-fit: cover; 
-}
-
-/* CSS cho khung modal */
-.modal {
-    display: none; /* áº¨n khung modal máº·c Ä‘á»‹nh */
-    position: fixed;
-    z-index: 1;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-    background-color: rgba(0,0,0,0.9);
-}
-
-.modal-content {
-    margin: auto;
-    display: block;
-    width: 80%;
-    max-width: 700px;
-}
-
-.modal-content img {
-    max-width: 100%;
-    height: auto;
-    display: block;
-    margin: auto;
-    padding: 20px 0;
-}
-
-.close {
-    color: #ccc;
-    font-size: 30px;
-    font-weight: bold;
-    position: absolute;
-    top: 10px;
-    right: 25px;
-    transition: 0.3s;
-    cursor: pointer;
-}
-
-.close:hover,
-.close:focus {
-    color: #fff;
-    text-decoration: none;
-    cursor: pointer;
-}
-
-/* CSS cho liĂªn káº¿t áº£nh */
+/* CSS cho liên kết ảnh */
 .image-link {
     display: block;
     width: 100%;
     height: auto;
+}
+
+.left-align {
+    text-align: left;
 }
 

@@ -6,9 +6,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Äáº·t sĂ¢n thá»ƒ thao</title>
+    <title>ĐẶT SÂN VNUA</title>
     <link rel="stylesheet" href="<?php echo e(asset('css/style.css')); ?>">
     <link rel="stylesheet" href="<?php echo e(asset('fonts/fontawesome-free-6.5.2/css/all.min.css')); ?>">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
     <?php echo $__env->yieldPushContent('styles'); ?>
 </head>
 <body>
@@ -16,10 +17,13 @@
         
         <!-- Begin: Header -->
         <div id="header">
-            <a class="home-heading" href="<?php echo e(route('admin')); ?>" target="_self">Äáº·t sĂ¢n thá»ƒ thao</a>
+            <a class="home-heading" href="<?php echo e(route('admin')); ?>" target="_self">QUẢN LÝ SÂN THỂ THAO</a>
             
             <div class="header-login">
-                <a class="signup-btn" href="<?php echo e(route('dang-nhap')); ?>" target="_self">ÄÄƒng xuáº¥t</a>
+                <form action="<?php echo e(route('dang-xuat')); ?>" method="post" onsubmit="return confirm('Bạn có chắc chắn muốn đăng xuất?');">
+                    <?php echo csrf_field(); ?>
+                    <button type="submit" class="signup-btn">Đăng xuất</button>
+                </form>
             </div>
         </div>
         <!-- End: Header -->
@@ -41,29 +45,29 @@
                                 </a>
                             <?php else: ?>
                                 <a class="avatar-name" href="<?php echo e(route('dang-nhap')); ?>" target="_self">
-                                    ÄÄƒng Nháº­p
+                                    Đăng Nhập
                                 </a>
                             <?php endif; ?>
                         </div>
                         
                         <div class="admin-manage">
                             <li>
-                                <a href="<?php echo e(route('quan-ly-nguoi-dung')); ?>">Quáº£n lĂ½ ngÆ°á»i dĂ¹ng</a>
+                                <a href="<?php echo e(route('quan-ly-nguoi-dung')); ?>">Quản lý người dùng</a>
                             </li>
                             <li>
-                                <a href="<?php echo e(route('quan-ly-loai-san')); ?>">Quáº£n lĂ½ loáº¡i sĂ¢n</a>
+                                <a href="<?php echo e(route('quan-ly-loai-san')); ?>">Quản lý loại sân</a>
                             </li>
                             <li>
-                                <a href="<?php echo e(route('quan-ly-san')); ?>">Quáº£n lĂ½ sĂ¢n</a>
+                                <a href="<?php echo e(route('quan-ly-san')); ?>">Quản lý sân</a>
                             </li>
                             <li>
-                                <a href="<?php echo e(route('quan-ly-don-dat-san')); ?>">Quáº£n lĂ½ Ä‘Æ¡n Ä‘áº·t sĂ¢n</a>
+                                <a href="<?php echo e(route('quan-ly-don-dat-san')); ?>">Đơn đặt sân</a>
                             </li>
                             <li>
-                                <a href="<?php echo e(route('thong-ke-bao-cao')); ?>">Thá»‘ng kĂª, bĂ¡o cĂ¡o</a>
+                                <a href="<?php echo e(route('thong-ke-bao-cao')); ?>">Thống kê, báo cáo</a>
                             </li>
                             <li>
-                                <a href="<?php echo e(route('thong-tin-tai-khoan')); ?>">Quáº£n lĂ½ tĂ i khoáº£n</a>
+                                <a href="<?php echo e(route('thong-tin-tai-khoan')); ?>">Quản lý tài khoản</a>
                             </li>
                         </div>
                     </div>
@@ -71,7 +75,7 @@
 
                 <div class="admin">
                     <div class="admin-section-right">
-                        <!-- Ná»™i dung chĂ­nh sáº½ Ä‘Æ°á»£c chĂ¨n á»Ÿ Ä‘Ă¢y -->
+                        <!-- Nội dung chính sẽ được chèn ở đây -->
                         <?php echo $__env->yieldContent('content'); ?>
                     </div>
                 </div>
@@ -82,14 +86,14 @@
 
         <!-- Begin: Footer -->
         <div id="footer">
-            <p class="copyright">Powered by Group 48</p>
+            <p class="copyright">Designed by Group 48</p>
         </div>
         <!-- End: Footer -->
 
     </div>
     <?php echo $__env->yieldPushContent('scripts'); ?>
 
-    <!-- Khung popup hiá»ƒn thá»‹ áº£nh -->
+    <!-- Khung popup hiển thị ảnh -->
     <div id="image-popup" onclick="hideImage()" style="
         display: none;
         position: fixed;
@@ -99,7 +103,7 @@
         justify-content: center;
         align-items: center;
     ">
-        <img id="popup-img" src="" style="max-height: 700px; max-width: 525px; box-shadow: 0 0 10px #000;">
+        <img id="popup-img" src="" style="height: auto; width: auto; box-shadow: 0 0 10px #000;">
     </div>
 
     <script>

@@ -4,34 +4,35 @@ namespace App\Http\Controllers\Client;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\Type;
 
 class SuccessController extends Controller
 {
     public function index()
     {
-        // Láº¥y danh sĂ¡ch Ä‘Æ¡n hĂ ng tá»« session
         $orders = session('orders', []);
-        return view('client.success', compact('orders'));
+        $types = Type::all(); // Lấy tất cả loại sân (nếu cần dùng trong view)
+        return view('client.success', compact('orders', 'types'));
     }
 
     public function delete(Request $request)
     {
-        // Láº¥y danh sĂ¡ch Ä‘Æ¡n hĂ ng tá»« session
+        // Lấy danh sách đơn hàng từ session
         $orders = session('orders', []);
         
-        // Láº¥y index cá»§a Ä‘Æ¡n hĂ ng cáº§n xĂ³a
+        // Lấy index của đơn hàng cần xóa
         $index = $request->input('index');
         
-        // Kiá»ƒm tra náº¿u tá»“n táº¡i Ä‘Æ¡n hĂ ng táº¡i index nĂ y
+        // Kiểm tra nếu tồn tại đơn hàng tại index này
         if (isset($orders[$index])) {
-            // XĂ³a Ä‘Æ¡n hĂ ng khá»i session
+            // Xóa đơn hàng khỏi session
             unset($orders[$index]);
             
-            // Cáº­p nháº­t láº¡i session vá»›i danh sĂ¡ch Ä‘Æ¡n hĂ ng Ä‘Ă£ xĂ³a
-            session(['orders' => array_values($orders)]); // array_values() Ä‘á»ƒ reset láº¡i chá»‰ sá»‘ máº£ng
+            // Cập nhật lại session với danh sách đơn hàng đã xóa
+            session(['orders' => array_values($orders)]); // array_values() để reset lại chỉ số mảng
         }
 
-        // Quay láº¡i trang danh sĂ¡ch Ä‘Æ¡n hĂ ng sau khi xĂ³a
+        // Quay lại trang danh sách đơn hàng sau khi xóa
         return redirect()->route('xac-nhan-dat-san');
     }
 }

@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Http\Requests\Admin\TimeYard\StoreRequest;
+use App\Http\Requests\Admin\TimeYard\UpdateRequest;
 use App\Models\Time;
 use App\Models\Yard;
 
@@ -11,35 +13,32 @@ class TimeController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Time::join('yards', 'times.yard_id', '=', 'yards.yard_id')
-                     ->orderBy('yards.name', 'asc');
-    
         $yards = Yard::orderBy('name', 'asc')->get();
-    
-        if ($request->has('yard_id') && $request->yard_id != '') {
-            $yard_id = $request->yard_id;
-            $date = $request->date ?? date('Y-m-d');
-    
-            $query->where('times.yard_id', $yard_id)
-                  ->whereDate('times.date', $date);
-    
-            $times = $query->get();
-    
-            // Náº¿u chÆ°a cĂ³ dá»¯ liá»‡u cho ngĂ y Ä‘Æ°á»£c chá»n, tá»± Ä‘á»™ng sao chĂ©p ngĂ y gáº§n nháº¥t
+        $yard_id = $request->yard_id;
+        $date = $request->date ?? date('Y-m-d');
+        $times = collect(); // Mặc định rỗng
+
+        if ($yard_id) {
+            $times = Time::join('yards', 'times.yard_id', '=', 'yards.yard_id')
+                        ->where('times.yard_id', $yard_id)
+                        ->whereDate('times.date', $date)
+                        ->orderBy('times.time', 'asc') // Sắp xếp theo thời gian tăng dần
+                        ->select('times.*') // Đảm bảo chỉ lấy các cột từ bảng times
+                        ->get();
+
+            // Nếu không có khung giờ nào cho ngày đã chọn → sao chép từ ngày gần nhất trước đó
             if ($times->isEmpty()) {
-                // TĂ¬m ngĂ y gáº§n nháº¥t cĂ³ dá»¯ liá»‡u cá»§a sĂ¢n nĂ y, trÆ°á»›c ngĂ y Ä‘Æ°á»£c chá»n
                 $latestDate = Time::where('yard_id', $yard_id)
                                 ->whereDate('date', '<', $date)
                                 ->orderBy('date', 'desc')
-                                ->limit(1)
                                 ->value('date');
-    
+
                 if ($latestDate) {
                     $latestTimes = Time::where('yard_id', $yard_id)
-                                       ->whereDate('date', $latestDate)
-                                       ->orderBy('time_id')
-                                       ->get();
-    
+                                    ->whereDate('date', $latestDate)
+                                    ->orderBy('time', 'asc')
+                                    ->get();
+
                     foreach ($latestTimes as $time) {
                         Time::create([
                             'yard_id' => $time->yard_id,
@@ -48,54 +47,43 @@ class TimeController extends Controller
                             'date'    => $date,
                         ]);
                     }
-    
-                    // Sau khi sao chĂ©p xong, láº¥y láº¡i dá»¯ liá»‡u Ä‘á»ƒ hiá»ƒn thá»‹
+
+                    // Lấy lại dữ liệu sau khi sao chép
                     $times = Time::join('yards', 'times.yard_id', '=', 'yards.yard_id')
-                                 ->where('times.yard_id', $yard_id)
-                                 ->whereDate('times.date', $date)
-                                 ->orderBy('yards.name', 'asc')
-                                 ->get();
+                                ->where('times.yard_id', $yard_id)
+                                ->whereDate('times.date', $date)
+                                ->orderBy('times.time', 'asc')
+                                ->select('times.*')
+                                ->get();
                 }
             }
-    
-            return view('admin.timeyards.index', compact('times', 'yards'));
         }
-    
-        $times = $query->get();
-        return view('admin.timeyards.index', compact('times', 'yards'));
+
+        return view('admin.timeyards.index', compact('times', 'yards', 'yard_id', 'date'));
     }
 
-    // Hiá»ƒn thá»‹ form thĂªm thá»i gian
-    public function create()
+    public function create(Request $request)
     {
-        $yards = Yard::orderBy('name')->get(); // Láº¥y danh sĂ¡ch sĂ¢n
-        return view('admin.timeyards.create', compact('yards'));
+        $yards = Yard::orderBy('name')->get();
+        $yard_id = $request->yard_id;
+        return view('admin.timeyards.create', compact('yards', 'yard_id'));
     }
 
-    // LÆ°u thá»i gian má»›i
-    public function store(Request $request)
+    public function store(StoreRequest $request)
     {
-        $request->validate([
-            'yard_id' => 'required|exists:yards,yard_id',
-            'time' => 'required|string',
-            'price' => 'required|numeric|min:0',
-            'date' => 'required|date', 
-        ]);
-    
-        // LÆ°u thĂ´ng tin khung giá» má»›i
         Time::create([
             'yard_id' => $request->yard_id,
-            'time' => $request->time,
-            'price' => $request->price,
-            'date' => $request->date, 
+            'time'    => $request->time,
+            'price'   => $request->price,
+            'date'    => $request->date,
         ]);
-    
-        // Chuyá»ƒn hÆ°á»›ng vá» trang quáº£n lĂ½ khung giá» vá»›i sĂ¢n Ä‘Ă£ chá»n
-        return redirect()->route('quan-ly-thoi-gian-san', ['yard_id' => $request->yard_id])
-                         ->with('success', 'ThĂªm khung giá» cho thuĂª thĂ nh cĂ´ng!');
+
+        return redirect()
+            ->route('quan-ly-thoi-gian-san', ['yard_id' => $request->yard_id])
+            ->with('success', 'Thêm khung giờ cho thuê thành công!');
     }
 
-    // Hiá»ƒn thá»‹ form cáº­p nháº­t
+    // Hiển thị form cập nhật
     public function edit($time_id)
     {
         $time = Time::findOrFail($time_id);
@@ -104,70 +92,56 @@ class TimeController extends Controller
         return view('admin.timeyards.update', compact('time', 'yards'));
     }
 
-    // Cáº­p nháº­t khung giá»
-    public function update(Request $request, $time_id)
+    public function update(UpdateRequest $request, $time_id)
     {
-        $request->validate([
-            'yard_id' => 'required|exists:yards,yard_id',
-            'time' => 'required|string',
-            'price' => 'required|numeric|min:0',
-            'date' => 'required|date', // Kiá»ƒm tra ngĂ y há»£p lá»‡
-        ]);
-    
         $time = Time::findOrFail($time_id);
-        $old_date = $time->date; // LÆ°u ngĂ y cÅ©
-    
-        // Cáº­p nháº­t khung giá» vĂ  giĂ¡ cho ngĂ y hiá»‡n táº¡i
+
         $time->update([
             'yard_id' => $request->yard_id,
             'time' => $request->time,
             'price' => $request->price,
-            'date' => $request->date, // Cáº­p nháº­t ngĂ y
+            'date' => $request->date,
         ]);
-    
-        // Cáº­p nháº­t táº¥t cáº£ cĂ¡c ngĂ y sau ngĂ y cáº­p nháº­t vá»›i khung giá» vĂ  giĂ¡ má»›i
+
+        // Cập nhật tất cả các ngày sau với cùng khung giờ
         Time::where('yard_id', $request->yard_id)
-            ->where('time', $time->time)  // CĂ¹ng thá»i gian
-            ->whereDate('date', '>', $request->date) // Chá»n ngĂ y sau ngĂ y cáº­p nháº­t
+            ->where('time', $time->time)
+            ->whereDate('date', '>', $request->date)
             ->update([
                 'time' => $request->time,
                 'price' => $request->price,
             ]);
-    
-        // Táº¡o cĂ¡c báº£n ghi tá»± Ä‘á»™ng cho cĂ¡c ngĂ y tiáº¿p theo dá»±a trĂªn time_id cá»§a ngĂ y trÆ°á»›c Ä‘Ă³
-        $nextDate = date('Y-m-d', strtotime($request->date . ' +1 day')); // NgĂ y tiáº¿p theo
-    
-        // Náº¿u khĂ´ng cĂ³ dá»¯ liá»‡u cho ngĂ y tiáº¿p theo, sao chĂ©p tá»« ngĂ y trÆ°á»›c
+
+        // Tạo bản ghi cho ngày kế tiếp nếu chưa có
+        $nextDate = date('Y-m-d', strtotime($request->date . ' +1 day'));
         $nextTime = Time::where('yard_id', $request->yard_id)
-                        ->whereDate('date', $nextDate)
-                        ->where('time', $time->time) // CĂ¹ng khung giá»
-                        ->first();
-    
+            ->where('date', $nextDate)
+            ->where('time', $request->time)
+            ->first();
+
         if (!$nextTime) {
-            // Sao chĂ©p thĂ´ng tin tá»« ngĂ y hiá»‡n táº¡i sang ngĂ y tiáº¿p theo
             Time::create([
-                'yard_id' => $time->yard_id,
+                'yard_id' => $request->yard_id,
                 'time' => $request->time,
                 'price' => $request->price,
                 'date' => $nextDate,
             ]);
         }
-    
-        // Chuyá»ƒn hÆ°á»›ng vá» trang quáº£n lĂ½ khung giá» vá»›i sĂ¢n Ä‘Ă£ chá»n
-        return redirect()->route('quan-ly-thoi-gian-san', ['yard_id' => $request->yard_id])
-                         ->with('success', 'Cáº­p nháº­t thá»i gian thĂ nh cĂ´ng!');
-    }
-    
 
-    // XĂ³a khung giá»
+        return redirect()
+            ->route('quan-ly-thoi-gian-san', ['yard_id' => $request->yard_id])
+            ->with('success', 'Cập nhật thời gian thành công!');
+    }
+
+    // Xóa khung giờ
     public function delete(Request $request, $time_id)
     {
         $time = Time::findOrFail($time_id);
         $time->delete();
     
-        // Chuyá»ƒn hÆ°á»›ng vá» trang quáº£n lĂ½ khung giá» vá»›i sĂ¢n Ä‘Ă£ chá»n
+        // Chuyển hướng về trang quản lý khung giờ với sân đã chọn
         return redirect()
             ->route('quan-ly-thoi-gian-san', ['yard_id' => $request->yard_id])
-            ->with('success', 'XĂ³a khung giá» thĂ nh cĂ´ng!');
+            ->with('success', 'Xóa khung giờ thành công!');
     }
 }

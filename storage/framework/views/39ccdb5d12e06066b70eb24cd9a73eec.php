@@ -1,44 +1,39 @@
 
 
-<?php $__env->startSection('title', 'Cáº­p nháº­t hĂ¬nh áº£nh sĂ¢n'); ?>
+<?php $__env->startSection('title', 'Cập nhật hình ảnh sân'); ?>
 
 <?php $__env->startSection('content'); ?>
-    <h3>Cáº­p nháº­t hĂ¬nh áº£nh</h3>
-
     <?php if(session('success')): ?>
+        <script>alert("<?php echo e(session('success')); ?>");</script>
+    <?php endif; ?>
+
+    <?php if(session('error') || $errors->any()): ?>
         <script>
-            alert('<?php echo e(session('success')); ?>');
+            alert(`<?php echo e(session('error') ? session('error') . '\n' : ''); ?><?php echo implode('\n', $errors->all()); ?>`);
         </script>
     <?php endif; ?>
+
+    <h2>Cập nhật hình ảnh</h2>
 
     <form method="POST" action="<?php echo e(route('cap-nhat-hinh-anh-san', ['image_id' => $image->image_id])); ?>" enctype="multipart/form-data">
         <?php echo csrf_field(); ?>
         <div class="pay-information">
             <div class="admin-img">
-                <!-- Hiá»ƒn thá»‹ áº£nh hiá»‡n táº¡i -->
-                <img src="<?php echo e(asset('storage/' . $image->image)); ?>" alt="HĂ¬nh áº£nh" class="admin-image">
+                <img src="<?php echo e(asset('storage/' . $image->image)); ?>" 
+                    alt="Hình ảnh" 
+                    class="football-img"
+                    onclick="showImage(this.src)">
             </div>
         </div>
 
         <div class="pay-information">
             <div class="admin-img">
-                <h3><?php echo e($image->yard->name); ?></h3>
+                <h2><?php echo e($image->yard->name); ?></h2>
 
-                <label for="image">Chá»n hĂ¬nh áº£nh má»›i:</label><br><br>
+                <h3 for="image">Chọn hình ảnh mới:</h3><br>
                 <input type="file" name="image" id="image"><br>
 
-                <?php $__errorArgs = ['image'];
-$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
-if ($__bag->has($__errorArgs[0])) :
-if (isset($message)) { $__messageOriginal = $message; }
-$message = $__bag->first($__errorArgs[0]); ?>
-                    <div class="error"><?php echo e($message); ?></div>
-                <?php unset($message);
-if (isset($__messageOriginal)) { $message = $__messageOriginal; }
-endif;
-unset($__errorArgs, $__bag); ?>
-
-                <button type="submit" class="update-btn">Cáº­p nháº­t</button>
+                <button type="submit" class="update-btn">Cập nhật</button>
             </div>
         </div>
     </form>                        

@@ -1,16 +1,16 @@
 
 
-<?php $__env->startSection('title', 'Lá»‹ch sá»­ Ä‘áº·t sĂ¢n'); ?>
+<?php $__env->startSection('title', 'Lịch sử đặt sân'); ?>
 
 <?php $__env->startSection('content'); ?> 
-    <h3>Danh sĂ¡ch Ä‘Æ¡n Ä‘áº·t sĂ¢n</h3>  
+    <h2>Danh sách đơn đặt sân</h2>  
     
     <!-- Begin: Date Filter -->
     <div class="admin-search">
         <form method="GET" action="<?php echo e(route('thong-tin-tai-khoan')); ?>">
-            <label for="date">Chá»n ngĂ y:</label>
+            <label for="date">Chọn ngày:</label>
             <input type="date" id="date" name="date" value="<?php echo e(request('date', date('Y-m-d'))); ?>">
-            <button class="update-btn" type="submit">TĂ¬m kiáº¿m</button>
+            <button class="update-btn" type="submit">Tìm kiếm</button>
         </form>
     </div>        
     <!-- End: Date Filter -->
@@ -20,26 +20,21 @@
         <table id="ListCustomers">
             <tr>
                 <th>STT</th>
-                <th>NgĂ y Ä‘áº·t</th>
-                <!-- <th>Há» vĂ  tĂªn</th>
-                <th>Sá»‘ Ä‘iá»‡n thoáº¡i</th> -->
-                <th>NgĂ y thuĂª</th>
-                <th>TĂªn sĂ¢n</th>
-                <th>Thá»i gian</th>
-                <!-- <th>GiĂ¡ tá»«ng khung giá»</th> -->
-                <th>ThĂ nh tiá»n</th>
-                <th>Ghi chĂº</th>
-                <th>áº¢nh thanh toĂ¡n</th>
-                <th>Tráº¡ng thĂ¡i</th>
+                <th>Ngày đặt</th>
+                <th>Ngày thuê</th>
+                <th>Tên sân</th>
+                <th>Thời gian</th>
+                <th>Thành tiền</th>
+                <th>Ghi chú</th>
+                <th>Ảnh thanh toán</th>
+                <th>Trạng thái</th>
             </tr>
             <?php $index = 1; ?>
             <?php $__currentLoopData = $orders; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $order): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                 <?php
-                    $totalDetailsCount = $order->orderDetails->count();
-                    $groupedDetails = $order->orderDetails->groupBy(function($item) {
-                        return $item->yard_id . '_' . $item->date;
-                    });
-                    $orderRowspan = $totalDetailsCount;
+                    $groupedDetails = $order->groupedDetails ?? collect();
+                    $rowspan = $groupedDetails->count();
+                    $isFirstGroup = true;
                 ?>
 
                 <?php $__currentLoopData = $groupedDetails; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $group): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
@@ -49,9 +44,9 @@
                     ?>
 
                     <tr>
-                        <?php if($loop->parent->first): ?>
-                            <td rowspan="<?php echo e($orderRowspan); ?>"><?php echo e($index++); ?></td>
-                            <td rowspan="<?php echo e($orderRowspan); ?>">
+                        <?php if($isFirstGroup): ?>
+                            <td rowspan="<?php echo e($rowspan); ?>"><?php echo e($index++); ?></td>
+                            <td rowspan="<?php echo e($rowspan); ?>">
                                 <?php echo e(\Carbon\Carbon::parse($order->date)->format('d/m/Y')); ?><br>
                                 <?php echo e(\Carbon\Carbon::parse($order->date)->format('H:i')); ?>
 
@@ -59,41 +54,41 @@
                         <?php endif; ?>
 
                         <td><?php echo e(\Carbon\Carbon::parse($firstDetail->date)->format('d/m/Y')); ?></td>
-                        <td><?php echo e($firstDetail->yard ? $firstDetail->yard->name : 'KhĂ´ng xĂ¡c Ä‘á»‹nh'); ?></td>
+                        <td><?php echo e($firstDetail->yard->name ?? 'Không xác định'); ?></td>
                         <td><?php echo $timeString; ?></td>
 
-                        <?php if($loop->parent->first): ?>
-                            <td rowspan="<?php echo e($orderRowspan); ?>">
-                                <?php echo e(number_format($order->orderDetails->sum('price'), 0, ',', '.')); ?>Ä‘
+                        <?php if($isFirstGroup): ?>
+                            <td rowspan="<?php echo e($rowspan); ?>">
+                                <?php echo e(number_format($order->orderDetails->sum('price'), 0, ',', '.')); ?>đ
                             </td>
-                            <td rowspan="<?php echo e($orderRowspan); ?>"><?php echo e($firstDetail->notes ?? 'KhĂ´ng cĂ³'); ?></td>
-                            <td rowspan="<?php echo e($orderRowspan); ?>">
-                                <?php
-                                    $images = json_decode($order->image) ?: [];
-                                ?>
-                                <?php if(count($images) > 0): ?>
+                            <td rowspan="<?php echo e($rowspan); ?>"><?php echo e($firstDetail->notes ?? 'Không có'); ?></td>
+                            <td rowspan="<?php echo e($rowspan); ?>">
+                                <?php $images = json_decode($order->image) ?? []; ?>
+                                <?php if(count($images)): ?>
                                     <?php $__currentLoopData = $images; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $img): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                        <img src="<?php echo e(asset('storage/' . $img)); ?>" alt="áº¢nh thanh toĂ¡n" style="width:100px; height:200px; cursor: pointer;" onclick="showImage('<?php echo e(asset('storage/' . $img)); ?>')">
+                                        <img src="<?php echo e(asset('storage/' . $img)); ?>" style="width:100px; height:200px;" onclick="showImage('<?php echo e(asset('storage/' . $img)); ?>')">
                                     <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                 <?php else: ?>
-                                    KhĂ´ng cĂ³ áº£nh
+                                    Không có ảnh
                                 <?php endif; ?>
                             </td>
-                            <td rowspan="<?php echo e($orderRowspan); ?>">
+                            <td rowspan="<?php echo e($rowspan); ?>">
                                 <?php switch($order->status):
-                                    case (0): ?> Chá» xĂ¡c nháº­n <?php break; ?>
-                                    <?php case (1): ?> ÄĂ£ xĂ¡c nháº­n <?php break; ?>
-                                    <?php case (2): ?> ÄÆ¡n Ä‘Ă£ bá»‹ há»§y <?php break; ?>
-                                    <?php default: ?> KhĂ´ng xĂ¡c Ä‘á»‹nh
+                                    case (0): ?> Chờ xác nhận <?php break; ?>
+                                    <?php case (1): ?> Đã xác nhận <?php break; ?>
+                                    <?php case (2): ?> Đơn đã bị hủy <?php break; ?>
+                                    <?php default: ?> Không xác định
                                 <?php endswitch; ?>
                             </td>
                         <?php endif; ?>
                     </tr>
+
+                    <?php $isFirstGroup = false; ?>
                 <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
             <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
         </table>
     <?php else: ?>
-        <h3 style="font-weight: normal; font-size: 18px;">Hiá»‡n táº¡i báº¡n chÆ°a cĂ³ Ä‘Æ¡n Ä‘áº·t sĂ¢n nĂ o</h3>
+        <h2 style="font-weight: normal; font-size: 18px;">Hiện chưa có đơn đặt sân nào</h2>
     <?php endif; ?>
     <!-- End: Display Orders -->
 <?php $__env->stopSection(); ?>

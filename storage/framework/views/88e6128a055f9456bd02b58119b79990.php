@@ -1,6 +1,6 @@
 
 
-<?php $__env->startSection('title', 'Quáº£n lĂ½ khung giá» cho thuĂª'); ?>
+<?php $__env->startSection('title', 'Quản lý khung giờ cho thuê'); ?>
 
 <?php $__env->startSection('content'); ?>
     <?php if(session('success')): ?>
@@ -15,32 +15,31 @@
         </script>
     <?php endif; ?>
 
-    <h3>Quáº£n lĂ½ khung giá» - <?php echo e($times->first()->yard->name ?? ''); ?></h3>
-
+    <h2>Quản lý khung giờ - <?php echo e($times->first()->yard->name ?? ''); ?></h2>
     <div class="admin-top-bar">
         <?php if(request('yard_id')): ?>
             <div class="admin-search">
                 <form method="GET" action="<?php echo e(route('quan-ly-thoi-gian-san')); ?>">
                     <input type="hidden" name="yard_id" value="<?php echo e(request('yard_id')); ?>">
-                    <label for="date">Chá»n ngĂ y:</label>
+                    <label for="date">Chọn ngày:</label>
                     <input type="date" id="date" name="date" value="<?php echo e(request('date', date('Y-m-d'))); ?>">
-                    <button class="admin-search-btn" type="submit">TĂ¬m kiáº¿m</button>
+                    <button class="update-btn" type="submit">Tìm kiếm</button>
                 </form>
             </div>
         <?php endif; ?>
         <div class="admin-add-btn">
-            <a href="<?php echo e(route('them-thoi-gian-san')); ?>">ThĂªm khung giá» cho thuĂª</a>
+            <a class="update-btn" href="<?php echo e(route('them-thoi-gian-san', ['yard_id' => request('yard_id')])); ?>">Thêm khung giờ</a>
         </div>
     </div>
 
-        <!-- Hiá»ƒn thá»‹ báº£ng dá»¯ liá»‡u khi Ä‘Ă£ chá»n sĂ¢n vĂ  lá»c theo ngĂ y -->
+        <!-- Hiển thị bảng dữ liệu khi đã chọn sân và lọc theo ngày -->
         <table id='ListCustomers'>
             <thead>
                 <tr>
-                    <th>STT</th>
-                    <th>Khung giá»</th>
-                    <th>GiĂ¡ (VNÄ)</th>
-                    <th colspan="2">TĂ¹y chá»n</th>
+                <th>STT</th>
+                <th>Khung giờ</th>
+                <th>Giá tiền</th>
+                <th colspan="2">Tuỳ chọn</th>
                 </tr>
             </thead>
             <tbody>
@@ -48,17 +47,17 @@
                     <tr>
                         <td><?php echo e($index + 1); ?></td>
                         <td><?php echo e($time->time); ?></td>
-                        <td><?php echo e(number_format($time->price, 0, ',', '.')); ?></td>
+                        <td><?php echo e(number_format($time->price, 0, ',', '.')); ?>đ</td>
                         <td>
                             <form method="GET" action="<?php echo e(route('cap-nhat-thoi-gian-san', ['time_id' => $time->time_id])); ?>">
-                                <button type="submit" class="update-btn">Sá»­a</button>
+                                <button type="submit" class="update-btn">Sửa</button>
                             </form>
                         </td>
                         <td>
-                        <form method="POST" action="<?php echo e(route('xoa-thoi-gian-san', ['time_id' => $time->time_id, 'yard_id' => request('yard_id')])); ?>" onsubmit="return confirm('Báº¡n cĂ³ cháº¯c cháº¯n muá»‘n xĂ³a khung giá» nĂ y?')">
+                        <form method="POST" action="<?php echo e(route('xoa-thoi-gian-san', ['time_id' => $time->time_id, 'yard_id' => request('yard_id')])); ?>" onsubmit="return confirm('Bạn có chắc chắn muốn xoá khung giờ này?')">
                             <?php echo csrf_field(); ?>
                             <?php echo method_field('DELETE'); ?>
-                            <button type="submit" class="update-btn">XĂ³a</button>
+                            <button type="submit" class="delete-btn">Xóa</button>
                         </form>
                         </td>
                     </tr>

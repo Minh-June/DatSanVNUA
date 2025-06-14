@@ -1,6 +1,6 @@
 
 
-<?php $__env->startSection('title', 'ThĂªm Ä‘Æ¡n Ä‘áº·t sĂ¢n'); ?>
+<?php $__env->startSection('title', 'Thêm đơn đặt sân'); ?>
 
 <?php $__env->startSection('content'); ?>
     <?php if(session('success')): ?>
@@ -11,24 +11,39 @@
         <script>alert("<?php echo e(session('error')); ?>");</script>
     <?php endif; ?>
 
-    <h3>ThĂªm Ä‘Æ¡n Ä‘áº·t sĂ¢n</h3>
+    <h2>Thêm đơn đặt sân</h2>
 
     <div class="adminedit">
+
+            <div class="adminedit-form-group">
+                <label>Loại sân:</label>
+                <select name="yard_id" required onchange="document.getElementById('form-select-yard-date').submit()">
+                    <?php $__currentLoopData = $yards; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $yard): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                        <option value="<?php echo e($yard->yard_id); ?>" <?php echo e(request('yard_id') == $yard->yard_id ? 'selected' : ''); ?>>
+                            <?php echo e($yard->name); ?>
+
+                        </option>
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                </select>
+            </div>
         
         <form method="GET" action="<?php echo e(route('them-don-dat-san')); ?>" id="form-select-yard-date">
+            
+            <div class="adminedit-form-group">
+                <label>Chọn sân:</label>
+                <select name="yard_id" required onchange="document.getElementById('form-select-yard-date').submit()">
+                    <?php $__currentLoopData = $yards; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $yard): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                        <option value="<?php echo e($yard->yard_id); ?>" <?php echo e(request('yard_id') == $yard->yard_id ? 'selected' : ''); ?>>
+                            <?php echo e($yard->name); ?>
 
-            <label>Chá»n sĂ¢n:</label>
-            <select name="yard_id" required onchange="document.getElementById('form-select-yard-date').submit()">
-                <?php $__currentLoopData = $yards; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $yard): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                    <option value="<?php echo e($yard->yard_id); ?>" <?php echo e(request('yard_id') == $yard->yard_id ? 'selected' : ''); ?>>
-                        <?php echo e($yard->name); ?>
-
-                    </option>
-                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-            </select><br>
-
-            <label>NgĂ y thuĂª:</label>
-            <input type="date" name="date" value="<?php echo e(request('date') ?? old('date')); ?>" required onchange="document.getElementById('form-select-yard-date').submit()">
+                        </option>
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                </select>
+            </div>
+            <div class="adminedit-form-group">
+                <label>Ngày thuê:</label>
+                <input type="date" name="date" value="<?php echo e(request('date') ?? old('date')); ?>" required onchange="document.getElementById('form-select-yard-date').submit()">
+            </div>
         </form>
 
         
@@ -37,30 +52,41 @@
             <input type="hidden" name="yard_id" value="<?php echo e(request('yard_id')); ?>">
             <input type="hidden" name="date" value="<?php echo e(request('date')); ?>">
 
-            <label>Khung giá»:</label>
-            <select name="time" id="time" required onchange="updatePrice()">
-                <?php $__currentLoopData = $timesForSelectedDate; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $time): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                    <option value="<?php echo e($time->time); ?>" data-price="<?php echo e($time->price); ?>">
-                        <?php echo e($time->time); ?>
+            <div class="adminedit-form-group">
+                <label>Khung giờ:</label>
+                <select name="time" id="time" required onchange="updatePrice()">
+                    <?php $__currentLoopData = $timesForSelectedDate; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $time): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                        <option value="<?php echo e($time->time); ?>" data-price="<?php echo e($time->price); ?>">
+                            <?php echo e($time->time); ?>
 
-                    </option>
-                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-            </select><br>
+                        </option>
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                </select>
+            </div>
+            <div class="adminedit-form-group">
+                <label>Thành tiền:</label>
+                <input type="text" id="price_display" disabled>
+                <input type="hidden" name="price" id="price">
+            </div>
 
-            <label>ThĂ nh tiá»n:</label>
-            <input type="text" id="price_display" disabled>
-            <input type="hidden" name="price" id="price"><br>
+            <div class="adminedit-form-group">
+                <label>Họ và tên:</label>
+                <input type="text" name="name" value="<?php echo e(old('name')); ?>" required pattern="^[\p{L}\s]+$" title="Chỉ nhập chữ cái và khoảng trắng">
+            </div>
 
-            <label>Há» vĂ  tĂªn:</label>
-            <input type="text" name="name" value="<?php echo e(old('name')); ?>" required><br>
+            <div class="adminedit-form-group">
+                <label>Số điện thoại:</label>
+                <input type="text" name="phone" value="<?php echo e(old('phone')); ?>" required pattern="^[0-9]+$" title="Chỉ nhập số">
+            </div>
 
-            <label>Sá»‘ Ä‘iá»‡n thoáº¡i:</label>
-            <input type="text" name="phone" value="<?php echo e(old('phone')); ?>" required><br>
+            <div class="adminedit-form-group">
+                <label>Ghi chú:</label><br><br>
+                <textarea name="notes" rows="3"><?php echo e(old('notes')); ?></textarea>
+            </div>
 
-            <label>Ghi chĂº:</label><br><br>
-            <textarea name="notes" rows="3"><?php echo e(old('notes')); ?></textarea><br>
-
-            <button type="submit" class="update-btn">XĂ¡c nháº­n thĂªm Ä‘Æ¡n</button><br><br>
+            <div class="adminedit-button">
+                <button type="submit" class="update-btn">Xác nhận thêm đơn</button>
+            </div>
         </form>
     </div>
 

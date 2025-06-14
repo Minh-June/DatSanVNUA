@@ -10,18 +10,18 @@ class TypeController extends Controller
 {
     public function index(Request $request)
     {
-        // Danh sĂ¡ch Ä‘áº§y Ä‘á»§ cho dropdown
+        // Danh sách đầy đủ cho dropdown
         $allTypes = Type::orderBy('name', 'asc')->get();
 
-        // Táº¡o query Ä‘á»ƒ lá»c danh sĂ¡ch
+        // Tạo query để lọc danh sách
         $query = Type::query();
 
-        // Náº¿u chá»n loáº¡i cá»¥ thá»ƒ, lá»c theo type_id
+        // Nếu chọn loại cụ thể, lọc theo type_id
         if ($request->filled('type_id')) {
             $query->where('type_id', $request->type_id);
         }
 
-        // Láº¥y káº¿t quáº£ lá»c
+        // Lấy kết quả lọc
         $types = $query->orderBy('name', 'asc')->get();
 
         return view('admin.types.index', compact('types', 'allTypes'));
@@ -29,7 +29,7 @@ class TypeController extends Controller
 
     public function create()
     {
-        return view('admin.types.create');  // Äáº£m báº£o báº¡n Ä‘Ă£ cĂ³ view 'create' cho trang táº¡o má»›i
+        return view('admin.types.create');  // Đảm bảo bạn đã có view 'create' cho trang tạo mới
     }
 
     public function store(Request $request)
@@ -42,38 +42,38 @@ class TypeController extends Controller
                 'regex:/^[^\d\W_]+(?:\s[^\d\W_]+)*$/u',
             ],
         ], [
-            'name.regex' => 'TĂªn loáº¡i sĂ¢n khĂ´ng Ä‘Æ°á»£c chá»©a sá»‘ hoáº·c kĂ½ tá»± Ä‘áº·c biá»‡t.',
+            'name.regex' => 'Tên loại sân không được chứa số hoặc ký tự đặc biệt.',
         ]);
     
-        // Kiá»ƒm tra tĂªn loáº¡i sĂ¢n Ä‘Ă£ tá»“n táº¡i chÆ°a
+        // Kiểm tra tên loại sân đã tồn tại chưa
         $exists = Type::where('name', $request->name)->exists();
         if ($exists) {
-            return redirect()->back()->with('error', 'Loáº¡i sĂ¢n Ä‘Ă£ tá»“n táº¡i, vui lĂ²ng nháº­p loáº¡i sĂ¢n má»›i.');
+            return redirect()->back()->with('error', 'Loại sân đã tồn tại, vui lòng nhập loại sân mới.');
         }
     
         $type = new Type();
         $type->name = $request->name;
         $type->save();
     
-        return redirect()->route('quan-ly-loai-san')->with('success', 'ThĂªm loáº¡i sĂ¢n thĂ nh cĂ´ng!');
+        return redirect()->route('quan-ly-loai-san')->with('success', 'Thêm loại sân thành công!');
     }
 
-    // Hiá»ƒn thá»‹ form sá»­a loáº¡i sĂ¢n
+    // Hiển thị form sửa loại sân
     public function edit($type_id)
     {
-        $type = Type::find($type_id);  // TĂ¬m loáº¡i sĂ¢n theo ID
+        $type = Type::find($type_id);  // Tìm loại sân theo ID
         if (!$type) {
-            return redirect()->route('quan-ly-loai-san')->with('error', 'Loáº¡i sĂ¢n khĂ´ng tá»“n táº¡i');
+            return redirect()->route('quan-ly-loai-san')->with('error', 'Loại sân không tồn tại');
         }
-        return view('admin.types.update', compact('type')); // Truyá»n dá»¯ liá»‡u vĂ o view Ä‘á»ƒ chá»‰nh sá»­a
+        return view('admin.types.update', compact('type')); // Truyền dữ liệu vào view để chỉnh sửa
     }
 
-    // Cáº­p nháº­t loáº¡i sĂ¢n
+    // Cập nhật loại sân
     public function update(Request $request, $type_id)
     {
         $type = Type::find($type_id);
         if (!$type) {
-            return redirect()->route('quan-ly-loai-san')->with('error', 'Loáº¡i sĂ¢n khĂ´ng tá»“n táº¡i');
+            return redirect()->route('quan-ly-loai-san')->with('error', 'Loại sân không tồn tại');
         }
     
         $request->validate([
@@ -81,37 +81,37 @@ class TypeController extends Controller
                 'required',
                 'string',
                 'max:255',
-                'regex:/^[\p{L}\s]+$/u', // Chá»‰ cho chá»¯ vĂ  khoáº£ng tráº¯ng
+                'regex:/^[\p{L}\s]+$/u', // Chỉ cho chữ và khoảng trắng
             ],
         ], [
-            'name.regex' => 'TĂªn loáº¡i sĂ¢n khĂ´ng Ä‘Æ°á»£c chá»©a sá»‘ hoáº·c kĂ½ tá»± Ä‘áº·c biá»‡t.',
+            'name.regex' => 'Tên loại sân không được chứa số hoặc ký tự đặc biệt.',
         ]);
 
     
-        // Kiá»ƒm tra tĂªn loáº¡i sĂ¢n Ä‘Ă£ tá»“n táº¡i (ngoáº¡i trá»« chĂ­nh nĂ³)
+        // Kiểm tra tên loại sân đã tồn tại (ngoại trừ chính nó)
         $exists = Type::where('name', $request->name)
                     ->where('type_id', '!=', $type_id)
                     ->exists();
         if ($exists) {
-            return redirect()->back()->with('error', 'Loáº¡i sĂ¢n Ä‘Ă£ tá»“n táº¡i, vui lĂ²ng nháº­p loáº¡i sĂ¢n má»›i.');
+            return redirect()->back()->with('error', 'Loại sân đã tồn tại, vui lòng nhập loại sân mới.');
         }
     
         $type->name = $request->input('name');
         $type->save();
     
-        return redirect()->route('quan-ly-loai-san')->with('success', 'Cáº­p nháº­t loáº¡i sĂ¢n thĂ nh cĂ´ng');
+        return redirect()->route('quan-ly-loai-san')->with('success', 'Cập nhật loại sân thành công');
     }
 
     public function delete($type_id)
     {
-        $type = Type::find($type_id);  // TĂ¬m loáº¡i sĂ¢n theo ID
+        $type = Type::find($type_id);  // Tìm loại sân theo ID
         if (!$type) {
-            return redirect()->route('quan-ly-loai-san')->with('error', 'Loáº¡i sĂ¢n khĂ´ng tá»“n táº¡i');
+            return redirect()->route('quan-ly-loai-san')->with('error', 'Loại sân không tồn tại');
         }
 
-        $type->delete();  // XĂ³a loáº¡i sĂ¢n
+        $type->delete(); // Xóa loại sân
 
-        return redirect()->route('quan-ly-loai-san')->with('success', 'XĂ³a loáº¡i sĂ¢n thĂ nh cĂ´ng');
+        return redirect()->route('quan-ly-loai-san')->with('success', 'Xóa loại sân thành công');
     }
 
 }

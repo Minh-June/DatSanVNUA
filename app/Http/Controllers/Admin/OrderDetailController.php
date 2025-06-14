@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\OrderDetail;
 use App\Models\Order;
 use App\Models\Yard;
+use App\Models\Type;
 use App\Models\Time;
 use Illuminate\Support\Facades\DB;
 
@@ -16,20 +17,30 @@ class OrderDetailController extends Controller
     {
         $editDetail = OrderDetail::with('yard', 'order')->findOrFail($order_detail_id);
         $order = Order::with('orderDetails.yard')->find($editDetail->order_id);
-        $yards = Yard::all();
+        
+        // Lấy danh sách loại sân
+        $types = Type::all();
 
+        // Lấy type_id được chọn, nếu không có thì lấy từ sân đang chỉnh sửa
+        $selectedType = $request->input('type_id', $editDetail->yard->type_id ?? null);
+        
+        // Lọc danh sách sân theo loại sân nếu có chọn
+        $yards = $selectedType ? Yard::where('type_id', $selectedType)->get() : Yard::all();
+
+        // Lấy sân và ngày đang chọn (hoặc từ chi tiết cũ)
         $selectedYard = $request->input('yard_id', $editDetail->yard_id);
         $selectedDate = $request->input('date', $editDetail->date);
 
         $timesForSelectedDate = collect();
 
+        // Nếu đã chọn sân và ngày thì lấy khung giờ khả dụng
         if ($selectedYard && $selectedDate) {
             $bookedTimes = DB::table('order_details')
                 ->join('orders', 'order_details.order_id', '=', 'orders.order_id')
                 ->where('orders.status', 1)
                 ->where('order_details.date', $selectedDate)
                 ->where('order_details.yard_id', $selectedYard)
-                ->where('order_details.order_detail_id', '!=', $order_detail_id) // exclude current detail
+                ->where('order_details.order_detail_id', '!=', $order_detail_id) // bỏ qua chi tiết hiện tại
                 ->pluck('order_details.time')
                 ->toArray();
 
@@ -41,7 +52,17 @@ class OrderDetailController extends Controller
 
         $totalPrice = $order ? $order->orderDetails->sum('price') : 0;
 
-        return view('admin.orders.update', compact('order', 'editDetail', 'timesForSelectedDate', 'yards', 'totalPrice'));
+        return view('admin.orders.update', compact(
+            'order',
+            'editDetail',
+            'types',
+            'yards',
+            'selectedType',
+            'selectedYard',
+            'selectedDate',
+            'timesForSelectedDate',
+            'totalPrice'
+        ));
     }
 
     public function update(Request $request, $order_detail_id)
@@ -56,11 +77,11 @@ class OrderDetailController extends Controller
 
         $orderDetail = OrderDetail::findOrFail($order_detail_id);
 
-        // Tá»•ng tiá»n cÅ© cá»§a Ä‘Æ¡n
+        // Tổng tiền cũ của đơn
         $order = $orderDetail->order;
         $oldTotal = $order->orderDetails->sum('price');
 
-        // Cáº­p nháº­t chi tiáº¿t Ä‘Æ¡n
+        // Cập nhật chi tiết đơn
         $orderDetail->update([
             'yard_id' => $request->yard_id,
             'date' => $request->date,
@@ -69,23 +90,23 @@ class OrderDetailController extends Controller
             'notes' => $request->notes,
         ]);
 
-        // TĂ­nh láº¡i tá»•ng tiá»n má»›i
+        // Tính lại tổng tiền mới
         $order->refresh();
         $newTotal = $order->orderDetails->sum('price');
 
         $diff = $newTotal - $oldTotal;
 
         if ($diff > 0) {
-            $message = "Cáº­p nháº­t chi tiáº¿t Ä‘Æ¡n thĂ nh cĂ´ng. Tá»•ng tiá»n tÄƒng thĂªm " . number_format($diff, 0, ',', '.') . " VND.";
+            $message = "Cập nhật chi tiết đơn thành công. Tổng tiền tăng thêm " . number_format($diff, 0, ',', '.') . "đ.";
         } elseif ($diff < 0) {
-            $message = "Cáº­p nháº­t chi tiáº¿t Ä‘Æ¡n thĂ nh cĂ´ng. Tá»•ng tiá»n giáº£m " . number_format(abs($diff), 0, ',', '.') . " VND.";
+            $message = "Cập nhật chi tiết đơn thành công. Tổng tiền giảm " . number_format(abs($diff), 0, ',', '.') . "đ.";
         } else {
-            $message = "Cáº­p nháº­t chi tiáº¿t Ä‘Æ¡n thĂ nh cĂ´ng. Tá»•ng tiá»n khĂ´ng thay Ä‘á»•i.";
+            $message = "Cập nhật chi tiết đơn thành công. Tổng tiền không thay đổi.";
         }
 
         return redirect()->route('cap-nhat-chi-tiet-don', $order_detail_id)
             ->with('price_change_message', $message);
-}
+    }
 
     public function delete($order_detail_id)
     {
@@ -94,6 +115,6 @@ class OrderDetailController extends Controller
         $detail->delete();
 
         return redirect()->route('cap-nhat-don-dat-san', $order_id)
-            ->with('success', 'ÄĂ£ xĂ³a chi tiáº¿t Ä‘Æ¡n thĂ nh cĂ´ng.');
+            ->with('success', 'Đã xóa chi tiết đơn thành công !');
     }
 }

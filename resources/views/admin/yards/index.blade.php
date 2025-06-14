@@ -1,76 +1,87 @@
 @extends('layouts.admin')
 
-@section('title', 'Danh sĂ¡ch sĂ¢n')
+@section('title', 'Danh sách sân')
 
 @section('content')
-    <!-- Hiá»ƒn thá»‹ thĂ´ng bĂ¡o -->
+    <!-- Hiển thị thông báo -->
     @if(session('success'))
         <script>
             alert("{{ session('success') }}");
         </script>
     @endif
 
-    <!-- Hiá»ƒn thá»‹ thĂ´ng bĂ¡o lá»—i -->
+    <!-- Hiển thị thông báo lỗi -->
     @if(session('error'))
         <script>
             alert("{{ session('error') }}");
         </script>
     @endif
     
-    <h3>Danh sĂ¡ch sĂ¢n thá»ƒ thao</h3>
+    <h2>Danh sách sân thể thao</h2>
 
-    <!-- Form tĂ¬m kiáº¿m loáº¡i sĂ¢n vĂ  thĂªm loáº¡i sĂ¢n má»›i -->
+    <!-- Form tìm kiếm loại sân và thêm sân mới -->
     <div class="admin-top-bar">
         <div class="admin-search">
             <form method="GET" action="{{ route('quan-ly-san') }}">
-                <label for="type_id">Chá»n loáº¡i sĂ¢n:</label>
+                <label for="type_id">Chọn loại sân:</label>
                 <select id="type_id" name="type_id">
-                    <option value="">Táº¥t cáº£</option>
+                    <option value="">Tất cả</option>
                     @foreach($types as $type)
                         <option value="{{ $type->type_id }}" 
                             {{ request('type_id') == $type->type_id ? 'selected' : '' }}>{{ $type->name }}</option>
                     @endforeach
                 </select>
-                <button class="admin-search-btn" type="submit">TĂ¬m kiáº¿m</button>
+                <button class="update-btn" type="submit">Tìm kiếm</button>
             </form>
         </div>
 
         <div class="admin-add-btn">
-            <a href="{{ route('them-san') }}">ThĂªm sĂ¢n má»›i</a>
+            <a class="update-btn" href="{{ route('them-san') }}">Thêm sân mới</a>
         </div>
     </div>
 
-    <!-- Hiá»ƒn thá»‹ báº£ng dá»¯ liá»‡u -->
+    <!-- Hiển thị bảng dữ liệu -->
     <table id='ListCustomers'>
         <thead>
             <tr>
                 <th>STT</th>
-                <th>TĂªn sĂ¢n</th>
-                <th colspan="2">ThĂ´ng tin</th>
-                <th colspan="2">TĂ¹y chá»n</th>
+                <th>Tên sân</th>
+                <th colspan="2">Thông tin</th>
+                <th colspan="3">Tuỳ chọn</th>
             </tr>
         </thead>
         <tbody>
             @foreach($yards as $key => $yard)
                 <tr>
                     <td>{{ $key + 1 }}</td>
-                    <td>{{ $yard->name }}</td>
-                <td>
-                    <a href="{{ route('quan-ly-thoi-gian-san', ['yard_id' => $yard->yard_id]) }}">Thá»i gian</a><br>
-                </td>
-                <td>
-                    <a href="{{ route('quan-ly-hinh-anh-san', ['yard_id' => $yard->yard_id]) }}">HĂ¬nh áº£nh</a>
-                </td>
+                    <td class="left-align">{{ $yard->name }}</td>
+                    <td>
+                        <a href="{{ route('quan-ly-thoi-gian-san', ['yard_id' => $yard->yard_id]) }}">Thời gian</a><br>
+                    </td>
+                    <td>
+                        <a href="{{ route('quan-ly-hinh-anh-san', ['yard_id' => $yard->yard_id]) }}">Hình ảnh</a>
+                    </td>
+                    <td>
+                        <form method="POST" action="{{ route('cap-nhat-trang-thai-san') }}">
+                            @csrf
+                            <input type="hidden" name="yard_id" value="{{ $yard->yard_id }}">
+                            <select name="status">
+                                <option value="0" {{ $yard->status == 0 ? 'selected' : '' }}>Đang hiện</option>
+                                <option value="1" {{ $yard->status == 1 ? 'selected' : '' }}>Đã ẩn</option>
+                            </select><br>
+                            <button type="submit" class="update-btn">Cập nhật</button>
+                        </form>
+                    </td>
                     <td>
                         <form method="GET" action="{{ route('cap-nhat-san', ['yard_id' => $yard->yard_id]) }}">
-                            <button type="submit" class="update-btn">Sá»­a</button>
+                            <button type="submit" class="update-btn">Sửa</button>
                         </form>
                     </td>                                      
                     <td>
-                        <form method="POST" action="{{ route('xoa-san', ['yard_id' => $yard->yard_id, 'type_id' => request('type_id')]) }}" onsubmit="return confirm('Báº¡n cĂ³ cháº¯c cháº¯n muá»‘n xĂ³a sĂ¢n nĂ y khĂ´ng?')">
+                        <form method="POST" action="{{ route('xoa-san', ['yard_id' => $yard->yard_id, 'type_id' => request('type_id')]) }}" onsubmit="return confirm('Bạn có chắc chắn muốn xoá sân này không?')">
                             @csrf
                             @method('DELETE')
-                            <button type="submit" class="update-btn">XĂ³a</button>
+                            <button type="submit" class="delete-btn">Xóa</button>
                         </form>
                     </td>                                                                           
                 </tr>

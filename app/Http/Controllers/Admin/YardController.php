@@ -11,31 +11,46 @@ use App\Http\Requests\Admin\Yard\UpdateRequest;
 
 class YardController extends Controller
 {
-    // Hiá»ƒn thá»‹ danh sĂ¡ch sĂ¢n
+    // Hiển thị danh sách sân
     public function index(Request $request) {
         $query = Yard::with('type')->orderBy('name', 'asc');
 
-        // Kiá»ƒm tra náº¿u cĂ³ filter theo thá»ƒ loáº¡i sĂ¢n
+        // Kiểm tra nếu có filter theo thể loại sân
         if ($request->has('type_id') && $request->type_id != '') {
             $query->where('type_id', $request->type_id);
         }
 
         $yards = $query->get();
-        $types = Type::all(); // Láº¥y táº¥t cáº£ thá»ƒ loáº¡i sĂ¢n Ä‘á»ƒ hiá»ƒn thá»‹ trong dropdown
+        $types = Type::all(); // Lấy tất cả thể loại sân để hiển thị trong dropdown
 
         return view('admin.yards.index', compact('yards', 'types'));
     }
 
-    // Hiá»ƒn thá»‹ form thĂªm sĂ¢n
+    public function updateStatus(Request $request)
+    {
+        $request->validate([
+            'yard_id' => 'required|exists:yards,yard_id',
+            'status' => 'required|in:0,1',
+        ]);
+
+        $yard = Yard::find($request->yard_id);
+        $yard->status = $request->status;
+        $yard->save();
+
+        return redirect()->route('quan-ly-san', ['type_id' => request('type_id')])
+            ->with('success', 'Cập nhật trạng thái sân thành công!');
+    }
+
+    // Hiển thị form thêm sân
     public function create() {
         $types = Type::orderBy('name', 'asc')->get();
         return view('admin.yards.create', compact('types'));
     }
 
-    // LÆ°u sĂ¢n má»›i
+    // Lưu sân mới
     public function store(StoreRequest $request) {
         if (Yard::where('name', $request->name)->exists()) {
-            return redirect()->back()->with('error', 'TĂªn sĂ¢n Ä‘Ă£ tá»“n táº¡i, vui lĂ²ng nháº­p láº¡i tĂªn sĂ¢n khĂ¡c.');
+            return redirect()->back()->with('error', 'Tên sân đã tồn tại, vui lòng nhập lại tên sân khác.');
         }
 
         Yard::create([
@@ -43,23 +58,23 @@ class YardController extends Controller
             'name' => $request->name,
         ]);
 
-        return redirect()->route('quan-ly-san')->with('success', 'ÄĂ£ thĂªm sĂ¢n thĂ nh cĂ´ng.');
+        return redirect()->route('quan-ly-san')->with('success', 'Đã thêm sân thành công.');
     }
 
-    // Hiá»ƒn thá»‹ form chá»‰nh sá»­a sĂ¢n
+    // Hiển thị form chỉnh sửa sân
     public function edit($yard_id) {
         $yard = Yard::findOrFail($yard_id);
         $types = Type::orderBy('name', 'asc')->get();
         return view('admin.yards.update', compact('yard', 'types'));
     }
 
-    // Cáº­p nháº­t thĂ´ng tin sĂ¢n
+    // Cập nhật thông tin sân
     public function update(UpdateRequest $request, $yard_id) {
         $yard = Yard::findOrFail($yard_id);
 
-        // Kiá»ƒm tra trĂ¹ng tĂªn ngoáº¡i trá»« chĂ­nh nĂ³
+        // Kiểm tra trùng tên ngoại trừ chính nó
         if (Yard::where('name', $request->name)->where('yard_id', '!=', $yard_id)->exists()) {
-            return redirect()->back()->with('error', 'TĂªn sĂ¢n Ä‘Ă£ tá»“n táº¡i, vui lĂ²ng nháº­p láº¡i tĂªn sĂ¢n khĂ¡c.');
+            return redirect()->back()->with('error', 'Tên sân đã tồn tại, vui lòng nhập lại tên sân khác.');
         }
 
         $yard->update([
@@ -67,7 +82,7 @@ class YardController extends Controller
             'name' => $request->name,
         ]);
 
-        return redirect()->route('quan-ly-san', ['type_id' => $request->type_id])->with('success', 'ÄĂ£ cáº­p nháº­t sĂ¢n thĂ nh cĂ´ng.');
+        return redirect()->route('quan-ly-san')->with('success', 'Đã cập nhật sân thành công.');
     }
 
     // XĂ³a sĂ¢n
@@ -75,6 +90,6 @@ class YardController extends Controller
         $yard = Yard::findOrFail($yard_id);
         $yard->delete();
 
-        return redirect()->route('quan-ly-san', ['type_id' => $request->type_id])->with('success', 'ÄĂ£ xĂ³a sĂ¢n thĂ nh cĂ´ng.');
+        return redirect()->route('quan-ly-san', ['type_id' => $request->type_id])->with('success', 'Đã xóa sân thành công.');
     }
 }

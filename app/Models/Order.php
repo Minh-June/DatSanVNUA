@@ -7,36 +7,35 @@ use Illuminate\Database\Eloquent\Model;
 
 class Order extends Model
 {
-    protected $table = 'orders'; // TĂªn báº£ng
-    protected $primaryKey = 'order_id'; // KhĂ³a chĂ­nh
-    public $timestamps = false; // KhĂ´ng sá»­ dá»¥ng timestamps
+    protected $table = 'orders'; // Tên bảng
+    protected $primaryKey = 'order_id'; // Khóa chính
+    public $timestamps = false; // Không sử dụng timestamps
 
-    // CĂ¡c tráº¡ng thĂ¡i Ä‘Æ¡n hĂ ng
-    const STATUS_PENDING   = 'chá» xĂ¡c nháº­n';
-    const STATUS_CONFIRMED = 'Ä‘Ă£ xĂ¡c nháº­n';
-    const STATUS_CANCELLED = 'Ä‘Ă£ há»§y';
+    // Các trạng thái đơn hàng
+    const STATUS_PENDING   = 'chờ xác nhận';
+    const STATUS_CONFIRMED = 'đã xác nhận';
+    const STATUS_CANCELLED = 'đã hủy';
 
     protected $casts = [
         'status' => 'integer',
     ];
 
     protected $fillable = [
-        'date', // NgĂ y táº¡o Ä‘Æ¡n, kiá»ƒu dá»¯ liá»‡u datetime
+        'date',     // Ngày tạo đơn (kiểu dữ liệu datetime)
         'user_id',
-        'name', // TĂªn ngÆ°á»i Ä‘áº·t
-        'phone',   // Sá»‘ Ä‘iá»‡n thoáº¡i ngÆ°á»i Ä‘áº·t
-        'image', // áº¢nh thanh toĂ¡n ngÆ°á»i Ä‘áº·t up lĂªn
-        'status', // Tráº¡ng thĂ¡i Ä‘Æ¡n (máº·c Ä‘á»‹nh lĂ  0: chá» xĂ¡c nháº­n, 1: Ä‘Ă£ xĂ¡c nháº­n, 2: Ä‘Ă£ há»§y)
-    ]; // CĂ¡c cá»™t cĂ³ thá»ƒ gĂ¡n
+        'name',     // Tên người đặt
+        'phone',    // Số điện thoại người đặt
+        'image',    // Ảnh thanh toán người đặt tải lên
+        'status',   // Trạng thái đơn (0: chờ xác nhận, 1: đã xác nhận, 2: đã hủy)
+    ];
 
-    // Quan há»‡: Má»™t Ä‘Æ¡n hĂ ng thuá»™c vá» má»™t ngÆ°á»i dĂ¹ng
-    
+    // Quan hệ: Một đơn hàng thuộc về một người dùng
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id', 'user_id');
     }
 
-    // Quan há»‡: Má»™t Ä‘Æ¡n hĂ ng cĂ³ nhiá»u chi tiáº¿t Ä‘Æ¡n hĂ ng
+    // Quan hệ: Một đơn hàng có nhiều chi tiết đơn hàng
     public function orderDetails()
     {
         return $this->hasMany(OrderDetail::class, 'order_id', 'order_id');

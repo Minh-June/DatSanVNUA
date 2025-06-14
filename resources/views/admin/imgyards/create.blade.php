@@ -1,36 +1,33 @@
 @extends('layouts.admin')
 
-@section('title', 'ThĂªm hĂ¬nh áº£nh sĂ¢n')
+@section('title', 'Thêm hình ảnh sân thể thao')
 
 @section('content')
-    <h3>ThĂªm hĂ¬nh áº£nh sĂ¢n thá»ƒ thao</h3>
+    @if(session('success'))
+        <script>alert("{{ session('success') }}");</script>
+    @endif
+
+    @if(session('error'))
+        <script>alert("{{ session('error') }}");</script>
+    @endif
+
+    <h2>Thêm hình ảnh sân thể thao</h2>
 
     <div class="adminedit">
         <form action="{{ route('luu-hinh-anh-san') }}" method="POST" enctype="multipart/form-data">
             @csrf
-            <div>
-                <label for="yard_id">SĂ¢n thá»ƒ thao:</label>
-                <select class="admin-time-select" name="yard_id" required>
-                    <option value="">Chá»n sĂ¢n</option>
-                    @foreach ($yards as $yard)
-                        <option value="{{ $yard->yard_id }}" {{ old('yard_id', request('yard_id')) == $yard->yard_id ? 'selected' : '' }}>
-                            {{ $yard->name }}
-                        </option>
-                    @endforeach
-                </select>
-                @error('yard_id')
-                    <div class="error">{{ $message }}</div>
-                @enderror
+            <div class="adminedit-form-group">
+                <label for="yard_id">Sân thể thao:</label>
+                <input type="text" class="admin-time-select" value="{{ $selectedYard->name }}" disabled>
+                <input type="hidden" name="yard_id" value="{{ $selectedYard->yard_id }}">
             </div>
-            <div>
-                <label for="image">Chá»n hĂ¬nh áº£nh:</label>
+
+            <div class="adminedit-form-group">
+                <label for="image">Chọn hình ảnh:</label>
                 <input type="file" name="image" id="image" required>
-                @error('image')
-                    <div class="error">{{ $message }}</div>
-                @enderror
             </div>
-            <div>
-                <button type="submit" class="update-btn">ThĂªm hĂ¬nh áº£nh</button>
+            <div class="adminedit-button">
+                <button type="submit" class="update-btn">Thêm hình ảnh</button>
             </div>
         </form>
     </div>

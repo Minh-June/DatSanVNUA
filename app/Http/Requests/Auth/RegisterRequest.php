@@ -15,51 +15,67 @@ class RegisterRequest extends FormRequest
     {
         return [
             'fullname'  => ['required', 'string', 'max:255', 'regex:/^[\p{L}\s]+$/u'],
-            'gender'    => 'required|in:Nam,Ná»¯,KhĂ¡c',
-            'birthdate' => 'required|date|before:today',
+            'gender'    => 'required|in:Nam,Nữ,Khác',
+            'birthdate' => [
+                'required',
+                'date',
+                'before:today',
+                'after_or_equal:' . now()->subYears(100)->toDateString(),
+                'before_or_equal:' . now()->subYears(13)->toDateString(),
+            ],
             'phonenb'   => ['required', 'regex:/^0[0-9]{9}$/', 'unique:users,phonenb'],
             'email'     => 'required|string|email|max:255|unique:users,email',
-            'username'  => ['required', 'string', 'max:255', 'unique:users,username', 'regex:/^[a-zA-Z0-9]+$/'],
-            'password'  => 'required|string|min:6|max:100',
+            'username'  => ['required', 'string', 'max:10', 'unique:users,username', 'regex:/^[a-zA-Z0-9]+$/'],
+            'password'  => [
+                'required',
+                'string',
+                'min:6',
+                'max:100',
+                'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/'
+            ],
         ];
     }
 
     public function messages()
     {
         return [
-            // Há» tĂªn
-            'fullname.required'     => 'Há» vĂ  tĂªn lĂ  báº¯t buá»™c.',
-            'fullname.regex'        => 'Há» vĂ  tĂªn chá»‰ Ä‘Æ°á»£c chá»©a chá»¯ cĂ¡i vĂ  khoáº£ng tráº¯ng.',
+            // Họ tên
+            'fullname.required'     => 'Họ và tên là bắt buộc.',
+            'fullname.regex'        => 'Họ và tên chỉ được chứa chữ cái và khoảng trắng.',
 
-            // Giá»›i tĂ­nh
-            'gender.required'       => 'Giá»›i tĂ­nh lĂ  báº¯t buá»™c.',
-            'gender.in'             => 'Giá»›i tĂ­nh khĂ´ng há»£p lá»‡.',
+            // Giới tính
+            'gender.required'       => 'Giới tính là bắt buộc.',
+            'gender.in'             => 'Giới tính không hợp lệ.',
 
-            // NgĂ y sinh
-            'birthdate.required'    => 'NgĂ y sinh lĂ  báº¯t buá»™c.',
-            'birthdate.date'        => 'NgĂ y sinh khĂ´ng há»£p lá»‡.',
-            'birthdate.before'      => 'NgĂ y sinh pháº£i nhá» hÆ¡n ngĂ y hiá»‡n táº¡i.',
+            // Ngày sinh
+            'birthdate.required'    => 'Ngày sinh là bắt buộc.',
+            'birthdate.date'        => 'Ngày sinh không hợp lệ.',
+            'birthdate.before'      => 'Ngày sinh phải nhỏ hơn ngày hiện tại.',
+            'birthdate.after_or_equal' => 'Tuổi tối đa được phép là 100.',
+            'birthdate.before_or_equal' => 'Bạn phải ít nhất 13 tuổi để đăng ký.',
 
-            // Sá»‘ Ä‘iá»‡n thoáº¡i
-            'phonenb.required'      => 'Sá»‘ Ä‘iá»‡n thoáº¡i lĂ  báº¯t buá»™c.',
-            'phonenb.unique'        => 'Sá»‘ Ä‘iá»‡n thoáº¡i Ä‘Ă£ Ä‘Æ°á»£c sá»­ dá»¥ng.',
-            'phonenb.regex'         => 'Sá»‘ Ä‘iá»‡n thoáº¡i pháº£i cĂ³ 10 chá»¯ sá»‘ vĂ  báº¯t Ä‘áº§u báº±ng sá»‘ 0.',
+            // Số điện thoại
+            'phonenb.required'      => 'Số điện thoại là bắt buộc.',
+            'phonenb.unique'        => 'Số điện thoại đã được sử dụng.',
+            'phonenb.regex'         => 'Số điện thoại phải có 10 chữ số và bắt đầu bằng số 0.',
 
             // Email
-            'email.required'        => 'Email lĂ  báº¯t buá»™c.',
-            'email.email'           => 'Email khĂ´ng há»£p lá»‡.',
-            'email.max'             => 'Email khĂ´ng Ä‘Æ°á»£c vÆ°á»£t quĂ¡ 255 kĂ½ tá»±.',
-            'email.unique'          => 'Email Ä‘Ă£ Ä‘Æ°á»£c sá»­ dá»¥ng.',
+            'email.required'        => 'Email là bắt buộc.',
+            'email.email'           => 'Email không hợp lệ.',
+            'email.max'             => 'Email không được vượt quá 255 ký tự.',
+            'email.unique'          => 'Email đã được sử dụng.',
 
-            // TĂªn Ä‘Äƒng nháº­p
-            'username.required'     => 'TĂªn ngÆ°á»i dĂ¹ng lĂ  báº¯t buá»™c.',
-            'username.unique'       => 'TĂªn ngÆ°á»i dĂ¹ng Ä‘Ă£ Ä‘Æ°á»£c sá»­ dá»¥ng.',
-            'username.regex'        => 'TĂªn ngÆ°á»i dĂ¹ng chá»‰ Ä‘Æ°á»£c chá»©a chá»¯ cĂ¡i vĂ  sá»‘, khĂ´ng chá»©a dáº¥u cĂ¡ch hoáº·c kĂ½ tá»± Ä‘áº·c biá»‡t.',
+            // Tên đăng nhập
+            'username.required'     => 'Tên người dùng là bắt buộc.',
+            'username.unique'       => 'Tên người dùng đã được sử dụng.',
+            'username.regex'        => 'Tên người dùng chỉ được chứa chữ cái và số, không chứa dấu cách hoặc ký tự đặc biệt.',
+            'username.max'          => 'Tên người dùng không được vượt quá 10 ký tự.',
 
-            // Máº­t kháº©u
-            'password.required'     => 'Máº­t kháº©u lĂ  báº¯t buá»™c.',
-            'password.min'          => 'Máº­t kháº©u pháº£i cĂ³ Ă­t nháº¥t 6 kĂ½ tá»±.',
-            'password.max'          => 'Máº­t kháº©u khĂ´ng Ä‘Æ°á»£c vÆ°á»£t quĂ¡ 100 kĂ½ tá»±.',
+            // Mật khẩu
+            'password.required'     => 'Mật khẩu là bắt buộc.',
+            'password.min'          => 'Mật khẩu phải có ít nhất 6 ký tự.',
+            'password.max'          => 'Mật khẩu không được vượt quá 100 ký tự.',
+            'password.regex'        => 'Mật khẩu phải có ít nhất 1 chữ thường, 1 chữ in hoa và 1 chữ số.',
         ];
     }
 }

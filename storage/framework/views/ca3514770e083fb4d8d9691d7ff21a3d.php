@@ -1,51 +1,60 @@
 
 
-<?php $__env->startSection('title', 'ThĂªm khung giá» sĂ¢n'); ?>
+<?php $__env->startSection('title', 'Thêm khung giờ sân'); ?>
 
 <?php $__env->startSection('content'); ?>
-    <!-- Hiá»ƒn thá»‹ thĂ´ng bĂ¡o -->
+    <!-- Hiển thị thông báo -->
     <?php if(session('success')): ?>
-        <script>
-            alert("<?php echo e(session('success')); ?>");
-        </script>
+        <script>alert("<?php echo e(session('success')); ?>");</script>
     <?php endif; ?>
 
-    <!-- Hiá»ƒn thá»‹ thĂ´ng bĂ¡o lá»—i -->
     <?php if(session('error')): ?>
-        <script>
-            alert("<?php echo e(session('error')); ?>");
-        </script>
+        <script>alert("<?php echo e(session('error')); ?>");</script>
     <?php endif; ?>
 
-    <h3>ThĂªm khung giá» cho thuĂª</h3>
+    <?php if($errors->has('time')): ?>
+        <script>alert("<?php echo e($errors->first('time')); ?>");</script>
+    <?php endif; ?>
 
-    <!-- Form thĂªm khung giá» -->
+    <h2>Thêm khung giờ cho thuê</h2>
+
+    <!-- Form thêm khung giờ -->
     <div class="adminedit">
         <form action="<?php echo e(route('luu-thoi-gian-san')); ?>" method="POST">
             <?php echo csrf_field(); ?>
 
-            <label for="yard_id">Chá»n sĂ¢n:</label>
-            <select id="yard_id" name="yard_id" required>
-                <option value="">Chá»n sĂ¢n</option>
-                <?php $__currentLoopData = $yards; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $yard): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                    <option value="<?php echo e($yard->yard_id); ?>"><?php echo e($yard->name); ?></option>
-                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-            </select>
-            <br>
+            <input type="hidden" name="yard_id" value="<?php echo e($yard_id); ?>">
+            <div class="adminedit-form-group">
+                <label>Sân:</label>
+                <input type="text" value="<?php echo e($yards->firstWhere('yard_id', $yard_id)?->name); ?>" disabled>
+            </div>
 
-            <label for="time">Khung giá»:</label>
-            <input type="text" id="time" name="time" required>
-            <br>
+            <div class="adminedit-form-group">
+                <label for="time">Khung giờ:</label>
+                <input
+                    type="text"
+                    id="time"
+                    name="time"
+                    required
+                    pattern="\d{2}:\d{2}\s*-\s*\d{2}:\d{2}"
+                    title="Định dạng phải là HH:MM - HH:MM (VD: 06:00 - 07:30)"
+                    placeholder="Ví dụ: 06:00 - 07:30"
+                >
+            </div>
 
-            <label for="price">GiĂ¡ (VNÄ):</label>
-            <input type="number" id="price" name="price" required min="0">
-            <br>
+            <div class="adminedit-form-group">
+                <label for="price">Giá tiền (đ):</label>
+                <input type="number" id="price" name="price" required step="1000">
+            </div>
 
-            <label for="date">NgĂ y Ă¡p dá»¥ng:</label>
-            <input type="date" id="date" name="date" required>
-            <br>
+            <div class="adminedit-form-group">
+                <label for="date">Ngày áp dụng:</label>
+                <input type="date" id="date" name="date" required min="<?php echo e(date('Y-m-d')); ?>" value="<?php echo e(date('Y-m-d')); ?>">
+            </div>
 
-            <button class="update-btn" type="submit">LÆ°u khung giá»</button>
+            <div class="adminedit-button">
+                <button class="update-btn" type="submit">Lưu khung giờ</button>
+            </div>
         </form>
     </div>
 <?php $__env->stopSection(); ?>

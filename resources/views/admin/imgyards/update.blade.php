@@ -1,37 +1,39 @@
 @extends('layouts.admin')
 
-@section('title', 'Cáº­p nháº­t hĂ¬nh áº£nh sĂ¢n')
+@section('title', 'Cập nhật hình ảnh sân')
 
 @section('content')
-    <h3>Cáº­p nháº­t hĂ¬nh áº£nh</h3>
+    @if(session('success'))
+        <script>alert("{{ session('success') }}");</script>
+    @endif
 
-    @if (session('success'))
+    @if(session('error') || $errors->any())
         <script>
-            alert('{{ session('success') }}');
+            alert(`{{ session('error') ? session('error') . '\n' : '' }}{!! implode('\n', $errors->all()) !!}`);
         </script>
     @endif
+
+    <h2>Cập nhật hình ảnh</h2>
 
     <form method="POST" action="{{ route('cap-nhat-hinh-anh-san', ['image_id' => $image->image_id]) }}" enctype="multipart/form-data">
         @csrf
         <div class="pay-information">
             <div class="admin-img">
-                <!-- Hiá»ƒn thá»‹ áº£nh hiá»‡n táº¡i -->
-                <img src="{{ asset('storage/' . $image->image) }}" alt="HĂ¬nh áº£nh" class="admin-image">
+                <img src="{{ asset('storage/' . $image->image) }}" 
+                    alt="Hình ảnh" 
+                    class="football-img"
+                    onclick="showImage(this.src)">
             </div>
         </div>
 
         <div class="pay-information">
             <div class="admin-img">
-                <h3>{{ $image->yard->name }}</h3>
+                <h2>{{ $image->yard->name }}</h2>
 
-                <label for="image">Chá»n hĂ¬nh áº£nh má»›i:</label><br><br>
+                <h3 for="image">Chọn hình ảnh mới:</h3><br>
                 <input type="file" name="image" id="image"><br>
 
-                @error('image')
-                    <div class="error">{{ $message }}</div>
-                @enderror
-
-                <button type="submit" class="update-btn">Cáº­p nháº­t</button>
+                <button type="submit" class="update-btn">Cập nhật</button>
             </div>
         </div>
     </form>                        

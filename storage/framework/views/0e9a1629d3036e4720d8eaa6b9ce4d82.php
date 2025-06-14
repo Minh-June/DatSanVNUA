@@ -1,46 +1,48 @@
-
-
-<?php $__env->startSection('title', 'SÃ¡Â»Â­a thÄ‚Â´ng tin sÄ‚Â¢n'); ?>
+<?php $__env->startSection('title', 'Sửa thông tin sân'); ?>
 
 <?php $__env->startSection('content'); ?>
-    <!-- HiÃ¡Â»Æ’n thÃ¡Â»â€¹ thÄ‚Â´ng bÄ‚Â¡o -->
+    <!-- Hiển thị thông báo -->
     <?php if(session('success')): ?>
         <script>
             alert("<?php echo e(session('success')); ?>");
         </script>
     <?php endif; ?>
 
-    <!-- HiÃ¡Â»Æ’n thÃ¡Â»â€¹ thÄ‚Â´ng bÄ‚Â¡o lÃ¡Â»â€”i -->
-    <?php if(session('error')): ?>
+    <!-- Hiển thị thông báo lỗi -->
+    <?php if($errors->any()): ?>
         <script>
-            alert("<?php echo e(session('error')); ?>");
+            alert("<?php echo e($errors->first()); ?>");
         </script>
     <?php endif; ?>
 
-    <h3>SÃ¡Â»Â­a thÄ‚Â´ng tin sÄ‚Â¢n</h3>
+    <h2>Sửa thông tin sân</h2>
 
-    <!-- Form chÃ¡Â»â€°nh sÃ¡Â»Â­a thÄ‚Â´ng tin sÄ‚Â¢n -->
+    <!-- Form chỉnh sửa thông tin sân -->
     <div class="adminedit">
         <form method="POST" action="<?php echo e(route('update.yard', $yard->yard_id)); ?>">
             <?php echo csrf_field(); ?>
-            <input type="hidden" name="_method" value="POST">
+            
 
-            <label for="type_id">ThÃ¡Â»Æ’ loÃ¡ÂºÂ¡i sÄ‚Â¢n:</label>
-            <select id="type_id" name="type_id" required>
-                <?php $__currentLoopData = $types; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $type): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                    <option value="<?php echo e($type->type_id); ?>" <?php echo e($yard->type_id == $type->type_id ? 'selected' : ''); ?>>
-                        <?php echo e($type->name); ?>
+            <div class="adminedit-form-group">
+                <label for="type_id">Thể loại sân:</label>
+                <select id="type_id" name="type_id" required>
+                    <?php $__currentLoopData = $types; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $type): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                        <option value="<?php echo e($type->type_id); ?>" <?php echo e($yard->type_id == $type->type_id ? 'selected' : ''); ?>>
+                            <?php echo e($type->name); ?>
 
-                    </option>
-                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-            </select>
-            <br>
+                        </option>
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                </select>
+            </div>
 
-            <label for="name">TÄ‚Âªn sÄ‚Â¢n:</label>
-            <input type="text" id="name" name="name" value="<?php echo e(old('name', $yard->name)); ?>" required>
-            <br>
+            <div class="adminedit-form-group">
+                <label for="name">Tên sân:</label>
+                <input type="text" id="name" name="name" value="<?php echo e(old('name', $yard->name)); ?>" required>
+            </div>
 
-            <button class="update-btn" type="submit">CÃ¡ÂºÂ­p nhÃ¡ÂºÂ­t thÄ‚Â´ng tin sÄ‚Â¢n</button>
+            <div class="adminedit-button">
+                <button class="update-btn" type="submit">Cập nhật thông tin</button>
+            </div>
         </form>
     </div>
 <?php $__env->stopSection(); ?>

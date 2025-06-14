@@ -6,40 +6,58 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class AccountRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
     public function authorize(): bool
     {
         return true;
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
-     */
     public function rules(): array
     {
+        $userId = session('user_id');
+
         return [
-            'fullname' => 'required|string|max:255',
-            'gender' => 'required|string',
-            'birthdate' => 'required|date',
-            'phonenb' => 'required|string|max:10|regex:/^[0-9]+$/',
-            'email' => 'required|string|email|max:255|unique:users,email,' . session('user_id') . ',user_id',
+            'fullname'  => ['required', 'string', 'max:255', 'regex:/^[\p{L}\s]+$/u'],
+            'gender'    => 'required|in:Nam,Nữ,Khác',
+            'birthdate' => [
+                'required',
+                'date',
+                'before:today',
+                'after_or_equal:' . now()->subYears(100)->toDateString(),
+                'before_or_equal:' . now()->subYears(13)->toDateString(),
+            ],
+            'phonenb'   => ['required', 'regex:/^0[0-9]{9}$/', 'unique:users,phonenb,' . $userId . ',user_id'],
+            'email'     => ['required', 'string', 'email', 'max:255', 'unique:users,email,' . $userId . ',user_id'],
         ];
     }
 
     public function messages()
     {
         return [
-            'fullname.required' => 'Há» vĂ  tĂªn lĂ  báº¯t buá»™c.',
-            'gender.required' => 'Giá»›i tĂ­nh lĂ  báº¯t buá»™c.',
-            'birthdate.required' => 'NgĂ y sinh lĂ  báº¯t buá»™c.',
-            'phonenb.required' => 'Sá»‘ Ä‘iá»‡n thoáº¡i lĂ  báº¯t buá»™c.',
-            'phonenb.regex' => 'Sá»‘ Ä‘iá»‡n thoáº¡i chá»‰ Ä‘Æ°á»£c chá»©a cĂ¡c kĂ½ tá»± sá»‘.',
-            'email.required' => 'Email lĂ  báº¯t buá»™c.',
-            'email.unique' => 'Email Ä‘Ă£ Ä‘Æ°á»£c sá»­ dá»¥ng.',
+            // Họ tên
+            'fullname.required' => 'Họ và tên là bắt buộc.',
+            'fullname.regex'    => 'Họ và tên chỉ được chứa chữ cái và khoảng trắng.',
+
+            // Giới tính
+            'gender.required'   => 'Giới tính là bắt buộc.',
+            'gender.in'         => 'Giới tính không hợp lệ.',
+
+            // Ngày sinh
+            'birthdate.required'        => 'Ngày sinh là bắt buộc.',
+            'birthdate.date'            => 'Ngày sinh không hợp lệ.',
+            'birthdate.before'          => 'Ngày sinh phải nhỏ hơn ngày hiện tại.',
+            'birthdate.after_or_equal'  => 'Tuổi tối đa được phép là 100.',
+            'birthdate.before_or_equal' => 'Bạn phải ít nhất đủ 13 tuổi.',
+
+            // Số điện thoại
+            'phonenb.required' => 'Số điện thoại là bắt buộc.',
+            'phonenb.regex'    => 'Số điện thoại phải có 10 chữ số và bắt đầu bằng số 0.',
+            'phonenb.unique'   => 'Số điện thoại đã được sử dụng.',
+
+            // Email
+            'email.required' => 'Email là bắt buộc.',
+            'email.email'    => 'Email không hợp lệ.',
+            'email.max'      => 'Email không được vượt quá 255 ký tự.',
+            'email.unique'   => 'Email đã được sử dụng.',
         ];
     }
 }

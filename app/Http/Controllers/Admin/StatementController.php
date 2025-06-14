@@ -20,9 +20,9 @@ class StatementController extends Controller
         $filterType = $request->input('filter_type', 'date');
         $typeId = $request->input('type_id');
         $yardId = $request->input('yard_id');
-        $keyword = $request->input('keyword');  // Láº¥y tá»« khĂ³a tĂ¬m kiáº¿m tá»« request
+        $keyword = $request->input('keyword');  // Lấy từ khóa tìm kiếm từ request
 
-        // XĂ¡c Ä‘á»‹nh khoáº£ng thá»i gian lá»c
+        // Xác định khoảng thời gian lọc
         $date = $request->input('date', Carbon::now()->format('Y-m-d'));
         $month = $request->input('month', Carbon::now()->format('Y-m'));
         $year = $request->input('year', Carbon::now()->year);
@@ -41,24 +41,24 @@ class StatementController extends Controller
         }
 
         $query = OrderDetail::whereHas('order', function ($q) {
-            $q->where('status', 1); // Chá»‰ láº¥y Ä‘Æ¡n Ä‘Ă£ xĂ¡c nháº­n
+            $q->where('status', 1); // Chỉ lấy đơn đã xác nhận
         })
         ->whereBetween('date', [$from, $to])
         ->with(['yard.type']);
 
-        // Náº¿u chá»n loáº¡i sĂ¢n
+        // Nếu chọn loại sân
         if ($typeId) {
             $query->whereHas('yard', function ($q) use ($typeId) {
                 $q->where('type_id', $typeId);
             });
         }
 
-        // Náº¿u chá»n tĂªn sĂ¢n theo yard_id
+        // Nếu chọn tên sân theo yard_id
         if ($yardId) {
             $query->where('yard_id', $yardId);
         }
 
-        // Náº¿u nháº­p keyword tĂ¬m theo tĂªn sĂ¢n (dĂ¹ng whereHas Ä‘á»ƒ lá»c theo quan há»‡ yard)
+        // Nếu nhập keyword tìm theo tên sân (dùng whereHas để lọc theo quan hệ yard)
         if ($keyword) {
             $query->whereHas('yard', function ($q) use ($keyword) {
                 $q->where('name', 'like', '%' . $keyword . '%');
@@ -68,17 +68,22 @@ class StatementController extends Controller
         $orderDetails = $query->get();
         $totalRevenue = $orderDetails->sum('price');
 
-        // Gom doanh thu theo tĂªn sĂ¢n
+        // Gom doanh thu theo tên sân
         $byYard = $orderDetails->groupBy('yard.name')->map(function ($group) {
             return $group->sum('price');
         });
 
-        // Dá»¯ liá»‡u cho dropdown
+        // đếm số dòng OrderDetail
+        $bookingCountByYard = $orderDetails->groupBy('yard.name')->map(function ($group) {
+            return $group->pluck('order_id')->unique()->count();
+        });
+
+        // Dữ liệu cho dropdown
         $allTypes = Type::orderBy('name')->get();
         $allYards = Yard::orderBy('name')->get();
 
         return view('admin.statements.index', compact(
-            'totalRevenue', 'byYard', 'allTypes', 'allYards'
+            'totalRevenue', 'byYard', 'allTypes', 'allYards', 'bookingCountByYard'
         ));
     }
 
@@ -90,24 +95,24 @@ class StatementController extends Controller
             $date = $request->input('date', now()->format('Y-m-d'));
             $from = $date;
             $to = $date;
-            $filterLabel = 'ngĂ y ' . \Carbon\Carbon::parse($date)->format('d/m/Y');
+            $filterLabel = 'Ngày ' . \Carbon\Carbon::parse($date)->format('d/m/Y');
         } elseif ($filterType == 'month') {
             $month = $request->input('month', now()->format('Y-m'));
             $from = \Carbon\Carbon::createFromFormat('Y-m', $month)->startOfMonth()->format('Y-m-d');
             $to = \Carbon\Carbon::createFromFormat('Y-m', $month)->endOfMonth()->format('Y-m-d');
-            $filterLabel = 'thĂ¡ng ' . \Carbon\Carbon::parse($from)->format('m/Y');
+            $filterLabel = 'Tháng ' . \Carbon\Carbon::parse($from)->format('m/Y');
         } elseif ($filterType == 'year') {
             $year = $request->input('year', now()->year);
             $from = \Carbon\Carbon::createFromFormat('Y', $year)->startOfYear()->format('Y-m-d');
             $to = \Carbon\Carbon::createFromFormat('Y', $year)->endOfYear()->format('Y-m-d');
-            $filterLabel = 'nÄƒm ' . $year;
+            $filterLabel = 'Năm ' . $year;
         } else {
             $from = now()->format('Y-m-d');
             $to = now()->format('Y-m-d');
-            $filterLabel = 'ngĂ y ' . now()->format('d/m/Y');
+            $filterLabel = 'Ngày ' . now()->format('d/m/Y');
         }
 
-        // TĂ­nh tá»•ng doanh thu
+        // Tổng doanh thu
         $totalRevenue = \App\Models\OrderDetail::whereBetween('date', [$from, $to])
             ->whereHas('order', function ($q) {
                 $q->where('status', 1);

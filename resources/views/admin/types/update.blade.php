@@ -1,16 +1,16 @@
 @extends('layouts.admin') 
 
-@section('title', 'SÃ¡Â»Â­a thÄ‚Â´ng tin loÃ¡ÂºÂ¡i sÄ‚Â¢n')
+@section('title', 'Sửa thông tin loại sân')
 
 @section('content')
-    <!-- HiÃ¡Â»Æ’n thÃ¡Â»â€¹ thÄ‚Â´ng bÄ‚Â¡o -->
+    <!-- Hiển thị thông báo -->
     @if(session('success'))
         <script>
             alert("{{ session('success') }}");
         </script>
     @endif
 
-    <!-- HiÃ¡Â»Æ’n thÃ¡Â»â€¹ thÄ‚Â´ng bÄ‚Â¡o lÃ¡Â»â€”i -->
+    <!-- Hiển thị thông báo lỗi -->
     @if ($errors->any())
         <script>
             alert("{{ $errors->first() }}");
@@ -18,17 +18,21 @@
     @endif
 
 
-    <h3>SÃ¡Â»Â­a thÄ‚Â´ng tin loÃ¡ÂºÂ¡i sÄ‚Â¢n</h3>
+    <h2>Sửa thông tin loại sân</h2>
 
-    <!-- Form chÃ¡Â»â€°nh sÃ¡Â»Â­a thÄ‚Â´ng tin loÃ¡ÂºÂ¡i sÄ‚Â¢n -->
+    <!-- Form chỉnh sửa thông tin loại sân -->
     <div class="adminedit">
         <form method="POST" action="{{ route('update.type', $type->type_id) }}">
             @csrf
             <input type="hidden" name="_method" value="POST">
-            <label for="name">TÄ‚Âªn loÃ¡ÂºÂ¡i sÄ‚Â¢n:</label>
-            <input type="text" id="name" name="name" value="{{ old('name', $type->name) }}" required>
-            <br>
-            <button class="update-btn" type="submit">CÃ¡ÂºÂ­p nhÃ¡ÂºÂ­t thÄ‚Â´ng tin loÃ¡ÂºÂ¡i sÄ‚Â¢n</button>
+            
+            <div class="adminedit-form-group">
+                <label for="name">Tên loại sân:</label>
+                <input type="text" id="name" name="name" value="{{ old('name', $type->name) }}" required>
+            </div>
+
+            <div class="adminedit-button">
+                <button class="update-btn" type="submit">Cập nhật thông tin</button>
         </form>
     </div>
 @endsection

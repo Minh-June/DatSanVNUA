@@ -6,17 +6,17 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Client\PayRequest;
 use Illuminate\Http\Request;
 use App\Models\Order;
+use App\Models\Type; 
 use App\Models\OrderDetail;
 
 class PayController extends Controller
 {
     public function index()
     {
-        // Láº¥y danh sĂ¡ch Ä‘Æ¡n hĂ ng tá»« session
         $orders = session('orders', []);
+        $types = Type::all();
 
-        // Truyá»n danh sĂ¡ch nĂ y sang view
-        return view('client.pay', compact('orders'));
+        return view('client.pay', compact('orders', 'types'));
     }
     
     public function store(PayRequest $request)
@@ -25,14 +25,14 @@ class PayController extends Controller
         $userId = auth()->id();
 
         if (!$userId) {
-            return redirect()->route('login')->with('error', 'Vui lĂ²ng Ä‘Äƒng nháº­p trÆ°á»›c khi thanh toĂ¡n.');
+            return redirect()->route('login')->with('error', 'Vui lòng đăng nhập trước khi thanh toán.');
         }
 
         if (empty($orders)) {
-            return redirect()->back()->with('error', 'KhĂ´ng cĂ³ Ä‘Æ¡n Ä‘áº·t sĂ¢n nĂ o Ä‘á»ƒ thanh toĂ¡n.');
+            return redirect()->back()->with('error', 'Không có đơn đặt sân nào để thanh toán.');
         }
 
-        // LÆ°u áº£nh thanh toĂ¡n
+        // Lưu ảnh thanh toán
         $imagePaths = [];
         if ($request->hasfile('images')) {
             foreach ($request->file('images') as $image) {
@@ -41,7 +41,7 @@ class PayController extends Controller
             }
         }
 
-        // Táº¡o Ä‘Æ¡n hĂ ng tá»•ng
+        // Tạo đơn hàng tổng
         $order = new Order();
         $order->user_id = $userId;
         $order->name = $orders[0]['name'];
@@ -51,19 +51,15 @@ class PayController extends Controller
         $order->image = json_encode($imagePaths);
         $order->save();
 
-        // LÆ°u chi tiáº¿t tá»«ng sĂ¢n, má»—i khung giá» 1 dĂ²ng order_detail riĂªng
+        // Lưu chi tiết từng sân
         foreach ($orders as $item) {
             foreach ($item['times'] as $index => $time) {
                 $orderDetail = new OrderDetail();
                 $orderDetail->order_id = $order->order_id;
                 $orderDetail->yard_id = $item['yard_id'];
                 $orderDetail->date = $item['date'];
-                $orderDetail->time = $time;   // Má»—i dĂ²ng chá»‰ lÆ°u 1 khung giá»
-
-                // Láº¥y Ä‘Ăºng giĂ¡ cho tá»«ng khung giá» theo index
-                $pricePerTime = $item['price_per_slot'][$index] ?? 0;
-                $orderDetail->price = $pricePerTime;
-
+                $orderDetail->time = $time;
+                $orderDetail->price = $item['price_per_slot'][$index] ?? 0;
                 $orderDetail->notes = $item['notes'] ?? null;
                 $orderDetail->save();
             }
@@ -71,7 +67,11 @@ class PayController extends Controller
 
         session()->forget('orders');
 
-        return redirect()->route('trang-chu')->with('success', 'Báº¡n Ä‘Ă£ Ä‘áº·t sĂ¢n thĂ nh cĂ´ng !');
-    }
+        // Điều hướng theo role
+        if (auth()->user()->role != 1) {
+            return redirect()->route('quan-ly-don-dat-san')->with('success', 'Bạn đã đặt sân thành công với tư cách quản trị viên !');
+        }
 
+        return redirect()->route('trang-chu')->with('success', 'Đặt sân thành công, vui lòng chờ chủ sân xác nhận !');
+    }
 }

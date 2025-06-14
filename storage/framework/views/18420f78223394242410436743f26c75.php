@@ -1,29 +1,30 @@
-<?php $__env->startSection('title', 'Há»£p Ä‘á»“ng'); ?>
+
+
+<?php $__env->startSection('title', 'Hợp đồng'); ?>
 
 <?php $__env->startSection('content'); ?>
 <div id="content" class="order-section">
-    <h2 class="order-heading">XĂ¡c nháº­n thĂ´ng tin Ä‘áº·t sĂ¢n</h2>
+    <h2 class="order-heading">Xác nhận thông tin đặt sân</h2>
 
     <div class="order-successfully">
         <div class="order-successfully-infor">
-            <h3 class="order-successfully-header">Há»£p Ä‘á»“ng Ä‘áº·t sĂ¢n</h3>
+            <h3 class="order-successfully-header">Hợp đồng đặt sân</h3>
 
-            <h3>Äiá»u 1: Ná»™i dung há»£p Ä‘á»“ng</h3><br>
-            <p>BĂªn A cam káº¿t vĂ  thá»±c hiá»‡n Ä‘áº·t lá»‹ch sĂ¢n thá»ƒ thao theo cĂ¡c thĂ´ng tin sau Ä‘Ă¢y:</p><br>
+            <h3>Điều 1: Nội dung hợp đồng</h3><br>
+            <p>Bên A cam kết và thực hiện đặt lịch sân thể thao theo các thông tin sau đây:</p><br>
 
             <table id="ListCustomers">
                 <thead>
                     <tr>
                         <th>STT</th>
-                        <th>NgĂ y Ä‘áº·t</th>
-                        <th>Há» vĂ  tĂªn</th>
-                        <th>SÄT</th>
-                        <th>TĂªn sĂ¢n</th>
-                        <th>Thá»i gian thuĂª</th>
-                        <!-- <th>GiĂ¡ tá»«ng khung giá»</th> -->
-                        <th>Ghi chĂº</th>
-                        <th>ThĂ nh tiá»n</th>
-                        <th>Thao tĂ¡c</th>
+                        <th>Ngày đặt</th>
+                        <th>Họ và tên</th>
+                        <th>SĐT</th>
+                        <th>Tên sân</th>
+                        <th>Thời gian thuê</th>
+                        <th>Ghi chú</th>
+                        <th>Thành tiền</th>
+                        <th>Thao tác</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -43,17 +44,17 @@
                             </td>
                             <!-- <td>
                                 <?php $__currentLoopData = $order['times']; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $time): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                    <div><?php echo e(number_format($order['price_per_slot'][$key] ?? 0)); ?> VND</div>
+                                    <div><?php echo e(number_format($order['price_per_slot'][$key] ?? 0)); ?> VNĐ</div>
                                 <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                             </td> -->
-                            <td><?php echo e($order['notes'] ?? 'KhĂ´ng cĂ³'); ?></td>
-                            <td><?php echo e(number_format($order['price'])); ?> VND</td>
+                            <td><?php echo e($order['notes'] ?? 'Không có'); ?></td>
+                            <td><?php echo e(number_format($order['price'])); ?> VNĐ</td>
                             <td>
                                 <form action="<?php echo e(route('xoa-don-tam-thoi')); ?>" method="POST">
                                     <?php echo csrf_field(); ?>
                                     <?php echo method_field('DELETE'); ?>
                                     <input type="hidden" name="index" value="<?php echo e($index); ?>">
-                                    <button type="submit" class="update-btn">XĂ³a</button>
+                                    <button type="submit" class="update-btn">Xóa</button>
                                 </form>
                             </td>
                         </tr>
@@ -62,29 +63,29 @@
 
             </table>
 
-            <h3>Äiá»u 2: Thanh toĂ¡n</h3><br>
-            <p>BĂªn A cam káº¿t thanh toĂ¡n phĂ­ dá»‹ch vá»¥ Ä‘áº·t lá»‹ch theo thá»a thuáº­n giá»¯a hai bĂªn.</p><br>
+            <h3>Điều 2: Thanh toán</h3>
+            <p>Bên A cam kết thanh toán phí dịch vụ đặt lịch theo thỏa thuận giữa hai bên.</p>
 
-            <h3>Äiá»u 3: Äiá»u khoáº£n chung</h3><br>
-            <p>Cáº£ hai bĂªn cam káº¿t thá»±c hiá»‡n Ä‘Ăºng vĂ  Ä‘áº§y Ä‘á»§ cĂ¡c Ä‘iá»u khoáº£n trong há»£p Ä‘á»“ng nĂ y.</p>
-            <p>Há»£p Ä‘á»“ng cĂ³ giĂ¡ trá»‹ tá»« ngĂ y kĂ½ vĂ  cĂ³ thá»ƒ Ä‘Æ°á»£c Ä‘iá»u chá»‰nh hoáº·c cháº¥m dá»©t khi hai bĂªn Ä‘á»“ng Ă½.</p><br>
+            <h3>Điều 3: Điều khoản chung</h3>
+            <p>Cả hai bên cam kết thực hiện đúng và đầy đủ các điều khoản trong hợp đồng này.</p>
+            <p>Hợp đồng có giá trị từ ngày ký và có thể được điều chỉnh hoặc chấm dứt khi hai bên đồng ý.</p>
 
-            <h3>Äiá»u 4: KĂ­ vĂ  xĂ¡c nháº­n</h3><br>
-            <p class="order-successfully-day">HĂ  Ná»™i, ngĂ y <?php echo e(date('d/m/Y')); ?></p><br>
+            <h3>Điều 4: Ký và xác nhận</h3>
+            <p class="order-successfully-day">Hà Nội, ngày <?php echo e(date('d/m/Y')); ?></p>
 
             <div class="signature">
                 <div class="signature-left">
-                    <p>BĂªn A<br><br> <?php echo e(session('orders.0.name')); ?></p>
+                    <p>Bên A<br><br> <?php echo e(session('orders.0.name')); ?></p>
                 </div>
                 <div class="signature-right">
-                    <p>BĂªn B<br><br> Group 48</p>
+                    <p>Bên B<br><br> Group 48</p>
                 </div>
             </div>
         </div>
     </div>
 
     <div class="footer-link">
-        <a href="<?php echo e(route('thanh-toan')); ?>" class="order-football-btn">Tiáº¿p tá»¥c</a>
+        <a href="<?php echo e(route('thanh-toan')); ?>" class="order-football-btn">Tiếp tục</a>
     </div>
 
 </div>

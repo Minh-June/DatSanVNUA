@@ -1,28 +1,28 @@
 @extends('layouts.auth')
 
-@section('title', 'ÄÄƒng KĂ½')
+@section('title', 'Đăng Ký')
 
 @section('content')
-    <!-- Hiá»ƒn thá»‹ thĂ´ng bĂ¡o thĂ nh cĂ´ng -->
+    <!-- Hiển thị thông báo thành công -->
     @if(session('success'))
         <script>
             alert("{{ session('success') }}");
         </script>
     @endif
 
-    <!-- Hiá»ƒn thá»‹ thĂ´ng bĂ¡o lá»—i -->
+    <!-- Hiển thị thông báo lỗi -->
     @if(session('error'))
         <script>
             alert("{{ session('error') }}");
         </script>
     @endif
 
-    <div class="container-access" id="signIn">
-        <h1 class="form-title">ÄÄƒng KĂ½</h1>
+    <div class="container-access-register" id="signUp">
+        <h2 class="form-title">Đăng Ký</h2>
 
         @if ($errors->any())
-            <div class="alert alert-danger" role="alert">
-                <strong>CĂ³ lá»—i xáº£y ra !</strong>
+            <div class="notice" role="alert">
+                <h4>Đã có lỗi xảy ra !</h4>
                 <ul>
                     @foreach ($errors->all() as $error)
                         <li>{{ $error }}</li>
@@ -30,35 +30,34 @@
                 </ul>
             </div>
         @endif
-        <br>
         <form method="post" action="{{ route('dang-ky') }}">
             @csrf            
             <div class="input-group">
-                <i class="fa-solid fa-user"></i>
-                <input type="text" id="fullname" name="fullname" placeholder="Há» vĂ  tĂªn" required>
+                <i class="fa-regular fa-user"></i>
+                <input type="text" id="fullname" name="fullname" placeholder="Họ và tên" required>
                 <label class="label-access" for="fullname"></label>
             </div>
         
             <div class="input-group">
-                <i class="fa-solid fa-genderless input-group-icon"></i>
-                <label class="input-group-select" for="gender">Giá»›i tĂ­nh:</label>
+                <i class="fa-solid fa-genderless"></i>
+                <label class="input-group-select" for="gender">Giới tính:</label>
                 <select class="login-time-select" id="gender" name="gender" required>
-                    <option value="" disabled selected>Chá»n</option>
+                    <option value="" disabled selected>Chọn</option>
                     <option value="Nam">Nam</option>
-                    <option value="Ná»¯">Ná»¯</option>
-                    <option value="KhĂ¡c">KhĂ¡c</option>
+                    <option value="Nữ">Nữ</option>
+                    <option value="Khác">Khác</option>
                 </select>
             </div>
         
             <div class="input-group">
-                <i class="fa-solid fa-calendar input-group-icon"></i>
-                <label class="input-group-select" for="birthdate">NgĂ y sinh:</label>
+                <i class="fa-solid fa-calendar"></i>
+                <label class="input-group-select" for="birthdate">Ngày sinh:</label>
                 <input class="login-time-select" type="date" id="birthdate" name="birthdate" required>
             </div>
         
             <div class="input-group">
                 <i class="fa-solid fa-phone"></i>
-                <input type="text" id="phonenb" name="phonenb" placeholder="Sá»‘ Ä‘iá»‡n thoáº¡i" required>
+                <input type="text" id="phonenb" name="phonenb" placeholder="Số điện thoại" required>
                 <label class="label-access" for="phonenb"></label>
             </div>
         
@@ -69,23 +68,23 @@
             </div>
         
             <div class="input-group">
-                <i class="fa-regular fa-user"></i>
-                <input type="text" name="username" id="username" placeholder="TĂªn ngÆ°á»i dĂ¹ng" required>
+                <i class="fa-solid fa-user"></i>
+                <input type="text" name="username" id="username" placeholder="Tên người dùng" required>
                 <label class="label-access" for="username"></label>
             </div>
         
             <div class="input-group">
                 <i class="fa-solid fa-lock"></i>
-                <input type="password" name="password" id="password" placeholder="Máº­t kháº©u" required>
+                <input type="password" name="password" id="password" placeholder="Mật khẩu" required>
                 <label class="label-access" for="password"></label>
             </div>
         
-            <input type="submit" class="index-btn" value="ÄÄƒng KĂ½" name="btnDangky">
+            <input type="submit" class="index-btn" value="Đăng Ký" name="btnDangky">
         </form>        
 
         <div class="links">
-            <p>Báº¡n Ä‘Ă£ cĂ³ tĂ i khoáº£n ?</p>
-            <a href="{{ route('dang-nhap') }}"><button id="signUpButton">ÄÄƒng Nháº­p</button></a>
+            <p>Bạn đã có tài khoản?</p>
+            <a href="{{ route('dang-nhap') }}"><button id="signUpButton">Đăng Nhập</button></a>
         </div>
 
     </div>

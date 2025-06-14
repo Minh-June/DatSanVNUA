@@ -19,6 +19,6 @@ class CheckRole
             return $next($request);
         }
         
-        return redirect()->route('dang-nhap')->withErrors(['message' => 'Báº¡n khĂ´ng cĂ³ quyá»n truy cáº­p.']);
+        return redirect()->route('dang-nhap')->withErrors(['message' => 'Bạn không có quyền truy cập.']);
     }
 }

@@ -1,16 +1,16 @@
 @extends('layouts.client.account')
 
-@section('title', 'Lá»‹ch sá»­ Ä‘áº·t sĂ¢n')
+@section('title', 'Lịch sử đặt sân')
 
 @section('content') 
-    <h3>Danh sĂ¡ch Ä‘Æ¡n Ä‘áº·t sĂ¢n</h3>  
+    <h2>Danh sách đơn đặt sân</h2>  
     
     <!-- Begin: Date Filter -->
     <div class="admin-search">
         <form method="GET" action="{{ route('thong-tin-tai-khoan') }}">
-            <label for="date">Chá»n ngĂ y:</label>
+            <label for="date">Chọn ngày:</label>
             <input type="date" id="date" name="date" value="{{ request('date', date('Y-m-d')) }}">
-            <button class="update-btn" type="submit">TĂ¬m kiáº¿m</button>
+            <button class="update-btn" type="submit">Tìm kiếm</button>
         </form>
     </div>        
     <!-- End: Date Filter -->
@@ -20,26 +20,21 @@
         <table id="ListCustomers">
             <tr>
                 <th>STT</th>
-                <th>NgĂ y Ä‘áº·t</th>
-                <!-- <th>Há» vĂ  tĂªn</th>
-                <th>Sá»‘ Ä‘iá»‡n thoáº¡i</th> -->
-                <th>NgĂ y thuĂª</th>
-                <th>TĂªn sĂ¢n</th>
-                <th>Thá»i gian</th>
-                <!-- <th>GiĂ¡ tá»«ng khung giá»</th> -->
-                <th>ThĂ nh tiá»n</th>
-                <th>Ghi chĂº</th>
-                <th>áº¢nh thanh toĂ¡n</th>
-                <th>Tráº¡ng thĂ¡i</th>
+                <th>Ngày đặt</th>
+                <th>Ngày thuê</th>
+                <th>Tên sân</th>
+                <th>Thời gian</th>
+                <th>Thành tiền</th>
+                <th>Ghi chú</th>
+                <th>Ảnh thanh toán</th>
+                <th>Trạng thái</th>
             </tr>
             @php $index = 1; @endphp
             @foreach($orders as $order)
                 @php
-                    $totalDetailsCount = $order->orderDetails->count();
-                    $groupedDetails = $order->orderDetails->groupBy(function($item) {
-                        return $item->yard_id . '_' . $item->date;
-                    });
-                    $orderRowspan = $totalDetailsCount;
+                    $groupedDetails = $order->groupedDetails ?? collect();
+                    $rowspan = $groupedDetails->count();
+                    $isFirstGroup = true;
                 @endphp
 
                 @foreach($groupedDetails as $group)
@@ -49,50 +44,50 @@
                     @endphp
 
                     <tr>
-                        @if ($loop->parent->first)
-                            <td rowspan="{{ $orderRowspan }}">{{ $index++ }}</td>
-                            <td rowspan="{{ $orderRowspan }}">
+                        @if ($isFirstGroup)
+                            <td rowspan="{{ $rowspan }}">{{ $index++ }}</td>
+                            <td rowspan="{{ $rowspan }}">
                                 {{ \Carbon\Carbon::parse($order->date)->format('d/m/Y') }}<br>
                                 {{ \Carbon\Carbon::parse($order->date)->format('H:i') }}
                             </td>
                         @endif
 
                         <td>{{ \Carbon\Carbon::parse($firstDetail->date)->format('d/m/Y') }}</td>
-                        <td>{{ $firstDetail->yard ? $firstDetail->yard->name : 'KhĂ´ng xĂ¡c Ä‘á»‹nh' }}</td>
+                        <td>{{ $firstDetail->yard->name ?? 'Không xác định' }}</td>
                         <td>{!! $timeString !!}</td>
 
-                        @if ($loop->parent->first)
-                            <td rowspan="{{ $orderRowspan }}">
-                                {{ number_format($order->orderDetails->sum('price'), 0, ',', '.') }}Ä‘
+                        @if ($isFirstGroup)
+                            <td rowspan="{{ $rowspan }}">
+                                {{ number_format($order->orderDetails->sum('price'), 0, ',', '.') }}đ
                             </td>
-                            <td rowspan="{{ $orderRowspan }}">{{ $firstDetail->notes ?? 'KhĂ´ng cĂ³' }}</td>
-                            <td rowspan="{{ $orderRowspan }}">
-                                @php
-                                    $images = json_decode($order->image) ?: [];
-                                @endphp
-                                @if(count($images) > 0)
+                            <td rowspan="{{ $rowspan }}">{{ $firstDetail->notes ?? 'Không có' }}</td>
+                            <td rowspan="{{ $rowspan }}">
+                                @php $images = json_decode($order->image) ?? []; @endphp
+                                @if(count($images))
                                     @foreach($images as $img)
-                                        <img src="{{ asset('storage/' . $img) }}" alt="áº¢nh thanh toĂ¡n" style="width:100px; height:200px; cursor: pointer;" onclick="showImage('{{ asset('storage/' . $img) }}')">
+                                        <img src="{{ asset('storage/' . $img) }}" style="width:100px; height:200px;" onclick="showImage('{{ asset('storage/' . $img) }}')">
                                     @endforeach
                                 @else
-                                    KhĂ´ng cĂ³ áº£nh
+                                    Không có ảnh
                                 @endif
                             </td>
-                            <td rowspan="{{ $orderRowspan }}">
+                            <td rowspan="{{ $rowspan }}">
                                 @switch($order->status)
-                                    @case(0) Chá» xĂ¡c nháº­n @break
-                                    @case(1) ÄĂ£ xĂ¡c nháº­n @break
-                                    @case(2) ÄÆ¡n Ä‘Ă£ bá»‹ há»§y @break
-                                    @default KhĂ´ng xĂ¡c Ä‘á»‹nh
+                                    @case(0) Chờ xác nhận @break
+                                    @case(1) Đã xác nhận @break
+                                    @case(2) Đơn đã bị hủy @break
+                                    @default Không xác định
                                 @endswitch
                             </td>
                         @endif
                     </tr>
+
+                    @php $isFirstGroup = false; @endphp
                 @endforeach
             @endforeach
         </table>
     @else
-        <h3 style="font-weight: normal; font-size: 18px;">Hiá»‡n táº¡i báº¡n chÆ°a cĂ³ Ä‘Æ¡n Ä‘áº·t sĂ¢n nĂ o</h3>
+        <h2 style="font-weight: normal; font-size: 18px;">Hiện chưa có đơn đặt sân nào</h2>
     @endif
     <!-- End: Display Orders -->
 @endsection

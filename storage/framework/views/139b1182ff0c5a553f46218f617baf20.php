@@ -1,6 +1,4 @@
-
-
-<?php $__env->startSection('title', 'Thay Ã„â€˜Ã¡Â»â€¢i mÃ¡ÂºÂ­t khÃ¡ÂºÂ©u'); ?>
+<?php $__env->startSection('title', 'Thay đổi mật khẩu'); ?>
 
 <?php $__env->startSection('content'); ?>  
     <?php if(session('success')): ?>
@@ -11,21 +9,37 @@
         <script>alert("<?php echo e(session('error')); ?>");</script>
     <?php endif; ?>
 
-    <h3>Thay Ã„â€˜Ã¡Â»â€¢i mÃ¡ÂºÂ­t khÃ¡ÂºÂ©u</h3> 
+    <?php if($errors->any()): ?>
+        <script>
+            <?php $__currentLoopData = $errors->all(); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $error): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                alert("<?php echo e($error); ?>");
+            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+        </script>
+    <?php endif; ?>
+
+    <h2>Thay đổi mật khẩu</h2> 
 
     <div class="adminedit">
         <form method="POST" action="<?php echo e(route('cap-nhat-mat-khau')); ?>">
             <?php echo csrf_field(); ?>
-            <label>MÃ¡ÂºÂ­t khÃ¡ÂºÂ©u hiÃ¡Â»â€¡n tÃ¡ÂºÂ¡i:</label>
-            <input type="password" name="matkhau_hientai" required><br><br>
+            <div class="adminedit-form-group">
+                <label>Mật khẩu hiện tại:</label>
+                <input type="password" name="matkhau_hientai" required>
+            </div>
 
-            <label>NhÃ¡ÂºÂ­p mÃ¡ÂºÂ­t khÃ¡ÂºÂ©u mÃ¡Â»â€ºi:</label>
-            <input type="password" name="matkhau_moi" required><br><br>
+            <div class="adminedit-form-group">
+                <label>Nhập mật khẩu mới:</label>
+                <input type="password" name="matkhau_moi" required>
+            </div>
+            
+            <div class="adminedit-form-group">
+                <label>Xác nhận mật khẩu mới:</label>
+                <input type="password" name="xacnhan_matkhau" required>
+            </div>
 
-            <label>XÄ‚Â¡c nhÃ¡ÂºÂ­n mÃ¡ÂºÂ­t khÃ¡ÂºÂ©u mÃ¡Â»â€ºi:</label>
-            <input type="password" name="xacnhan_matkhau" required><br><br>
-
-            <button class="update-btn" type="submit">CÃ¡ÂºÂ­p nhÃ¡ÂºÂ­t mÃ¡ÂºÂ­t khÃ¡ÂºÂ©u</button>
+            <div class="adminedit-button">
+                <button class="update-btn" type="submit">Cập nhật mật khẩu</button>
+            </div>
         </form>
     </div>
 <?php $__env->stopSection(); ?>

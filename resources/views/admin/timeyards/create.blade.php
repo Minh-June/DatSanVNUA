@@ -1,51 +1,60 @@
 @extends('layouts.admin')
 
-@section('title', 'ThĂªm khung giá» sĂ¢n')
+@section('title', 'Thêm khung giờ sân')
 
 @section('content')
-    <!-- Hiá»ƒn thá»‹ thĂ´ng bĂ¡o -->
+    <!-- Hiển thị thông báo -->
     @if(session('success'))
-        <script>
-            alert("{{ session('success') }}");
-        </script>
+        <script>alert("{{ session('success') }}");</script>
     @endif
 
-    <!-- Hiá»ƒn thá»‹ thĂ´ng bĂ¡o lá»—i -->
     @if(session('error'))
-        <script>
-            alert("{{ session('error') }}");
-        </script>
+        <script>alert("{{ session('error') }}");</script>
     @endif
 
-    <h3>ThĂªm khung giá» cho thuĂª</h3>
+    @if ($errors->has('time'))
+        <script>alert("{{ $errors->first('time') }}");</script>
+    @endif
 
-    <!-- Form thĂªm khung giá» -->
+    <h2>Thêm khung giờ cho thuê</h2>
+
+    <!-- Form thêm khung giờ -->
     <div class="adminedit">
         <form action="{{ route('luu-thoi-gian-san') }}" method="POST">
             @csrf
 
-            <label for="yard_id">Chá»n sĂ¢n:</label>
-            <select id="yard_id" name="yard_id" required>
-                <option value="">Chá»n sĂ¢n</option>
-                @foreach($yards as $yard)
-                    <option value="{{ $yard->yard_id }}">{{ $yard->name }}</option>
-                @endforeach
-            </select>
-            <br>
+            <input type="hidden" name="yard_id" value="{{ $yard_id }}">
+            <div class="adminedit-form-group">
+                <label>Sân:</label>
+                <input type="text" value="{{ $yards->firstWhere('yard_id', $yard_id)?->name }}" disabled>
+            </div>
 
-            <label for="time">Khung giá»:</label>
-            <input type="text" id="time" name="time" required pattern="\d{2}:\d{2}\s*-\s*\d{2}:\d{2}" title="Äá»‹nh dáº¡ng pháº£i lĂ  HH:MM - HH:MM">
-            <br>
+            <div class="adminedit-form-group">
+                <label for="time">Khung giờ:</label>
+                <input
+                    type="text"
+                    id="time"
+                    name="time"
+                    required
+                    pattern="\d{2}:\d{2}\s*-\s*\d{2}:\d{2}"
+                    title="Định dạng phải là HH:MM - HH:MM (VD: 06:00 - 07:30)"
+                    placeholder="Ví dụ: 06:00 - 07:30"
+                >
+            </div>
 
-            <label for="price">GiĂ¡ (VNÄ):</label>
-            <input type="number" id="price" name="price" required min="0" step="1000">
-            <br>
+            <div class="adminedit-form-group">
+                <label for="price">Giá tiền (đ):</label>
+                <input type="number" id="price" name="price" required step="1000">
+            </div>
 
-            <label for="date">NgĂ y Ă¡p dá»¥ng:</label>
-            <input type="date" id="date" name="date" required>
-            <br>
+            <div class="adminedit-form-group">
+                <label for="date">Ngày áp dụng:</label>
+                <input type="date" id="date" name="date" required min="{{ date('Y-m-d') }}" value="{{ date('Y-m-d') }}">
+            </div>
 
-            <button class="update-btn" type="submit">LÆ°u khung giá»</button>
+            <div class="adminedit-button">
+                <button class="update-btn" type="submit">Lưu khung giờ</button>
+            </div>
         </form>
     </div>
 @endsection

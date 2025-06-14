@@ -1,92 +1,125 @@
 @extends('layouts.client.client')
 
-@section('title', 'Há»£p Ä‘á»“ng')
+@section('title', 'Hợp đồng')
 
 @section('content')
+@if (count(session('orders', [])) === 0)
+    <script>
+        alert("Vui lòng quay về trang chủ để đặt sân !");
+        window.location.href = "{{ route('trang-chu') }}";
+    </script>
+@endif
+
 <div id="content" class="order-section">
-    <h2 class="order-heading">XĂ¡c nháº­n thĂ´ng tin Ä‘áº·t sĂ¢n</h2>
+    <h2 class="order-heading">Xác nhận thông tin đặt sân</h2>
 
     <div class="order-successfully">
         <div class="order-successfully-infor">
-            <h3 class="order-successfully-header">Há»£p Ä‘á»“ng Ä‘áº·t sĂ¢n</h3>
+            <h3 class="order-successfully-header">Hợp đồng đặt sân</h3>
 
-            <h3>Äiá»u 1: Ná»™i dung há»£p Ä‘á»“ng</h3><br>
-            <p>BĂªn A cam káº¿t vĂ  thá»±c hiá»‡n Ä‘áº·t lá»‹ch sĂ¢n thá»ƒ thao theo cĂ¡c thĂ´ng tin sau Ä‘Ă¢y:</p><br>
+            <h4>Điều 1: Nội dung hợp đồng</h4>
+            <p>Bên A cam kết và thực hiện đặt lịch sân thể thao theo các thông tin sau đây:</p><br>
 
             <table id="ListCustomers">
                 <thead>
                     <tr>
                         <th>STT</th>
-                        <th>NgĂ y Ä‘áº·t</th>
-                        <th>Há» vĂ  tĂªn</th>
-                        <th>SÄT</th>
-                        <th>TĂªn sĂ¢n</th>
-                        <th>Thá»i gian thuĂª</th>
-                        <!-- <th>GiĂ¡ tá»«ng khung giá»</th> -->
-                        <th>Ghi chĂº</th>
-                        <th>ThĂ nh tiá»n</th>
-                        <th>Thao tĂ¡c</th>
+                        <th>Ngày đặt</th>
+                        <th>Họ và tên</th>
+                        <th>SĐT</th>
+                        <th>Tên sân</th>
+                        <th>Thời gian thuê</th>
+                        <th>Ghi chú</th>
+                        <th>Thành tiền</th>
+                        <th>Tùy chọn</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach(session('orders', []) as $index => $order)
+                @php
+                    $groupedOrders = collect(session('orders', []))->groupBy(fn($order) => $order['date'] . '-' . $order['yard_name']);
+                    $stt = 1;
+                @endphp
+
+                @foreach ($groupedOrders as $group)
+                    @php
+                        $first = $group->first();
+                        $totalPrice = $group->sum('price');
+                    @endphp
+                    <tr>
+                        <td rowspan="{{ $group->count() }}">{{ $stt++ }}</td>
+                        <td rowspan="{{ $group->count() }}">{{ \Carbon\Carbon::parse($first['date'])->format('d/m/Y') }}</td>
+                        <td rowspan="{{ $group->count() }}">{{ $first['name'] }}</td>
+                        <td rowspan="{{ $group->count() }}">{{ $first['phone'] }}</td>
+                        <td rowspan="{{ $group->count() }}">{{ $first['yard_name'] }}</td>
+
+                        {{-- Cột đầu tiên: thời gian thuê, ghi chú, thành tiền, thao tác --}}
+                        <td>
+                            @foreach ($first['times'] as $time)
+                                <div>{{ $time }}</div>
+                            @endforeach
+                        </td>
+                        <td>{{ $first['notes'] ?? 'Không có' }}</td>
+                        <td>{{ number_format($first['price']) }}đ</td>
+                        <td>
+                            <form action="{{ route('xoa-don-tam-thoi') }}" method="POST" onsubmit="return confirm('Bạn có chắc chắn muốn xóa đơn này?')">
+                                @csrf
+                                @method('DELETE')
+                                <input type="hidden" name="index" value="{{ array_search($first, session('orders')) }}">
+                                <button type="submit" class="delete-btn">Xóa</button>
+                            </form>
+                        </td>
+                    </tr>
+
+                    {{-- Các dòng còn lại (cùng ngày + sân, khác thời gian) --}}
+                    @foreach ($group->slice(1) as $order)
                         <tr>
-                            <td>{{ $index + 1 }}</td>
-                            <td>{{ date('d/m/Y', strtotime($order['date'])) }}</td>
-                            @if ($index === 0)
-                                <td rowspan="{{ count(session('orders')) }}">{{ $order['name'] }}</td>
-                                <td rowspan="{{ count(session('orders')) }}">{{ $order['phone'] }}</td>
-                            @endif
-                            <td>{{ $order['yard_name'] }}</td>
                             <td>
-                                @foreach($order['times'] as $time)
+                                @foreach ($order['times'] as $time)
                                     <div>{{ $time }}</div>
                                 @endforeach
                             </td>
-                            <!-- <td>
-                                @foreach($order['times'] as $key => $time)
-                                    <div>{{ number_format($order['price_per_slot'][$key] ?? 0) }} VND</div>
-                                @endforeach
-                            </td> -->
-                            <td>{{ $order['notes'] ?? 'KhĂ´ng cĂ³' }}</td>
-                            <td>{{ number_format($order['price']) }} VND</td>
+                            <td>{{ $order['notes'] ?? 'Không có' }}</td>
+                            <td>{{ number_format($order['price']) }}đ</td>
                             <td>
-                                <form action="{{ route('xoa-don-tam-thoi') }}" method="POST">
+                                <form action="{{ route('xoa-don-tam-thoi') }}" method="POST" onsubmit="return confirm('Bạn có chắc chắn muốn xóa đơn này?')">
                                     @csrf
                                     @method('DELETE')
-                                    <input type="hidden" name="index" value="{{ $index }}">
-                                    <button type="submit" class="update-btn">XĂ³a</button>
+                                    <input type="hidden" name="index" value="{{ array_search($order, session('orders')) }}">
+                                    <button type="submit" class="delete-btn">Xóa</button>
                                 </form>
                             </td>
                         </tr>
                     @endforeach
+                @endforeach
                 </tbody>
-
             </table>
 
-            <h3>Äiá»u 2: Thanh toĂ¡n</h3><br>
-            <p>BĂªn A cam káº¿t thanh toĂ¡n phĂ­ dá»‹ch vá»¥ Ä‘áº·t lá»‹ch theo thá»a thuáº­n giá»¯a hai bĂªn.</p><br>
+            <h4>Điều 2: Thanh toán</h4>
+            <p>Bên A cam kết thanh toán phí dịch vụ đặt lịch theo thỏa thuận giữa hai bên.</p>
 
-            <h3>Äiá»u 3: Äiá»u khoáº£n chung</h3><br>
-            <p>Cáº£ hai bĂªn cam káº¿t thá»±c hiá»‡n Ä‘Ăºng vĂ  Ä‘áº§y Ä‘á»§ cĂ¡c Ä‘iá»u khoáº£n trong há»£p Ä‘á»“ng nĂ y.</p>
-            <p>Há»£p Ä‘á»“ng cĂ³ giĂ¡ trá»‹ tá»« ngĂ y kĂ½ vĂ  cĂ³ thá»ƒ Ä‘Æ°á»£c Ä‘iá»u chá»‰nh hoáº·c cháº¥m dá»©t khi hai bĂªn Ä‘á»“ng Ă½.</p><br>
+            <h4>Điều 3: Điều khoản chung</h4>
+            <p>Cả hai bên cam kết thực hiện đúng và đầy đủ các điều khoản trong hợp đồng này.</p>
+            <p>Hợp đồng có giá trị từ ngày ký và có thể được điều chỉnh hoặc chấm dứt khi hai bên đồng ý.</p>
 
-            <h3>Äiá»u 4: KĂ­ vĂ  xĂ¡c nháº­n</h3><br>
-            <p class="order-successfully-day">HĂ  Ná»™i, ngĂ y {{ date('d/m/Y') }}</p><br>
-
+            <h4>Điều 4: Ký và xác nhận</h4>
+            <p class="order-successfully-day">
+                Hà Nội, ngày {{ date('d') }} tháng {{ date('m') }} năm {{ date('Y') }}
+            </p>
             <div class="signature">
                 <div class="signature-left">
-                    <p>BĂªn A<br><br> {{ session('orders.0.name') }}</p>
+                    <p>Bên A</p>
+                    <p>{{ session('orders.0.name') }}</p>
                 </div>
                 <div class="signature-right">
-                    <p>BĂªn B<br><br> Group 48</p>
+                    <p>Bên B</p>
+                    <p>Group 48</p>
                 </div>
             </div>
         </div>
     </div>
 
     <div class="footer-link">
-        <a href="{{ route('thanh-toan') }}" class="order-football-btn">Tiáº¿p tá»¥c</a>
+        <a href="{{ route('thanh-toan') }}" class="order-football-btn">Tiếp tục</a>
     </div>
 
 </div>

@@ -1,45 +1,36 @@
 
 
-<?php $__env->startSection('title', 'Quáº£n lĂ½ hĂ¬nh áº£nh sĂ¢n'); ?>
+<?php $__env->startSection('title', 'Quản lý hình ảnh sân'); ?>
 
 <?php $__env->startSection('content'); ?>
-    <!-- Hiá»ƒn thá»‹ thĂ´ng bĂ¡o thĂ nh cĂ´ng -->
+    <!-- Hiển thị thông báo thành công -->
     <?php if(session('success')): ?>
-        <script>
-            alert("<?php echo e(session('success')); ?>");
-        </script>
+        <script>alert("<?php echo e(session('success')); ?>");</script>
     <?php endif; ?>
 
-    <!-- Hiá»ƒn thá»‹ thĂ´ng bĂ¡o lá»—i -->
     <?php if(session('error')): ?>
-        <script>
-            alert("<?php echo e(session('error')); ?>");
-        </script>
+        <script>alert("<?php echo e(session('error')); ?>");</script>
     <?php endif; ?>
 
-    <h3>
-        Quáº£n lĂ½ hĂ¬nh áº£nh 
-        <?php if(isset($selectedYard)): ?>
-            - <?php echo e($selectedYard->name); ?>
-
-        <?php endif; ?>
-    </h3>
+    <h2>Quản lý hình ảnh - <?php echo e($selectedYard->name); ?></h2>
 
     <div class="admin-top-bar">
         <div class="admin-search"></div>
 
         <div class="admin-add-btn">
-            <a href="<?php echo e(route('them-hinh-anh-san')); ?>">ThĂªm hĂ¬nh áº£nh sĂ¢n</a>
+            <a class="update-btn" href="<?php echo e(isset($selectedYard) ? route('them-hinh-anh-san', ['yard_id' => $selectedYard->yard_id]) : route('them-hinh-anh-san')); ?>">
+                Thêm hình ảnh
+            </a>
         </div>
     </div>
 
-    <!-- Hiá»ƒn thá»‹ báº£ng hĂ¬nh áº£nh khi Ä‘Ă£ chá»n sĂ¢n -->
+    <!-- Hiển thị bảng hình ảnh khi đã chọn sân -->
     <table id='ListCustomers'>
         <thead>
             <tr>
                 <th>STT</th>
-                <th>HĂ¬nh áº£nh</th>
-                <th colspan="2">TĂ¹y chá»n</th>
+                <th>Hình ảnh</th>
+                <th colspan="2">Tùy chọn</th>
             </tr>
         </thead>
         <tbody>
@@ -47,18 +38,21 @@
                 <tr>
                     <td><?php echo e($index + 1); ?></td>
                     <td>
-                        <img src="<?php echo e(asset('storage/' . $image->image)); ?>" alt="HĂ¬nh áº£nh" class="admin-image">
+                        <img src="<?php echo e(asset('storage/' . $image->image)); ?>" 
+                            alt="Hình ảnh" 
+                            class="football-img"
+                            onclick="showImage(this.src)">
                     </td>
                     <td>
                         <form action="<?php echo e(route('cap-nhat-hinh-anh-san', ['image_id' => $image->image_id])); ?>" method="GET">
-                            <button type="submit" class="update-btn">Sá»­a</button>
+                            <button type="submit" class="update-btn">Sửa</button>
                         </form>
                     </td>
                     <td>
-                        <form action="<?php echo e(route('xoa-hinh-anh-san', ['image_id' => $image->image_id])); ?>" method="POST" onsubmit="return confirm('Báº¡n cĂ³ cháº¯c cháº¯n muá»‘n xĂ³a hĂ¬nh áº£nh nĂ y?');">
+                        <form action="<?php echo e(route('xoa-hinh-anh-san', ['image_id' => $image->image_id])); ?>" method="POST" onsubmit="return confirm('Bạn có chắc chắn muốn xóa hình ảnh này?');">
                             <?php echo csrf_field(); ?>
                             <?php echo method_field('DELETE'); ?>
-                            <button type="submit" class="update-btn">XĂ³a</button>
+                            <button type="submit" class="delete-btn">Xóa</button>
                         </form>                                
                     </td>
                 </tr>

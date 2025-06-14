@@ -1,33 +1,34 @@
 
 
-<?php $__env->startSection('title', 'Quáº£n lĂ½ thá»‘ng kĂª, bĂ¡o cĂ¡o'); ?>
+<?php $__env->startSection('title', 'Quản lý thống kê, báo cáo'); ?>
 
 <?php $__env->startSection('content'); ?>
-    <h3>Thá»‘ng kĂª doanh thu</h3>
+    <h2>Thống kê doanh thu</h2>
 
     <div class="admin-top-bar">
         <div class="admin-search">
             <form method="GET" action="<?php echo e(route('thong-ke-bao-cao')); ?>">
-                <label for="filter_type">Chá»n kiá»ƒu thá»‘ng kĂª:</label>
-                <select name="filter_type" id="filter_type" onchange="toggleInputs()" required style="width: 100px;">
-                    <option value="date" <?php echo e(request('filter_type') == 'date' ? 'selected' : ''); ?>>Theo ngĂ y</option>
-                    <option value="month" <?php echo e(request('filter_type') == 'month' ? 'selected' : ''); ?>>Theo thĂ¡ng</option>
-                    <option value="year" <?php echo e(request('filter_type') == 'year' ? 'selected' : ''); ?>>Theo nÄƒm</option>
+                <label for="filter_type">Chọn kiểu thống kê:</label>
+                <select name="filter_type" id="filter_type" onchange="toggleInputs()" required style="width: 102px; margin-bottom: 6px;">
+                    <option value="date" <?php echo e(request('filter_type') == 'date' ? 'selected' : ''); ?>>Theo ngày</option>
+                    <option value="month" <?php echo e(request('filter_type') == 'month' ? 'selected' : ''); ?>>Theo tháng</option>
+                    <option value="year" <?php echo e(request('filter_type') == 'year' ? 'selected' : ''); ?>>Theo năm</option>
                 </select>
-                <button type="submit" class="admin-search-btn">Xem bĂ¡o cĂ¡o</button>
+
+                <button type="submit" class="update-btn">Xem báo cáo</button>
             
                 <div id="input-date" style="<?php echo e(request('filter_type') != 'date' ? 'display:none;' : ''); ?>">
-                    <label for="date">Chá»n ngĂ y:</label>
-                    <input type="date" style="width: 165px;" name="date" id="date" value="<?php echo e(request('date', date('Y-m-d'))); ?>">
+                    <label for="date">Chọn ngày:</label>
+                    <input type="date" style="width: 169px;" name="date" id="date" value="<?php echo e(request('date', date('Y-m-d'))); ?>">
                 </div>
 
                 <div id="input-month" style="<?php echo e(request('filter_type') != 'month' ? 'display:none;' : ''); ?>">
-                    <label for="month">Chá»n thĂ¡ng:</label>
-                    <input type="month" style="width: 160px;" name="month" id="month" value="<?php echo e(request('month', date('Y-m'))); ?>">
+                    <label for="month">Chọn tháng:</label>
+                    <input type="month" style="width: 164px;" name="month" id="month" value="<?php echo e(request('month', date('Y-m'))); ?>">
                 </div>
                 
                 <div id="input-year" style="<?php echo e(request('filter_type') != 'year' ? 'display:none;' : ''); ?>">
-                    <label for="year">Chá»n nÄƒm:</label>
+                    <label for="year">Chọn năm:</label>
                     <input type="number" name="year" id="year" min="2000" max="<?php echo e(date('Y')); ?>" value="<?php echo e(request('year', date('Y'))); ?>">
                 </div>
             </form>
@@ -39,16 +40,16 @@
                 <input type="hidden" name="date" value="<?php echo e(request('date')); ?>">
                 <input type="hidden" name="month" value="<?php echo e(request('month')); ?>">
                 <input type="hidden" name="year" value="<?php echo e(request('year')); ?>">
-                <button type="submit" class="update-btn">Xuáº¥t file excel</button>
+                <button type="submit" class="update-btn">Xuất file excel</button>
             </form>
         </div>
     </div>
 
     <?php if(isset($totalRevenue)): ?>
-        <h3>Tá»•ng doanh thu: <?php echo e(number_format($totalRevenue, 0, ',', '.')); ?> VNÄ</h3>
+        <h2>Tổng doanh thu: <?php echo e(number_format($totalRevenue, 0, ',', '.')); ?>đ</h2>
 
         <?php if($totalRevenue > 0): ?>
-            <h3>Doanh thu tá»«ng sĂ¢n</h3>
+            <h2>Doanh thu từng sân</h2>
 
             <div class="admin-top-bar">
                 <div class="admin-search">
@@ -58,9 +59,9 @@
                         <input type="hidden" name="month" value="<?php echo e(request('month')); ?>">
                         <input type="hidden" name="year" value="<?php echo e(request('year')); ?>">
 
-                        <label for="keyword">TĂ¬m sĂ¢n:</label>
-                        <input type="text" id="keyword" name="keyword" placeholder="Nháº­p tĂªn sĂ¢n cáº§n tĂ¬m" value="<?php echo e(request('keyword')); ?>">
-                        <button class="admin-search-btn" type="submit">TĂ¬m kiáº¿m</button>
+                        <label for="keyword">Tìm sân:</label>
+                        <input type="text" id="keyword" name="keyword" placeholder="Nhập tên sân cần tìm" value="<?php echo e(request('keyword')); ?>">
+                        <button class="update-btn" type="submit">Tìm kiếm</button>
                     </form>
                 </div>
             </div>
@@ -69,22 +70,29 @@
                 <thead>
                     <tr>
                         <th>STT</th>
-                        <th>TĂªn sĂ¢n</th>
-                        <th>Doanh thu (VNÄ)</th>
+                        <th>Tên sân</th>
+                        <th>Số đơn đặt</th>
+                        <th>Doanh thu</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <?php $__currentLoopData = $byYard; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $yardName => $revenue): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                        <tr>
-                            <td><?php echo e($loop->iteration); ?></td>
-                            <td><?php echo e($yardName); ?></td>
-                            <td><?php echo e(number_format($revenue, 0, ',', '.')); ?></td>
-                        </tr>
-                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                <?php $__currentLoopData = $byYard; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $yardName => $revenue): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                    <tr>
+                        <td><?php echo e($loop->iteration); ?></td>
+                        <td class="left-align"><?php echo e(!empty($yardName) ? $yardName : 'Sân không tồn tại'); ?></td>
+                        <td>
+                            <a href="<?php echo e(route('quan-ly-don-dat-san', ['yard_name' => $yardName])); ?>">
+                                <?php echo e($bookingCountByYard[$yardName] ?? 0); ?>
+
+                            </a>
+                        </td>
+                        <td><?php echo e(number_format($revenue, 0, ',', '.')); ?>đ</td>
+                    </tr>
+                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                 </tbody>
             </table>
         <?php else: ?>
-            <h3 style="font-weight: normal; font-size: 17px;">Hiá»‡n táº¡i chÆ°a cĂ³ dá»¯ liá»‡u bĂ¡o cĂ¡o.</h3>
+            <h2 style="font-weight: normal; font-size: 18px;">Hiện chưa có dữ liệu báo cáo</h2>
         <?php endif; ?>
     <?php endif; ?>
 

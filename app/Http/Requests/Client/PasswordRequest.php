@@ -8,26 +8,40 @@ class PasswordRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return true; // Cho phÄ‚Â©p thÃ¡Â»Â±c hiÃ¡Â»â€¡n request
+        return true;
     }
 
     public function rules(): array
     {
         return [
-            'matkhau_hientai'    => 'required',
-            'matkhau_moi'        => 'required|min:6',
-            'xacnhan_matkhau'    => 'required|same:matkhau_moi',
+            'matkhau_hientai'   => 'required',
+            'matkhau_moi'       => [
+                'required',
+                'min:6',
+                'max:100',
+                'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/',
+                'different:matkhau_hientai'
+            ],
+            'xacnhan_matkhau'   => 'required|same:matkhau_moi',
         ];
     }
 
     public function messages(): array
     {
         return [
-            'matkhau_hientai.required'  => 'Vui lÄ‚Â²ng nhÃ¡ÂºÂ­p mÃ¡ÂºÂ­t khÃ¡ÂºÂ©u hiÃ¡Â»â€¡n tÃ¡ÂºÂ¡i.',
-            'matkhau_moi.required'      => 'Vui lÄ‚Â²ng nhÃ¡ÂºÂ­p mÃ¡ÂºÂ­t khÃ¡ÂºÂ©u mÃ¡Â»â€ºi.',
-            'matkhau_moi.min'           => 'MÃ¡ÂºÂ­t khÃ¡ÂºÂ©u mÃ¡Â»â€ºi phÃ¡ÂºÂ£i cÄ‚Â³ Ä‚Â­t nhÃ¡ÂºÂ¥t 6 kÄ‚Â½ tÃ¡Â»Â±.',
-            'xacnhan_matkhau.required'  => 'Vui lÄ‚Â²ng xÄ‚Â¡c nhÃ¡ÂºÂ­n mÃ¡ÂºÂ­t khÃ¡ÂºÂ©u mÃ¡Â»â€ºi.',
-            'xacnhan_matkhau.same'      => 'MÃ¡ÂºÂ­t khÃ¡ÂºÂ©u xÄ‚Â¡c nhÃ¡ÂºÂ­n khÄ‚Â´ng khÃ¡Â»â€ºp.',
+            // Mật khẩu hiện tại
+            'matkhau_hientai.required'   => 'Vui lòng nhập mật khẩu hiện tại.',
+
+            // Mật khẩu mới
+            'matkhau_moi.required'       => 'Vui lòng nhập mật khẩu mới.',
+            'matkhau_moi.min'            => 'Mật khẩu mới phải có ít nhất 6 ký tự.',
+            'matkhau_moi.max'            => 'Mật khẩu mới không được vượt quá 100 ký tự.',
+            'matkhau_moi.regex'          => 'Mật khẩu mới phải có ít nhất 1 chữ thường, 1 chữ in hoa và 1 chữ số.',
+            'matkhau_moi.different'      => 'Mật khẩu mới phải khác mật khẩu hiện tại.',
+
+            // Xác nhận mật khẩu
+            'xacnhan_matkhau.required'   => 'Vui lòng xác nhận mật khẩu mới.',
+            'xacnhan_matkhau.same'       => 'Xác nhận mật khẩu không khớp với mật khẩu mới.',
         ];
     }
 }

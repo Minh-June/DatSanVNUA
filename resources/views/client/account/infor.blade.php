@@ -1,6 +1,6 @@
 @extends('layouts.client.account')
 
-@section('title', 'Quáº£n lĂ½ thĂ´ng tin cĂ¡ nhĂ¢n')
+@section('title', 'Quản lý thông tin cá nhân')
 
 @section('content')  
     @if ($errors->any())
@@ -17,42 +17,44 @@
         </script>
     @endif
 
-    <h3>Quáº£n lĂ½ thĂ´ng tin cĂ¡ nhĂ¢n</h3>
+    <h2>Quản lý thông tin cá nhân</h2>
 
     <div class="adminedit">
         <form method="post" action="{{ route('cap-nhat-thong-tin-ca-nhan') }}">
             @csrf
 
-            <div class="form-group">
-                <label for="fullname">Há» vĂ  tĂªn:</label>
+            <div class="adminedit-form-group">
+                <label for="fullname">Họ và tên:</label>
                 <input type="text" name="fullname" value="{{ $user->fullname }}" required>
             </div>
 
-            <div class="form-group">
-                <label for="gender">Giá»›i tĂ­nh:</label>
+            <div class="adminedit-form-group">
+                <label for="gender">Giới tính:</label>
                 <select name="gender" required>
                     <option value="Nam" {{ $user->gender == 'Nam' ? 'selected' : '' }}>Nam</option>
-                    <option value="Ná»¯" {{ $user->gender == 'Ná»¯' ? 'selected' : '' }}>Ná»¯</option>
-                    <option value="KhĂ¡c" {{ $user->gender == 'KhĂ¡c' ? 'selected' : '' }}>KhĂ¡c</option>
+                    <option value="Nữ" {{ $user->gender == 'Nữ' ? 'selected' : '' }}>Nữ</option>
+                    <option value="Khác" {{ $user->gender == 'Khác' ? 'selected' : '' }}>Khác</option>
                 </select>
             </div>
 
-            <div class="form-group">
-                <label for="birthdate">NgĂ y sinh:</label>
+            <div class="adminedit-form-group">
+                <label for="birthdate">Ngày sinh:</label>
                 <input type="date" name="birthdate" value="{{ $user->birthdate }}" required>
             </div>
 
-            <div class="form-group">
-                <label for="phonenb">Sá»‘ Ä‘iá»‡n thoáº¡i:</label>
+            <div class="adminedit-form-group">
+                <label for="phonenb">Số điện thoại:</label>
                 <input type="text" name="phonenb" value="{{ $user->phonenb }}" required>
             </div>
 
-            <div class="form-group">
+            <div class="adminedit-form-group">
                 <label for="email">Email:</label>
                 <input type="email" name="email" value="{{ $user->email }}" required>
             </div>
 
-            <button class="update-btn" type="submit">Cáº­p nháº­t thĂ´ng tin cĂ¡ nhĂ¢n</button>
+            <div class="adminedit-button">
+                <button class="update-btn" type="submit">Cập nhật thông tin</button>
+            </div>
         </form>
     </div>
 

@@ -10,23 +10,23 @@ class User extends Authenticatable
 {
     use HasFactory, Notifiable;
 
-    protected $table = 'users'; // TĂªn báº£ng
-    protected $primaryKey = 'user_id'; // KhĂ³a chĂ­nh
-    public $timestamps = false; // KhĂ´ng sá»­ dá»¥ng timestamps
+    protected $table = 'users'; // Tên bảng
+    protected $primaryKey = 'user_id'; // Khóa chính
+    public $timestamps = false; // Không sử dụng timestamps
 
     protected $fillable = [
         'user_id',
-        'username', // TĂªn Ä‘Äƒng nháº­p
-        'password', // Máº­t kháº©u
-        'role', // Quyá»n háº¡n (0: admin, 1: user)
-        'fullname', // Há» tĂªn
-        'gender', // Giá»›i tĂ­nh (0: nam, 1: ná»¯, 2: khĂ¡c)
-        'birthdate', // NgĂ y sinh
-        'phonenb', // Sá»‘ Ä‘iá»‡n thoáº¡i
+        'username', // Tên đăng nhập
+        'password', // Mật khẩu
+        'role', // Quyền hạn (0: admin, 1: user)
+        'fullname', // Họ tên
+        'gender', // Giới tính (0: nam, 1: nữ, 2: khác)
+        'birthdate', // Ngày sinh
+        'phonenb', // Số điện thoại
         'email' 
-    ]; // CĂ¡c cá»™t cĂ³ thá»ƒ gĂ¡n
+    ]; // Các cột có thể gán
 
-    // Quan há»‡: Má»™t ngÆ°á»i dĂ¹ng cĂ³ thá»ƒ cĂ³ nhiá»u Ä‘Æ¡n Ä‘áº·t sĂ¢n
+    // Quan hệ: Một người dùng có thể có nhiều đơn đặt sân
     public function orders()
     {
         return $this->hasMany(Order::class, 'user_id', 'user_id');

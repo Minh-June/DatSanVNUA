@@ -4,20 +4,29 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Äáº·t sĂ¢n thá»ƒ thao</title>
+    <title>ĐẶT SÂN VNUA</title>
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
     <link rel="stylesheet" href="{{ asset('fonts/fontawesome-free-6.5.2/css/all.min.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
 </head>
 <body>
     <div id="main">
 
         <!-- Begin: Header -->
         <div id="header">
-            <a class="home-heading" href="#" target="_top">Äáº·t sĂ¢n thá»ƒ thao</a>
-            
+            <ul id="nav">
+                <li>
+                    <a class="home-heading" href="{{ route('trang-chu') }}" target="_top">
+                        <i class="fa-solid fa-house"></i>TRANG CHỦ
+                    </a>
+                </li>
+                <li></li>
+            </ul>
+            <!-- End: Nav -->
+
             <div class="header-login">
-                <a class="login-btn dash" href="{{ route('dang-nhap') }}">ÄÄƒng Nháº­p</a>
-                <a class="signup-btn" href="{{ route('dang-ky') }}">ÄÄƒng KĂ½</a>
+                <a class="login-btn dash" href="{{ route('dang-nhap') }}">Đăng Nhập</a>
+                <a class="signup-btn" href="{{ route('dang-ky') }}">Đăng Ký</a>
             </div>
         </div>
         <!-- End: Header -->
@@ -36,13 +45,13 @@
                     @foreach ($yards as $yard)
                         <div class="content-item">
                             <?php
-                                // Láº¥y hĂ¬nh áº£nh tá»« máº£ng $yard->images theo yard_id
-                                $imageData = $yard->images->first(); // Láº¥y hĂ¬nh áº£nh Ä‘áº§u tiĂªn náº¿u cĂ³
+                                // Lấy hình ảnh từ mảng $yard->images theo yard_id
+                                $imageData = $yard->images->first(); // Lấy hình ảnh đầu tiên nếu có
                                 if ($imageData) {
-                                    // Hiá»ƒn thá»‹ hĂ¬nh áº£nh dÆ°á»›i dáº¡ng base64
-                                    echo '<img src="' . $imageData->url . '" alt="" class="football-img">'; // Sá»­ dá»¥ng phÆ°Æ¡ng thá»©c getUrlAttribute
+                                    // Hiển thị hình ảnh dưới dạng base64
+                                    echo '<img src="' . $imageData->url . '" alt="" class="football-img">'; // Sử dụng phương thức getUrlAttribute
                                 } else {
-                                    // Hiá»ƒn thá»‹ hĂ¬nh áº£nh máº·c Ä‘á»‹nh náº¿u khĂ´ng cĂ³ hĂ¬nh áº£nh
+                                    // Hiển thị hình ảnh mặc định nếu không có hình ảnh
                                     echo '<img src="' . asset('image/football.jpg') . '" alt="" class="football-img">';
                                 }
                             ?>
@@ -51,9 +60,9 @@
                                     {{ $yard->name }}
                                 </p>
                                 <a href="{{ route('dang-nhap') }}"
-                                onclick="alert('Vui lĂ²ng Ä‘Äƒng nháº­p Ä‘á»ƒ Ä‘áº·t sĂ¢n');"
+                                onclick="alert('Vui lòng đăng nhập để đặt sân !');"
                                 class="order-football-btn">
-                                    Chá»n sĂ¢n
+                                    Chọn sân
                                 </a>
                             </div>
                         </div>
@@ -61,32 +70,45 @@
                 </div>
             </div>
             <div class="clear"></div>
-            @endforeach
+        @endforeach
         <!-- End: Content -->
 
         <!-- Begin: Contact section -->
         <div id="contact" class="content-section">
-            <h2 class="content-heading">LIĂN Há»†</h2>
+            <h2 class="content-heading">LIÊN HỆ</h2>
 
             <div class="row contact-content">
                 <div class="col col-half contact-infor">
                     <div class="contact-infor-header">  
-                        <img src="/image/logo.png" alt="Logo máº·c Ä‘á»‹nh">
+                        <img src="/image/logo.png" alt="Logo mặc định">
                         <div class="contact-infor-text">  
-                            <h3>Há»ŒC VIá»†N NĂ”NG NGHIá»†P VIá»†T NAM</h3>
-                            <h5>VIETNAM NATIONAL UNIVERSITY OF AGRICULTURE</h5>
+                            <h3>HỌC VIỆN NÔNG NGHIỆP VIỆT NAM</h3>
+                            <h4>TRUNG TÂM GIÁO DỤC THỂ CHẤT VÀ THỂ THAO</h4>
                         </div>
                     </div>
-                    <p><i class="fa-solid fa-location-dot"></i>TrĂ¢u Quá»³, Gia LĂ¢m, HĂ  Ná»™i, Viá»‡t Nam</p>
-                    <p><i class="fa-solid fa-phone"></i>Äiá»‡n thoáº¡i: 84.024.62617586</p>
-                    <p><i class="fa-solid fa-envelope"></i>Email: webmaster@vnua.edu.vn</p>
+                    <p><i class="fa-solid fa-location-dot"></i>Trâu Quỳ, Gia Lâm, Hà Nội, Việt Nam</p>
+                    <p>
+                        <i class="fa-solid fa-phone"></i>
+                        <span class="website-label">Điện thoại:</span>
+                        <a href="tel:+8424362618401" class="website-link">024(3) 62.618.401</a>
+                    </p>
+                    <p>
+                        <i class="fa-solid fa-envelope"></i>
+                        <span class="website-label">Email:</span>
+                        <a href="mailto:gdtc@vnua.edu.vn" class="website-link">gdtc@vnua.edu.vn</a>
+                    </p>
+                    <p>
+                        <i class="fa-solid fa-globe"></i>
+                        <span class="website-label">Website:</span>
+                        <a href="http://gdtc.vnua.edu.vn" target="_blank" class="website-link">http://gdtc.vnua.edu.vn</a>
+                    </p>
                 </div>
 
                 <div class="col col-half contact-form">
-                    <form action="">
+                    <form action="{{ route('dang-nhap') }}" method="GET">
                         <div class="row">
                             <div class="col col-half">
-                                <input type="text" name="" placeholder="TĂªn" required id="" class="form-control">
+                                <input type="text" name="" placeholder="Tên" required id="" class="form-control">
                             </div>
                             <div class="col col-half s-mt-8">
                                 <input type="email" name="" placeholder="Email" required id="" class="form-control">
@@ -94,24 +116,23 @@
                         </div>
                         <div class="row mt-8">
                             <div class="col col-full">
-                                <input type="text" name="" placeholder="Ghi chĂº" required id="" class="form-control">
+                                <input type="text" name="" placeholder="Ghi chú" required id="" class="form-control">
                             </div>
                         </div>
-                        <input class="contact-btn pull-right mt-16" type="submit" value="Gá»­i">
+                        <input class="contact-btn pull-right mt-16" type="submit" value="Gửi">
                     </form>
-
                 </div>
-                
             </div>
         </div>
         <!-- End: Contact section -->
 
         <!-- Begin: Footer -->
         <div id="footer">
-            <p class="copyright">Powered by Group 48</p>
+            <p class="copyright">Designed by Group 48</p>
         </div>
         <!-- End: Footer -->
          
     </div>
+        
 </body>
 </html>

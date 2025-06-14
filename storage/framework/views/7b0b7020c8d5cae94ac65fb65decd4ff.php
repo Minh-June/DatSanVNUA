@@ -1,52 +1,75 @@
 
 
-<?php $__env->startSection('title', 'Cáº­p nháº­t khung giá» sĂ¢n'); ?>
+<?php $__env->startSection('title', 'Cập nhật khung giờ'); ?>
 
 <?php $__env->startSection('content'); ?>
-    <!-- Hiá»ƒn thá»‹ thĂ´ng bĂ¡o -->
+    <!-- Hiển thị thông báo -->
     <?php if(session('success')): ?>
-        <script>
-            alert("<?php echo e(session('success')); ?>");
-        </script>
+        <script>alert("<?php echo e(session('success')); ?>");</script>
     <?php endif; ?>
 
     <?php if(session('error')): ?>
-        <script>
-            alert("<?php echo e(session('error')); ?>");
-        </script>
+        <script>alert("<?php echo e(session('error')); ?>");</script>
     <?php endif; ?>
 
-    <h3>Cáº­p nháº­t khung giá»</h3>
+    <?php if($errors->has('time')): ?>
+        <script>alert("<?php echo e($errors->first('time')); ?>");</script>
+    <?php endif; ?>
 
-    <!-- Form cáº­p nháº­t khung giá» -->
+    <h2>Cập nhật khung giờ cho thuê</h2>
+
     <div class="adminedit">
         <form action="<?php echo e(route('update.time', ['time_id' => $time->time_id])); ?>" method="POST">
             <?php echo csrf_field(); ?>
 
-            <label for="yard_id">Chá»n sĂ¢n:</label>
-            <select id="yard_id" name="yard_id" required>
-                <?php $__currentLoopData = $yards; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $yard): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                    <option value="<?php echo e($yard->yard_id); ?>" <?php echo e($yard->yard_id == $time->yard_id ? 'selected' : ''); ?>>
-                        <?php echo e($yard->name); ?>
+            <input type="hidden" name="yard_id" value="<?php echo e($time->yard_id); ?>">
+            <div class="adminedit-form-group">
+                <label>Sân:</label>
+                <input type="text" value="<?php echo e($yards->firstWhere('yard_id', $time->yard_id)?->name); ?>" disabled>
+            </div>
 
-                    </option>
-                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-            </select>
-            <br>
+            <div class="adminedit-form-group">
+                <label for="time">Khung giờ:</label>
+                <input
+                    type="text"
+                    id="time"
+                    name="time"
+                    value="<?php echo e(old('time', $time->time)); ?>"
+                    required
+                    pattern="\d{2}:\d{2}\s*-\s*\d{2}:\d{2}"
+                    title="Định dạng phải là HH:MM - HH:MM (VD: 06:00 - 07:30)"
+                    placeholder="Ví dụ: 06:00 - 07:30"
+                >
+            </div>
 
-            <label for="time">Khung giá»:</label>
-            <input type="text" id="time" name="time" value="<?php echo e($time->time); ?>" required>
-            <br>
+            <div class="adminedit-form-group">
+                <label for="price">Giá tiền (đ):</label>
+                <input
+                    type="number"
+                    id="price"
+                    name="price"
+                    value="<?php echo e(old('price', $time->price)); ?>"
+                    required
+                    step="100000"
+                    min="0"
+                >
+            </div>
 
-            <label for="price">GiĂ¡ (VNÄ):</label>
-            <input type="number" id="price" name="price" value="<?php echo e($time->price); ?>" required min="0">
-            <br>
+            <div class="adminedit-form-group">
+                <label for="date">Ngày áp dụng:</label>
+                <input
+                    type="date"
+                    id="date"
+                    name="date"
+                    value="<?php echo e(old('date', $time->date)); ?>"
+                    required
+                    min="<?php echo e(date('Y-m-d')); ?>"
+                >
+            </div>
 
-            <label for="date">NgĂ y Ă¡p dá»¥ng:</label>
-            <input type="date" id="date" name="date" value="<?php echo e($time->date); ?>" required>
-            <br>
-
-            <button class="update-btn" type="submit">Cáº­p nháº­t khung giá»</button>
+            <div class="adminedit-button">
+                <button class="update-btn" type="submit">Cập nhật</button>
+            </div>
         </form>
     </div>
 <?php $__env->stopSection(); ?>

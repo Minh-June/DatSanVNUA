@@ -14,21 +14,21 @@ class InforRequest extends FormRequest
 
     public function rules(): array
     {
-        $userId = Auth::id(); // Láº¥y ID ngÆ°á»i dĂ¹ng hiá»‡n táº¡i
+        $userId = Auth::id(); // Lấy ID người dùng hiện tại
 
         return [
             'fullname' => [
                 'required',
                 'string',
                 'max:255',
-                'regex:/^[\p{L}\s]+$/u' // Chá»‰ chá»©a chá»¯ vĂ  khoáº£ng tráº¯ng
+                'regex:/^[\p{L}\s]+$/u' // Chỉ chứa chữ và khoảng trắng
             ],
-            'gender' => 'required|in:Nam,Ná»¯,KhĂ¡c',
+            'gender' => 'required|in:Nam,Nữ,Khác',
             'birthdate' => 'required|date',
             'phonenb' => [
                 'required',
-                'regex:/^0\d{9}$/', // Báº¯t Ä‘áº§u báº±ng 0, Ä‘á»§ 10 sá»‘
-                'unique:users,phonenb,' . $userId . ',user_id', // Kiá»ƒm tra trĂ¹ng ngoáº¡i trá»« báº£n ghi hiá»‡n táº¡i
+                'regex:/^0\d{9}$/', // Bắt đầu bằng 0, đủ 10 chữ số
+                'unique:users,phonenb,' . $userId . ',user_id', //Kiểm tra trùng ngoại trừ bản ghi hiện tại
             ],
             'email' => [
                 'required',
@@ -43,17 +43,17 @@ class InforRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'fullname.required' => 'Há» vĂ  tĂªn lĂ  báº¯t buá»™c.',
-            'fullname.regex' => 'Há» vĂ  tĂªn chá»‰ Ä‘Æ°á»£c chá»©a chá»¯ cĂ¡i vĂ  khoáº£ng tráº¯ng.',
-            'gender.required' => 'Giá»›i tĂ­nh lĂ  báº¯t buá»™c.',
-            'gender.in' => 'Giá»›i tĂ­nh khĂ´ng há»£p lá»‡.',
-            'birthdate.required' => 'NgĂ y sinh lĂ  báº¯t buá»™c.',
-            'phonenb.required' => 'Sá»‘ Ä‘iá»‡n thoáº¡i lĂ  báº¯t buá»™c.',
-            'phonenb.regex' => 'Sá»‘ Ä‘iá»‡n thoáº¡i pháº£i báº¯t Ä‘áº§u báº±ng 0 vĂ  cĂ³ Ä‘Ăºng 10 chá»¯ sá»‘.',
-            'phonenb.unique' => 'Sá»‘ Ä‘iá»‡n thoáº¡i Ä‘Ă£ Ä‘Æ°á»£c sá»­ dá»¥ng.',
-            'email.required' => 'Email lĂ  báº¯t buá»™c.',
-            'email.email' => 'Email khĂ´ng Ä‘Ăºng Ä‘á»‹nh dáº¡ng.',
-            'email.unique' => 'Email Ä‘Ă£ Ä‘Æ°á»£c sá»­ dá»¥ng.',
+            'fullname.required' => 'Họ và tên là bắt buộc.',
+            'fullname.regex' => 'Họ và tên chỉ được chứa chữ cái và khoảng trắng.',
+            'gender.required' => 'Giới tính là bắt buộc.',
+            'gender.in' => 'Giới tính không hợp lệ.',
+            'birthdate.required' => 'Ngày sinh là bắt buộc.',
+            'phonenb.required' => 'Số điện thoại là bắt buộc.',
+            'phonenb.regex' => 'Số điện thoại phải bắt đầu bằng 0 và có đúng 10 chữ số.',
+            'phonenb.unique' => 'Số điện thoại đã được sử dụng.',
+            'email.required' => 'Email là bắt buộc.',
+            'email.email' => 'Email không đúng định dạng.',
+            'email.unique' => 'Email đã được sử dụng.',
         ];
     }
 }

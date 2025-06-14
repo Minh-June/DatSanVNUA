@@ -1,6 +1,6 @@
 
 
-<?php $__env->startSection('title', 'Quáº£n lĂ½ Ä‘Æ¡n Ä‘áº·t sĂ¢n thá»ƒ thao'); ?>
+<?php $__env->startSection('title', 'Quản lý đơn đặt sân thể thao'); ?>
 
 <?php $__env->startSection('content'); ?>
     <?php if(session('success')): ?>
@@ -15,19 +15,19 @@
         </script>
     <?php endif; ?>
 
-    <h3>Danh sĂ¡ch Ä‘Æ¡n sĂ¢n thá»ƒ thao</h3>
+    <h3>Danh sách đơn sân thể thao</h3>
 
     <div class="admin-top-bar">
         <div class="admin-search">
             <form method="GET" action="<?php echo e(route('quan-ly-don-dat-san')); ?>">
-                <label for="selected_date">Chá»n ngĂ y:</label>
+                 <label for="selected_date">Chọn ngày:</label>
                 <input type="date" id="selected_date" name="selected_date" value="<?php echo e(request('selected_date')); ?>">
-                <button class="admin-search-btn" type="submit">TĂ¬m kiáº¿m</button>
+                <button class="admin-search-btn" type="submit">Tìm kiếm</button>
             </form>
         </div>
 
         <div class="admin-add-btn">
-            <a href="<?php echo e(route('them-don-dat-san')); ?>">ThĂªm Ä‘Æ¡n Ä‘áº·t sĂ¢n</a>
+            <a href="<?php echo e(route('them-don-dat-san')); ?>">Thêm đơn đặt sân</a>
         </div>
     </div>
 
@@ -35,17 +35,13 @@
         <table id="ListCustomers">
             <tr>
                 <th>STT</th>
-                <th>NgĂ y táº¡o</th>
-                <th>Há» vĂ  tĂªn</th>
-                <th>SÄT</th>
-                <!-- <th>TĂªn sĂ¢n</th>
-                <th>NgĂ y thuĂª</th>
-                <th>Thá»i gian</th>
-                <th>Ghi chĂº</th> -->
-                <th>ThĂ nh tiá»n</th>
-                <th>áº¢nh thanh toĂ¡n</th>
-                <th>ThĂ´ng tin</th>
-                <th colspan="2">TĂ¹y chá»n</th>
+                <th>Ngày tạo</th>
+                <th>Họ và tên</th>
+                <th>SĐT</th>
+                <th>Thành tiền</th>
+                <th>Ảnh thanh toán</th>
+                <th>Thông tin</th>
+                <th colspan="2">Tùy chọn</th>
             </tr>
 
             <?php $__currentLoopData = $orders; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $order): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
@@ -66,10 +62,10 @@
                             <td rowspan="<?php echo e($rowspan); ?>"><?php echo e($order->phone); ?></td>
                         <?php endif; ?>
 
-                        <!-- <td><?php echo e($detail['yard']->name ?? 'KhĂ´ng xĂ¡c Ä‘á»‹nh'); ?></td>
+                        <!-- <td><?php echo e($detail['yard']->name ?? 'Không xác định'); ?></td>
                         <td><?php echo e(\Carbon\Carbon::parse($detail['date'])->format('d/m/Y')); ?></td>
                         <td><?php echo e($detail['times']); ?></td>
-                        <td><?php echo e($detail['notes'] ?: 'KhĂ´ng cĂ³'); ?></td> -->
+                        <td><?php echo e($detail['notes'] ?: 'Không có'); ?></td> -->
 
                         <?php if($index === 0): ?>
                             <td rowspan="<?php echo e($rowspan); ?>">
@@ -82,34 +78,34 @@
                                 <?php $images = json_decode($order->image); ?>
                                 <?php if($images && count($images) > 0): ?>
                                     <?php $__currentLoopData = $images; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $img): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                        <img src="<?php echo e(asset('storage/' . $img)); ?>" alt="áº¢nh" style="width:100px; height:200px; cursor:pointer;" onclick="showImage(this.src)">
+                                        <img src="<?php echo e(asset('storage/' . $img)); ?>" alt="Ảnh" style="width:100px; height:200px; cursor:pointer;" onclick="showImage(this.src)">
                                     <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                 <?php else: ?>
-                                    KhĂ´ng cĂ³
+                                    Không có
                                 <?php endif; ?>
                             </td>
                             
                             <td rowspan="<?php echo e($rowspan); ?>">
-                                <a href="<?php echo e(route('cap-nhat-don-dat-san', $order->order_id)); ?>">Xem chi tiáº¿t</a>
+                                <a href="<?php echo e(route('cap-nhat-don-dat-san', $order->order_id)); ?>">Xem chi tiết</a>
                             </td>
 
                             <td rowspan="<?php echo e($rowspan); ?>">
                                 <form method="POST" action="<?php echo e(route('cap-nhat-trang-thai-don-dat-san', $order->order_id)); ?>">
                                     <?php echo csrf_field(); ?>
                                     <select name="status">
-                                        <option value="0" <?php echo e($order->status == 0 ? 'selected' : ''); ?>>Chá» xĂ¡c nháº­n</option>
-                                        <option value="1" <?php echo e($order->status == 1 ? 'selected' : ''); ?>>XĂ¡c nháº­n</option>
-                                        <option value="2" <?php echo e($order->status == 2 ? 'selected' : ''); ?>>Há»§y</option>
+                                        <option value="0" <?php echo e($order->status == 0 ? 'selected' : ''); ?>>Chờ xác nhận</option>
+                                        <option value="1" <?php echo e($order->status == 1 ? 'selected' : ''); ?>>Xác nhận</option>
+                                        <option value="2" <?php echo e($order->status == 2 ? 'selected' : ''); ?>>Hủy</option>
                                     </select><br>
-                                    <button type="submit" class="update-btn">Cáº­p nháº­t</button>
+                                    <button type="submit" class="update-btn">Cập nhật</button>
                                 </form>
                             </td>
 
                             <td rowspan="<?php echo e($rowspan); ?>">
-                                <form method="POST" action="<?php echo e(route('xoa-don-dat-san', $order->order_id)); ?>" onsubmit="return confirm('Báº¡n cĂ³ cháº¯c muá»‘n xĂ³a Ä‘Æ¡n nĂ y?')">
+                                <form method="POST" action="<?php echo e(route('xoa-don-dat-san', $order->order_id)); ?>" onsubmit="return confirm('Bạn có chắc muốn xóa đơn này?')">
                                     <?php echo csrf_field(); ?>
                                     <?php echo method_field('DELETE'); ?>
-                                    <button type="submit" class="update-btn">XĂ³a</button>
+                                    <button type="submit" class="update-btn">Xóa</button>
                                 </form>
                             </td>
                         <?php endif; ?>
@@ -118,7 +114,7 @@
             <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
         </table>
     <?php else: ?>
-        <p>KhĂ´ng cĂ³ káº¿t quáº£</p>
+        <p>Không có kết quả</p>
     <?php endif; ?>
 <?php $__env->stopSection(); ?>
 

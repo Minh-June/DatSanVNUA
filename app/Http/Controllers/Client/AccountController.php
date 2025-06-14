@@ -25,7 +25,7 @@ class AccountController extends Controller
 
         $orders = $ordersQuery->get();
 
-        // NhĂ³m chi tiáº¿t orderDetails theo yard_id vĂ  date
+        // Nhóm chi tiết orderDetails theo yard_id và date
         foreach ($orders as $order) {
             $order->groupedDetails = $order->orderDetails->groupBy(function ($detail) {
                 return $detail->yard_id . '_' . $detail->date;
@@ -35,17 +35,17 @@ class AccountController extends Controller
         return view('client.account.index', compact('orders'));
     }
 
-    // Hiá»ƒn thá»‹ form cáº­p nháº­t thĂ´ng tin cĂ¡ nhĂ¢n
+    // Hiển thị form cập nhật thông tin cá nhân
     public function editInfor()
     {
-        $user = Auth::user(); // Láº¥y thĂ´ng tin ngÆ°á»i dĂ¹ng hiá»‡n táº¡i
+        $user = Auth::user(); // Lấy thông tin người dùng hiện tại
         return view('client.account.infor', compact('user'));
     }
 
-    // Cáº­p nháº­t thĂ´ng tin cĂ¡ nhĂ¢n
+    // Cập nhật thông tin cá nhân
     public function updateInfor(InforRequest  $request)
     {
-        $user = Auth::user(); // Láº¥y thĂ´ng tin ngÆ°á»i dĂ¹ng hiá»‡n táº¡i
+        $user = Auth::user(); // Lấy thông tin người dùng hiện tại
 
         $user->fullname = $request->fullname;
         $user->gender = $request->gender;
@@ -55,45 +55,45 @@ class AccountController extends Controller
 
         $user->save();
 
-        return redirect()->route('thong-tin-ca-nhan')->with('success', 'Cáº­p nháº­t thĂ´ng tin cĂ¡ nhĂ¢n thĂ nh cĂ´ng.');
+        return redirect()->route('thong-tin-ca-nhan')->with('success', 'Cập nhật thông tin cá nhân thành công.');
     }
 
-    // Hiá»ƒn thá»‹ form thay Ä‘á»•i máº­t kháº©u
+    // Hiển thị form thay đổi mật khẩu
     public function editPassword()
     {
         return view('client.account.password');
     }
 
-    // Cáº­p nháº­t máº­t kháº©u
+    // Cập nhật mật khẩu
     public function updatePassword(PasswordRequest $request)
     {
         $user = Auth::user();
 
-        // Kiá»ƒm tra máº­t kháº©u hiá»‡n táº¡i
+        // Kiểm tra mật khẩu hiện tại có đúng không
         if (!Hash::check($request->matkhau_hientai, $user->password)) {
-            return back()->with('error', 'Máº­t kháº©u hiá»‡n táº¡i khĂ´ng Ä‘Ăºng.');
+            return back()->withErrors(['matkhau_hientai' => 'Mật khẩu hiện tại không đúng.'])->withInput();
         }
 
-        // Cáº­p nháº­t máº­t kháº©u má»›i
+        // Cập nhật mật khẩu mới
         $user->password = Hash::make($request->matkhau_moi);
         $user->save();
 
-        return redirect()->route('thay-doi-mat-khau')->with('success', 'Cáº­p nháº­t máº­t kháº©u thĂ nh cĂ´ng.');
+        return redirect()->route('thay-doi-mat-khau')->with('success', 'Cập nhật mật khẩu thành công.');
     }
 
     public function delete(Request $request)
     {
         $user = Auth::user();
 
-        // Kiá»ƒm tra máº­t kháº©u
+        // Kiểm tra mật khẩu
         if (!Hash::check($request->password, $user->password)) {
-            return back()->with('error', 'Máº­t kháº©u khĂ´ng Ä‘Ăºng. KhĂ´ng thá»ƒ xĂ³a tĂ i khoáº£n.');
+            return back()->with('error', 'Mật khẩu không đúng. Không thể xóa tài khoản.');
         }
 
         $user->delete();
         Auth::logout();
 
-        return redirect()->route('dang-nhap')->with('success', 'TĂ i khoáº£n Ä‘Ă£ Ä‘Æ°á»£c xĂ³a thĂ nh cĂ´ng.');
+        return redirect()->route('dang-nhap')->with('success', 'Tài khoản đã được xóa thành công.');
     }
 
 }

@@ -1,32 +1,36 @@
 @extends('layouts.admin')
 
-@section('title', 'ThÄ‚Âªm loÃ¡ÂºÂ¡i sÄ‚Â¢n')
+@section('title', 'Thêm loại sân')
 
 @section('content')
-    <!-- HiÃ¡Â»Æ’n thÃ¡Â»â€¹ thÄ‚Â´ng bÄ‚Â¡o -->
+    <!-- Hiển thị thông báo -->
     @if(session('success'))
         <script>
             alert("{{ session('success') }}");
         </script>
     @endif
 
-    <!-- HiÃ¡Â»Æ’n thÃ¡Â»â€¹ thÄ‚Â´ng bÄ‚Â¡o lÃ¡Â»â€”i -->
+    <!-- Hiển thị thông báo lỗi -->
     @if ($errors->any())
         <script>
             alert("{{ $errors->first() }}");
         </script>
     @endif
 
-    <h3>ThÄ‚Âªm loÃ¡ÂºÂ¡i sÄ‚Â¢n</h3>
+    <h2>Thêm loại sân</h2>
 
-    <!-- Form thÄ‚Âªm loÃ¡ÂºÂ¡i sÄ‚Â¢n mÃ¡Â»â€ºi -->
+    <!-- Form thêm loại sân mới -->
     <div class="adminedit">
         <form action="{{ route('luu-loai-san') }}" method="POST">
-            @csrf <!-- ThÄ‚Âªm CSRF token -->
-            <label for="name">TÄ‚Âªn loÃ¡ÂºÂ¡i sÄ‚Â¢n:</label>
-            <input type="text" id="name" name="name" required>
-            <br>
-            <button class="update-btn" type="submit">LÃ†Â°u thÄ‚Â´ng tin loÃ¡ÂºÂ¡i sÄ‚Â¢n</button>
+            @csrf
+            <div class="adminedit-form-group">
+                <label for="name">Tên loại sân:</label>
+                <input type="text" id="name" name="name" required>
+            </div>
+
+            <div class="adminedit-button">
+                <button class="update-btn" type="submit">Lưu thông tin</button>
+            </div>
         </form>
     </div>
 @endsection

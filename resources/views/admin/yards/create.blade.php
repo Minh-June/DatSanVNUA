@@ -1,40 +1,46 @@
 @extends('layouts.admin')
 
-@section('title', 'ThĂªm sĂ¢n')
+@section('title', 'Thêm sân')
 
 @section('content')
-    <!-- Hiá»ƒn thá»‹ thĂ´ng bĂ¡o -->
+    <!-- Hiển thị thông báo -->
     @if(session('success'))
         <script>
             alert("{{ session('success') }}");
         </script>
     @endif
 
-    <!-- Hiá»ƒn thá»‹ thĂ´ng bĂ¡o lá»—i -->
+    <!-- Hiển thị thông báo lỗi -->
     @if ($errors->any())
         <script>
             alert("{{ $errors->first() }}");
         </script>
     @endif
 
-    <h3>ThĂªm sĂ¢n má»›i</h3>
+    <h2>Thêm sân mới</h2>
 
-    <!-- Form thĂªm sĂ¢n má»›i -->
+    <!-- Form thêm sân mới -->
     <div class="adminedit">
         <form action="{{ route('luu-san') }}" method="POST">
             @csrf
-            <label for="type_id">Thá»ƒ loáº¡i sĂ¢n:</label>
-            <select id="type_id" name="type_id" required>
-                <option value="">Chá»n loáº¡i sĂ¢n</option>
-                @foreach($types as $type)
-                    <option value="{{ $type->type_id }}">{{ $type->name }}</option>
-                @endforeach
-            </select>
-            <br>
-            <label for="name">TĂªn sĂ¢n:</label>
-            <input type="text" id="name" name="name" required>
-            <br>
-            <button class="update-btn" type="submit">LÆ°u thĂ´ng tin sĂ¢n</button>
+            <div class="adminedit-form-group">
+                <label for="type_id">Thể loại sân:</label>
+                <select id="type_id" name="type_id" required>
+                    <option value="">Chọn loại sân</option>
+                    @foreach($types as $type)
+                        <option value="{{ $type->type_id }}">{{ $type->name }}</option>
+                    @endforeach
+                </select>
+            </div>
+
+            <div class="adminedit-form-group">
+                <label for="name">Tên sân:</label>
+                <input type="text" id="name" name="name" required>
+            </div>
+
+            <div class="adminedit-button">
+                <button class="update-btn" type="submit">Lưu thông tin</button>
+            </div>
         </form>
     </div>
 @endsection

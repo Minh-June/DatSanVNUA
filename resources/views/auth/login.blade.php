@@ -1,28 +1,28 @@
 @extends('layouts.auth')
 
-@section('title', 'ÄÄƒng Nháº­p')
+@section('title', 'Đăng Nhập')
 
 @section('content')
-    <div class="container-access" id="signIn">
-        <h1 class="form-title">ÄÄƒng Nháº­p</h1>
+    <div class="container-access-login" id="signIn">
+        <h2 class="form-title">Đăng Nhập</h2>
 
         <form method="post" action="{{ route('dang-nhap') }}">
             @csrf
             @method('post')
 
             <div class="input-group">
-                <i class="fa-solid fa-envelope"></i>
-                <input type="text" name="username" id="username" placeholder="TĂªn ngÆ°á»i dĂ¹ng" required>
+                <i class="fa-solid fa-user"></i>
+                <input type="text" name="username" id="username" placeholder="Tên người dùng" required>
             </div>
 
             <div class="input-group">
                 <i class="fa-solid fa-lock"></i>
-                <input type="password" name="password" id="password" placeholder="Máº­t kháº©u" required>
+                <input type="password" name="password" id="password" placeholder="Mật khẩu" required>
             </div>
 
-            {{-- Hiá»ƒn thá»‹ lá»—i ngay trĂªn nĂºt Ä‘Äƒng nháº­p --}}
+            {{-- Hiển thị lỗi ngay trên nút đăng nhập --}}
             @if ($errors->any())
-                <div class="alert">
+                <div class="notice">
                     <ul>
                         @foreach ($errors->all() as $error)
                             <li>{{ $error }}</li>
@@ -31,12 +31,12 @@
                 </div>
             @endif
 
-            <input type="submit" class="index-btn" value="ÄÄƒng Nháº­p">
+            <input type="submit" class="index-btn" value="Đăng Nhập">
         </form>
 
         <div class="links">
-            <p>Báº¡n chÆ°a cĂ³ tĂ i khoáº£n?</p>
-            <a href="{{ route('dang-ky') }}"><button id="signUpButton">ÄÄƒng KĂ½</button></a>
+            <p>Bạn chưa có tài khoản?</p>
+            <a href="{{ route('dang-ky') }}"><button id="signUpButton">Đăng Ký</button></a>
         </div>
     </div>
 @endsection

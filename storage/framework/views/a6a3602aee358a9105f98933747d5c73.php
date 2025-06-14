@@ -1,6 +1,4 @@
-
-
-<?php $__env->startSection('title', 'Thay Ã„â€˜Ã¡Â»â€¢i mÃ¡ÂºÂ­t khÃ¡ÂºÂ©u'); ?>
+<?php $__env->startSection('title', 'Thay đổi mật khẩu'); ?>
 
 <?php $__env->startSection('content'); ?>  
     <?php if(session('success')): ?>
@@ -19,21 +17,21 @@
         </script>
     <?php endif; ?>
 
-    <h3>Thay Ã„â€˜Ã¡Â»â€¢i mÃ¡ÂºÂ­t khÃ¡ÂºÂ©u</h3> 
+    <h3>Thay đổi mật khẩu</h3> 
 
     <div class="adminedit">
         <form method="POST" action="<?php echo e(route('cap-nhat-mat-khau')); ?>">
             <?php echo csrf_field(); ?>
-            <label>MÃ¡ÂºÂ­t khÃ¡ÂºÂ©u hiÃ¡Â»â€¡n tÃ¡ÂºÂ¡i:</label>
+            <label>Mật khẩu hiện tại:</label>
             <input type="password" name="matkhau_hientai" required><br><br>
 
-            <label>NhÃ¡ÂºÂ­p mÃ¡ÂºÂ­t khÃ¡ÂºÂ©u mÃ¡Â»â€ºi:</label>
+            <label>Nhập mật khẩu mới:</label>
             <input type="password" name="matkhau_moi" required><br><br>
 
-            <label>XÄ‚Â¡c nhÃ¡ÂºÂ­n mÃ¡ÂºÂ­t khÃ¡ÂºÂ©u mÃ¡Â»â€ºi:</label>
+            <label>Xác nhận mật khẩu mới:</label>
             <input type="password" name="xacnhan_matkhau" required><br><br>
 
-            <button class="update-btn" type="submit">CÃ¡ÂºÂ­p nhÃ¡ÂºÂ­t mÃ¡ÂºÂ­t khÃ¡ÂºÂ©u</button>
+            <button class="update-btn" type="submit">Cập nhật mật khẩu</button>
         </form>
     </div>
 <?php $__env->stopSection(); ?>

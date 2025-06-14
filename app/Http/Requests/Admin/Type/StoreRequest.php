@@ -8,7 +8,7 @@ class StoreRequest extends FormRequest
 {
     public function authorize()
     {
-        return true; // Cáº§n xĂ¡c Ä‘á»‹nh quyá»n ngÆ°á»i dĂ¹ng táº¡i Ä‘Ă¢y náº¿u cáº§n
+        return true;// Cần xác định quyền người dùng tại đây nếu cần
     }
 
     public function rules()
@@ -18,7 +18,7 @@ class StoreRequest extends FormRequest
                 'required',
                 'string',
                 'max:255',
-                'regex:/^[\p{L}\s]+$/u', // KhĂ´ng cho phĂ©p sá»‘ & kĂ½ tá»± Ä‘áº·c biá»‡t
+                'regex:/^[\p{L}\s]+$/u', // Không cho phép số & ký tự đặc biệt
                 'unique:types,name,' . $this->route('type_id'), // Cho UpdateRequest
             ],
         ];

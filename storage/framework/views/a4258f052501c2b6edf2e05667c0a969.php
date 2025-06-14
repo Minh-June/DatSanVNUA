@@ -1,6 +1,6 @@
 
 
-<?php $__env->startSection('title', 'Cáº­p nháº­t thĂ´ng tin Ä‘Æ¡n Ä‘áº·t sĂ¢n'); ?>
+<?php $__env->startSection('title', 'Cập nhật thông tin đơn đặt sân'); ?>
 
 <?php $__env->startSection('content'); ?>
     <?php if(session('price_change_message')): ?>
@@ -9,20 +9,19 @@
         </script>
     <?php endif; ?>
 
-    <!-- Hiá»ƒn thá»‹ thĂ´ng bĂ¡o lá»—i -->
     <?php if(session('error')): ?>
         <script>
             alert("<?php echo e(session('error')); ?>");
         </script>
     <?php endif; ?>
     
-    <h3>Chi tiáº¿t Ä‘Æ¡n Ä‘áº·t sĂ¢n</h3>
+    <h3>Chi tiết đơn đặt sân</h3>
 
     <div class="admin-top-bar">
         <div class="admin-search"></div>
 
         <div class="admin-add-btn">
-            <a href="<?php echo e(route('quan-ly-don-dat-san')); ?>">Quay láº¡i danh sĂ¡ch</a>
+            <a href="<?php echo e(route('quan-ly-don-dat-san')); ?>">Quay lại danh sách</a>
         </div>
     </div>
 
@@ -30,33 +29,33 @@
         <thead>
             <tr>
                 <th>STT</th>
-                <th>TĂªn sĂ¢n</th>
-                <th>NgĂ y thuĂª</th>
-                <th>Khung giá»</th>
-                <th>GiĂ¡</th>
-                <th>Ghi chĂº</th>
-                <th colspan="2">TĂ¹y chá»n</th>
+                <th>Tên sân</th>
+                <th>Ngày thuê</th>
+                <th>Khung giờ</th>
+                <th>Giá</th>
+                <th>Ghi chú</th>
+                <th colspan="2">Tùy chọn</th>
             </tr>
         </thead>
         <tbody>
             <?php $__currentLoopData = $order->orderDetails; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $detail): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                 <tr>
                     <td><?php echo e($loop->iteration); ?></td>
-                    <td><?php echo e($detail->yard->name ?? 'KhĂ´ng xĂ¡c Ä‘á»‹nh'); ?></td>
+                    <td><?php echo e($detail->yard->name ?? 'Không xác định'); ?></td>
                     <td><?php echo e(\Carbon\Carbon::parse($detail->date)->format('d/m/Y')); ?></td>
                     <td><?php echo e(optional($detail->time)->time ?? $detail->time); ?></td>
                     <td><?php echo e(number_format($detail->price, 0, ',', '.')); ?> VND</td>
-                    <td><?php echo e($detail->notes ?: 'KhĂ´ng cĂ³'); ?></td>
+                    <td><?php echo e($detail->notes ?: 'Không có'); ?></td>
                     <td>
                         <form action="<?php echo e(route('cap-nhat-chi-tiet-don', $detail->order_detail_id)); ?>" method="GET" style="display:inline;">
-                            <button type="submit" class="update-btn">Sá»­a</button>
+                            <button type="submit" class="update-btn">Sửa</button>
                         </form>
                     </td>
                     <td>
-                        <form method="POST" action="<?php echo e(route('xoa-chi-tiet-don', $detail->order_detail_id)); ?>" onsubmit="return confirm('Báº¡n cĂ³ cháº¯c muá»‘n xĂ³a chi tiáº¿t nĂ y?')">
+                        <form method="POST" action="<?php echo e(route('xoa-chi-tiet-don', $detail->order_detail_id)); ?>" onsubmit="return confirm('Bạn có chắc muốn xóa chi tiết này?')">
                             <?php echo csrf_field(); ?>
                             <?php echo method_field('DELETE'); ?>
-                            <button type="submit" class="update-btn">XĂ³a</button>
+                            <button type="submit" class="update-btn">Xóa</button>
                         </form>
                     </td>
                 </tr>
@@ -64,8 +63,8 @@
         </tbody>
         <tfoot>
             <tr>
-                <td colspan="6" style="text-align: right;"><strong>Tá»•ng tiá»n:</strong></td>
-                <td colspan="2"><strong><?php echo e(number_format($totalPrice, 0, ',', '.')); ?> VND</strong></td>
+                <td colspan="6" style="text-align: right;"><strong>Tổng tiền:</strong></td>
+                <td colspan="2"><strong><?php echo e(number_format($totalPrice, 0, ',', '.')); ?> VNĐ</strong></td>
             </tr>
         </tfoot>
     </table>
@@ -74,7 +73,7 @@
         <div class="adminedit">
             
             <form method="GET" action="<?php echo e(route('cap-nhat-chi-tiet-don', $editDetail->order_detail_id)); ?>" id="form-select-yard-date">
-                <label>Chá»n sĂ¢n:</label>
+                <label>Chọn sân:</label>
                 <select name="yard_id" id="yard_id" required onchange="document.getElementById('form-select-yard-date').submit()">
                     <?php $__currentLoopData = $yards; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $san): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                         <option value="<?php echo e($san->yard_id); ?>"
@@ -85,7 +84,7 @@
                     <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                 </select><br>
 
-                <label>NgĂ y thuĂª:</label>
+                <label>Ngày thuê:</label>
                 <input type="date" name="date" id="date"
                     value="<?php echo e(request('date', $editDetail->date)); ?>"
                     required onchange="document.getElementById('form-select-yard-date').submit()">
@@ -98,7 +97,7 @@
                 <input type="hidden" name="yard_id" value="<?php echo e(request('yard_id', $editDetail->yard_id)); ?>">
                 <input type="hidden" name="date" value="<?php echo e(request('date', $editDetail->date)); ?>">
 
-                <label>Khung giá»:</label>
+                <label>Khung giờ:</label>
                 <select name="time" id="time" required onchange="updatePrice()">
                     <?php $__currentLoopData = $timesForSelectedDate; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $time): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                         <option value="<?php echo e($time->time); ?>" data-price="<?php echo e($time->price); ?>"
@@ -109,20 +108,20 @@
                     <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                 </select><br>
 
-                <label>GiĂ¡:</label>
+                <label>Giá:</label>
                 <input type="text" id="price_display" value="" disabled>
                 <input type="hidden" name="price" id="price" value=""><br>
 
-                <label>Ghi chĂº:</label><br>
+                <label>ghi chú:</label><br>
                 <textarea name="notes" rows="3"><?php echo e(old('notes', $editDetail->notes ?? '')); ?></textarea><br>
 
-                <button class="update-btn" type="submit">Cáº­p nháº­t</button><br><br>
+                <button class="update-btn" type="submit">Cập nhật</button><br><br>
             </form>
         </div>
     <?php endif; ?>
 
     <script>
-        // HĂ m cáº­p nháº­t giĂ¡ khi chá»n khung giá»
+        // Hàm cập nhật giá khi chọn khung giờ
         function updatePrice() {
             const timeSelect = document.getElementById('time');
             const selectedOption = timeSelect.options[timeSelect.selectedIndex];
@@ -131,7 +130,7 @@
             document.getElementById('price').value = price;
         }
 
-        // Khi load trang, hiá»ƒn thá»‹ giĂ¡ khung giá» Ä‘áº§u tiĂªn
+        // Khi load trang, hiển thị giá khung giờ đầu tiên
         window.onload = function () {
             updatePrice();
         };

@@ -21,7 +21,7 @@ class LoginController extends Controller
 
         $user = Auth::user();
 
-        // Äiá»u hÆ°á»›ng ngÆ°á»i dĂ¹ng theo vai trĂ²
+        // Điều hướng người dùng theo vai trò
         if ($user->role == 1) {
             return redirect()->route('trang-chu');
         } else {
@@ -31,7 +31,7 @@ class LoginController extends Controller
 
     public function logout(Request $request)
     {
-        Auth::logout(); // ÄÄƒng xuáº¥t ngÆ°á»i dĂ¹ng
+        Auth::logout(); // Đăng xuất người dùng
 
         return redirect()->route('view');
     }

@@ -27,10 +27,10 @@ function changeTimeSlot(button) {
         totalPrice += price;
     }
 
-    document.getElementById('total_price').innerText = totalPrice.toLocaleString('vi-VN') + ' VND';
+    document.getElementById('total_price').innerText = totalPrice.toLocaleString('vi-VN') + 'đ';
     document.getElementById('total_price_input').value = totalPrice;
 
-    // Cáº­p nháº­t cĂ¡c input hidden cho selected_times[]
+    // Cập nhật các input hidden cho selected_times[]
     const container = document.getElementById('selected_times');
     container.innerHTML = '';
     selectedTimes.forEach(time => {
@@ -41,7 +41,7 @@ function changeTimeSlot(button) {
         container.appendChild(input);
     });
 
-    // Cáº­p nháº­t input hidden price_per_slot dÆ°á»›i dáº¡ng JSON string
+    // Cập nhật input hidden price_per_slot dưới dạng JSON string
     let pricePerSlotInput = document.getElementById('price_per_slot_input');
     if (!pricePerSlotInput) {
         pricePerSlotInput = document.createElement('input');
@@ -64,11 +64,11 @@ function confirmBooking(event) {
     event.preventDefault();
 
     if (selectedTimes.length === 0) {
-        alert('Vui lĂ²ng chá»n ngĂ y khĂ¡c. Hiá»‡n táº¡i khĂ´ng cĂ³ khung giá» kháº£ dá»¥ng.');
+        alert('Vui lòng chọn khung giờ và ngày đặt !');
         return false;
     }
 
-    if (!confirm('Báº¡n muá»‘n tiáº¿p tá»¥c Ä‘áº·t sĂ¢n khĂ´ng ?')) {
+    if (!confirm('Bạn muốn tiếp tục đặt sân không ?')) {
         event.target.submit();
         return true;
     }
@@ -92,7 +92,7 @@ function confirmBooking(event) {
         }
     })
     .catch(error => {
-        alert('ÄĂ£ xáº£y ra lá»—i khi lÆ°u Ä‘Æ¡n Ä‘áº·t sĂ¢n: ' + error.message);
+        alert('Đã xảy ra lỗi khi lưu đơn đặt sân: ' + error.message);
     });
 
     return false;

@@ -2,23 +2,29 @@
 
 namespace App\Http\Controllers\Client;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use Carbon\Carbon; 
 use App\Models\Yard;
+use App\Models\Type;
+use App\Models\Time;
 use App\Models\Image;
+use App\Models\Order;
+use App\Models\OrderDetail;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\Client\SearchRequest;
 
 class HomeController extends Controller
 {
     public function index()
     {
-        // LÃ¡ÂºÂ¥y tÃ¡ÂºÂ¥t cÃ¡ÂºÂ£ sÄ‚Â¢n kÄ‚Â¨m theo loÃ¡ÂºÂ¡i sÄ‚Â¢n (type)
+        // Lấy tất cả sân kèm theo loại sân (type)
         $yards = Yard::with('type')->get();
 
-        // NhÄ‚Â³m cÄ‚Â¡c sÄ‚Â¢n theo tÄ‚Âªn loÃ¡ÂºÂ¡i sÄ‚Â¢n (type.name)
-        $groupedYards = $yards->groupBy(function ($yard) {
-            return $yard->type->name;
-        });
+        // Nhóm các sân theo tên loại sân (type.name)
+        $groupedYards = $yards->filter(fn($yard) => $yard->type !== null)
+            ->groupBy(fn($yard) => $yard->type->name);
 
         return view('view')->with('groupedYards', $groupedYards);
     }
@@ -26,37 +32,39 @@ class HomeController extends Controller
     public function home()
     {
         if (!Auth::check()) {
-            return redirect()->route('dang-nhap')->with('alert', 'YÄ‚Âªu cÃ¡ÂºÂ§u Ã„â€˜Ã„Æ’ng nhÃ¡ÂºÂ­p');
+            return redirect()->route('dang-nhap')->with('alert', 'Yêu cầu đăng nhập');
         }
 
-        // LÃ¡ÂºÂ¥y sÄ‚Â¢n kÄ‚Â¨m loÃ¡ÂºÂ¡i vÄ‚Â  Ã¡ÂºÂ£nh
-        $yards = Yard::with('type', 'images')->orderBy('yard_id')->get();
+        // Lấy tất cả sân đang hiển thị (status = 0), kèm loại và ảnh
+        $yards = Yard::with('type', 'images')
+            ->where('status', 0) // chỉ lấy sân đang hiện
+            ->orderBy('yard_id')
+            ->get();
 
-        // GÄ‚Â¡n Ã¡ÂºÂ£nh Ã„â€˜Ã¡ÂºÂ§u tiÄ‚Âªn cho mÃ¡Â»â€”i sÄ‚Â¢n
+        // Gán ảnh đầu tiên cho mỗi sân
         foreach ($yards as $yard) {
             $yard->first_image_url = $yard->images->first()?->url ?? asset('image/football.jpg');
         }
 
-        // NhÄ‚Â³m sÄ‚Â¢n theo loÃ¡ÂºÂ¡i
-        $groupedYards = $yards->groupBy(fn($yard) => $yard->type->name);
+        // Nhóm theo loại sân
+        $groupedYards = $yards->filter(fn($yard) => $yard->type !== null)
+            ->groupBy(fn($yard) => $yard->type->name);
 
-        // LÃ¡ÂºÂ¥y orders trong session
+        // Lấy đơn trong session
         $orders = session('orders') ?? [];
 
-        // LÃ¡ÂºÂ¥y danh sÄ‚Â¡ch yard_id trong orders
-        $yardIds = collect($orders)->pluck('yard_id')->unique();
-
-        // LÃ¡ÂºÂ¥y Ã¡ÂºÂ£nh Ã„â€˜Ã¡ÂºÂ§u tiÄ‚Âªn tÃ¡Â»Â«ng sÄ‚Â¢n trong orders
-        $yardFirstImages = Image::whereIn('yard_id', $yardIds)->get()
-            ->groupBy('yard_id')
-            ->map(fn($imgs) => $imgs->first()?->url ?? asset('image/football.jpg'));
+        // Lấy loại sân để dùng cho modal tìm kiếm
+        $types = Type::all();
 
         return view('client.home', [
             'groupedYards' => $groupedYards,
-            'user_id' => Auth::id(),
             'orders' => $orders,
-            'yardFirstImages' => $yardFirstImages,
+            'user_id' => Auth::id(),
+            'types' => $types,
         ]);
     }
-    
+
+    public function search(SearchRequest $request)
+    {
+    }
 }

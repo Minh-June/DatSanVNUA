@@ -1,6 +1,6 @@
 
 
-<?php $__env->startSection('title', 'Trang chá»§'); ?>
+<?php $__env->startSection('title', 'Trang chủ'); ?>
 
 <?php $__env->startSection('content'); ?>
         <div id="slider">
@@ -23,7 +23,7 @@
                                     <?php echo e($yard->name); ?>
 
                                 </h3>
-                                <a href="<?php echo e(route('dat-san', ['yard_id' => $yard->yard_id])); ?>" class="order-football-btn">Chá»n sĂ¢n</a>
+                                <a href="<?php echo e(route('dat-san', ['yard_id' => $yard->yard_id])); ?>" class="order-football-btn">Chọn sân</a>
                             </div>
                         </div>
                     <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
@@ -35,27 +35,40 @@
             
         <!-- Begin: Contact section -->
         <div id="contact" class="content-section">
-            <h2 class="content-heading">LIĂN Há»†</h2>
+            <h2 class="content-heading">LIÊN HỆ</h2>
 
             <div class="row contact-content">
                 <div class="col col-half contact-infor">
                     <div class="contact-infor-header">  
-                        <img src="/image/logo.png" alt="Logo máº·c Ä‘á»‹nh">
+                        <img src="/image/logo.png" alt="Logo mặc định">
                         <div class="contact-infor-text">  
-                            <h3>Há»ŒC VIá»†N NĂ”NG NGHIá»†P VIá»†T NAM</h3>
-                            <h5>VIETNAM NATIONAL UNIVERSITY OF AGRICULTURE</h5>
+                            <h3>HỌC VIỆN NÔNG NGHIỆP VIỆT NAM</h3>
+                            <h4>TRUNG TÂM GIÁO DỤC THỂ CHẤT VÀ THỂ THAO</h4>
                         </div>
                     </div>
-                    <p><i class="fa-solid fa-location-dot"></i>TrĂ¢u Quá»³, Gia LĂ¢m, HĂ  Ná»™i, Viá»‡t Nam</p>
-                    <p><i class="fa-solid fa-phone"></i>Äiá»‡n thoáº¡i: 84.024.62617586</p>
-                    <p><i class="fa-solid fa-envelope"></i>Email: webmaster@vnua.edu.vn</p>
+                    <p><i class="fa-solid fa-location-dot"></i>Trâu Quỳ, Gia Lâm, Hà Nội, Việt Nam</p>
+                    <p>
+                        <i class="fa-solid fa-phone"></i>
+                        <span class="website-label">Điện thoại:</span>
+                        <a href="tel:+8424362618401" class="website-link">024(3) 62.618.401</a>
+                    </p>
+                    <p>
+                        <i class="fa-solid fa-envelope"></i>
+                        <span class="website-label">Email:</span>
+                        <a href="mailto:gdtc@vnua.edu.vn" class="website-link">gdtc@vnua.edu.vn</a>
+                    </p>
+                    <p>
+                        <i class="fa-solid fa-globe"></i>
+                        <span class="website-label">Website:</span>
+                        <a href="http://gdtc.vnua.edu.vn" target="_blank" class="website-link">http://gdtc.vnua.edu.vn</a>
+                    </p>
                 </div>
 
                 <div class="col col-half contact-form">
                     <form action="">
                         <div class="row">
                             <div class="col col-half">
-                                <input type="text" name="" placeholder="TĂªn" required id="" class="form-control">
+                                <input type="text" name="" placeholder="Tên" required id="" class="form-control">
                             </div>
                             <div class="col col-half s-mt-8">
                                 <input type="email" name="" placeholder="Email" required id="" class="form-control">
@@ -63,10 +76,10 @@
                         </div>
                         <div class="row mt-8">
                             <div class="col col-full">
-                                <input type="text" name="" placeholder="Ghi chĂº" required id="" class="form-control">
+                                <input type="text" name="" placeholder="Ghi chú" required id="" class="form-control">
                             </div>
                         </div>
-                        <input class="contact-btn pull-right mt-16" type="submit" value="Gá»­i">
+                        <input class="contact-btn pull-right mt-16" type="submit" value="Gửi">
                     </form>
 
                 </div>
