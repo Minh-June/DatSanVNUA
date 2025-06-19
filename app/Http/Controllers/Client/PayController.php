@@ -16,6 +16,8 @@ class PayController extends Controller
         $orders = session('orders', []);
         $types = Type::all();
 
+        session(['orders' => $orders]);
+
         return view('client.pay', compact('orders', 'types'));
     }
     
@@ -57,6 +59,7 @@ class PayController extends Controller
                 $orderDetail = new OrderDetail();
                 $orderDetail->order_id = $order->order_id;
                 $orderDetail->yard_id = $item['yard_id'];
+                $orderDetail->type_id = $item['type_id'];
                 $orderDetail->date = $item['date'];
                 $orderDetail->time = $time;
                 $orderDetail->price = $item['price_per_slot'][$index] ?? 0;

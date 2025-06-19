@@ -40,7 +40,10 @@
                 <input type="hidden" name="date" value="{{ request('date') }}">
                 <input type="hidden" name="month" value="{{ request('month') }}">
                 <input type="hidden" name="year" value="{{ request('year') }}">
-                <button type="submit" class="update-btn">Xuất file excel</button>
+                <button type="submit" class="delete-btn">
+                    <i class="fa-solid fa-file-export"></i>
+                    Xuất Excel
+                </button>
             </form>
         </div>
     </div>
@@ -59,7 +62,6 @@
                         <input type="hidden" name="month" value="{{ request('month') }}">
                         <input type="hidden" name="year" value="{{ request('year') }}">
 
-                        <label for="keyword">Tìm sân:</label>
                         <input type="text" id="keyword" name="keyword" placeholder="Nhập tên sân cần tìm" value="{{ request('keyword') }}">
                         <button class="update-btn" type="submit">Tìm kiếm</button>
                     </form>
@@ -70,23 +72,43 @@
                 <thead>
                     <tr>
                         <th>STT</th>
+                        <th>Loại sân</th>
                         <th>Tên sân</th>
                         <th>Số đơn đặt</th>
                         <th>Doanh thu</th>
                     </tr>
                 </thead>
                 <tbody>
-                @foreach($byYard as $yardName => $revenue)
-                    <tr>
-                        <td>{{ $loop->iteration }}</td>
-                        <td class="left-align">{{ !empty($yardName) ? $yardName : 'Sân không tồn tại' }}</td>
-                        <td>
-                            <a href="{{ route('quan-ly-don-dat-san', ['yard_name' => $yardName]) }}">
-                                {{ $bookingCountByYard[$yardName] ?? 0 }}
-                            </a>
-                        </td>
-                        <td>{{ number_format($revenue, 0, ',', '.') }}đ</td>
-                    </tr>
+                @php
+                    $stt = 1;
+                @endphp
+
+                @foreach($groupByTypeThenYard as $typeName => $yards)
+                    @php
+                        $rowCount = $yards->count();
+                        $firstTypeRow = true;
+                    @endphp
+
+                    @foreach($yards as $yardName => $data)
+                        <tr>
+                            <td>{{ $stt++ }}</td>
+
+                            {{-- Cột loại sân chỉ hiển thị 1 lần trên nhóm, rowspan = số sân --}}
+                            @if($firstTypeRow)
+                                <td class="left-align" rowspan="{{ $rowCount }}">{{ $typeName }}</td>
+                                @php $firstTypeRow = false; @endphp
+                            @endif
+
+                            <td class="left-align">{{ $yardName }}</td>
+
+                            <td>
+                                <a href="{{ route('quan-ly-don-dat-san', ['yard_name' => $yardName, 'status' => 1]) }}">
+                                    {{ $data['booking_count'] }}
+                                </a>
+                            </td>
+                            <td>{{ number_format($data['total_revenue'], 0, ',', '.') }}đ</td>
+                        </tr>
+                    @endforeach
                 @endforeach
                 </tbody>
             </table>
@@ -102,5 +124,8 @@
             document.getElementById('input-month').style.display = filterType === 'month' ? 'inline-block' : 'none';
             document.getElementById('input-year').style.display = filterType === 'year' ? 'inline-block' : 'none';
         }
+
+        // Gọi khi trang load
+        document.addEventListener('DOMContentLoaded', toggleInputs);
     </script>
 @endsection

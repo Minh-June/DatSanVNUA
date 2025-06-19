@@ -17,7 +17,7 @@
         <div class="admin-search">
             <form method="GET" action="{{ route('quan-ly-don-dat-san') }}">
                 <input type="hidden" name="yard_name" value="{{ request('yard_name') }}">
-                <label for="selected_date">Chọn ngày:</label>
+                <label for="selected_date">Ngày:</label>
                 <input type="date" id="selected_date" name="selected_date" value="{{ request('selected_date', now()->toDateString()) }}">
                 <button class="update-btn" type="submit">Tìm kiếm</button>
             </form>

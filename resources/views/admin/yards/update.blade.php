@@ -23,7 +23,6 @@
     <div class="adminedit">
         <form method="POST" action="{{ route('update.yard', $yard->yard_id) }}">
             @csrf
-            {{-- <input type="hidden" name="_method" value="POST"> --}}
 
             <div class="adminedit-form-group">
                 <label for="type_id">Thể loại sân:</label>

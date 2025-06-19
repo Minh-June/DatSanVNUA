@@ -11,7 +11,7 @@
 <?php endif; ?>
 
 <div id="content" class="order-section">
-    <h2 class="order-heading"><?php echo e($yard_name); ?></h2>
+    <h2 class="order-heading"><?php echo e($type_name); ?> - <?php echo e($yard_name); ?></h2>
     <div class="order-content">
         <div class="order-section-left">
             <?php if($yard_image): ?>
@@ -26,6 +26,7 @@
                 <p>* Lưu ý: Nếu bạn muốn đặt sân ngoài khung giờ có sẵn, vui lòng liên hệ chủ sân qua SĐT: 0356645445</p>
                 <form action="<?php echo e(route('luu-thong-tin-don-dat-san')); ?>" method="POST" id="orderForm" onsubmit="return confirmBooking(event)">
                     <?php echo csrf_field(); ?>
+                    <input type="hidden" name="type_name" value="<?php echo e($type_name); ?>">
                     <div class="form-order-days">
                         <label for="date">Chọn ngày:</label>
                         <input type="hidden" id="yard_id_input" value="<?php echo e($yard_id); ?>">
@@ -57,6 +58,8 @@
 
                     <input type="hidden" name="user_id" value="<?php echo e($userId); ?>">
                     <input type="hidden" name="yard_id" value="<?php echo e($yard_id); ?>">
+                    <input type="hidden" name="type_id" value="<?php echo e($type_id); ?>">
+                    <input type="hidden" name="type_name" value="<?php echo e($type_name); ?>">
                     <input type="hidden" name="total_price" id="total_price_input" value="0">
                     <div id="selected_times"></div>
                     <input type="hidden" name="continue_booking" id="continue_booking">
@@ -76,7 +79,7 @@
     <div class="clear"></div>
 </div>
 
-<!-- Lightbox hiển thị tất cả ảnh sân -->
+    <!-- Hiển thị tất cả ảnh sân -->
     <div id="multi-image-popup" onclick="hideAllImages()" style="
         display: none;
         position: fixed;
@@ -86,11 +89,16 @@
         justify-content: center;
         align-items: center;
     ">
-        <div onclick="event.stopPropagation()" style="display: flex; gap: 15px;">
+        <div onclick="event.stopPropagation()" style="
+            display: flex; 
+            gap: 15px;
+            max-width: 90%;
+            overflow-x: auto;
+        ">
             <?php $__currentLoopData = $yard->images; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $img): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                 <img src="<?php echo e(asset(Storage::url($img->image))); ?>"
                     alt="Ảnh sân"
-                    style="max-height: 700px; max-width: 525px; box-shadow: 0 0 10px #000;">
+                    style="max-height: 600px; max-width: 500px; box-shadow: 0 0 10px #000;">
             <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
         </div>
     </div>

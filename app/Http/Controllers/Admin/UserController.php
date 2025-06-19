@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
@@ -17,7 +18,8 @@ class UserController extends Controller
 
             $query->where(function ($q) use ($keyword) {
                 $q->whereRaw('LOWER(fullname) LIKE ?', ['%' . $keyword . '%'])
-                ->orWhereRaw('LOWER(username) LIKE ?', ['%' . $keyword . '%']);
+                ->orWhereRaw('LOWER(username) LIKE ?', ['%' . $keyword . '%'])
+                ->orWhere('phonenb', 'like', '%' . $keyword . '%'); // ✅ Thêm dòng này
 
                 if (str_contains($keyword, 'admin')) {
                     $q->orWhere('role', 0);
@@ -32,7 +34,7 @@ class UserController extends Controller
             $xem_user = User::find($request->xem);
         }
 
-        $users = $query->orderBy('user_id', 'desc')->paginate(15);
+        $users = $query->orderBy('role', 'desc')->paginate(15);
 
         return view('admin.users.index', compact('users', 'xem_user'));
     }
@@ -63,7 +65,6 @@ class UserController extends Controller
             return redirect()->route('quan-ly-nguoi-dung')->with('error', 'Người dùng không tồn tại.');
         }
 
-        // KhĂ´ng cho xĂ³a admin
         if ($user->role == 0) {
             return redirect()->route('quan-ly-nguoi-dung')->with('error', 'Không thể xóa tài khoản admin.');
         }
@@ -73,5 +74,17 @@ class UserController extends Controller
         return redirect()->route('quan-ly-nguoi-dung')->with('success', 'Xóa người dùng thành công.');
     }
 
+    public function reset($user_id)
+    {
+        $user = User::find($user_id);
 
+        if (!$user) {
+            return redirect()->route('quan-ly-nguoi-dung')->with('error', 'Người dùng không tồn tại.');
+        }
+
+        $user->password = Hash::make('123456');
+        $user->save();
+
+        return redirect()->route('quan-ly-nguoi-dung')->with('success', 'Đã đặt lại mật khẩu về 123456 thành công !');
+    }
 }

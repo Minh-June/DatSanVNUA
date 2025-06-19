@@ -15,7 +15,7 @@
 
     <div class="order-successfully">
         <div class="order-successfully-infor">
-            <h3 class="order-successfully-header">Hợp đồng đặt sân</h3>
+            <h2 class="order-successfully-header">Hợp đồng đặt sân</h2>
 
             <h4>Điều 1: Nội dung hợp đồng</h4>
             <p>Bên A cam kết và thực hiện đặt lịch sân thể thao theo các thông tin sau đây:</p><br>
@@ -23,77 +23,113 @@
             <table id="ListCustomers">
                 <thead>
                     <tr>
-                        <th>STT</th>
-                        <th>Ngày đặt</th>
                         <th>Họ và tên</th>
                         <th>SĐT</th>
+                        <th>Ngày đặt</th>
+                        <th>Loại sân</th>
                         <th>Tên sân</th>
                         <th>Thời gian thuê</th>
+                        <th>Giá từng khung giờ</th>
                         <th>Ghi chú</th>
-                        <th>Thành tiền</th>
                         <th>Tùy chọn</th>
                     </tr>
                 </thead>
                 <tbody>
-                @php
-                    $groupedOrders = collect(session('orders', []))->groupBy(fn($order) => $order['date'] . '-' . $order['yard_name']);
-                    $stt = 1;
-                @endphp
-
-                @foreach ($groupedOrders as $group)
                     @php
-                        $first = $group->first();
-                        $totalPrice = $group->sum('price');
+                        $orders = collect(session('orders', []));
+                        $groupedByUser = $orders->groupBy(fn($o) => $o['name'] . '-' . $o['phone']);
+                        $totalAmount = $orders->sum('price');
                     @endphp
-                    <tr>
-                        <td rowspan="{{ $group->count() }}">{{ $stt++ }}</td>
-                        <td rowspan="{{ $group->count() }}">{{ \Carbon\Carbon::parse($first['date'])->format('d/m/Y') }}</td>
-                        <td rowspan="{{ $group->count() }}">{{ $first['name'] }}</td>
-                        <td rowspan="{{ $group->count() }}">{{ $first['phone'] }}</td>
-                        <td rowspan="{{ $group->count() }}">{{ $first['yard_name'] }}</td>
 
-                        {{-- Cột đầu tiên: thời gian thuê, ghi chú, thành tiền, thao tác --}}
-                        <td>
-                            @foreach ($first['times'] as $time)
-                                <div>{{ $time }}</div>
-                            @endforeach
-                        </td>
-                        <td>{{ $first['notes'] ?? 'Không có' }}</td>
-                        <td>{{ number_format($first['price']) }}đ</td>
-                        <td>
-                            <form action="{{ route('xoa-don-tam-thoi') }}" method="POST" onsubmit="return confirm('Bạn có chắc chắn muốn xóa đơn này?')">
-                                @csrf
-                                @method('DELETE')
-                                <input type="hidden" name="index" value="{{ array_search($first, session('orders')) }}">
-                                <button type="submit" class="delete-btn">Xóa</button>
-                            </form>
-                        </td>
-                    </tr>
+                    @forelse ($groupedByUser as $userGroup)
+                        @php
+                            $rowspanNamePhone = $userGroup->count();
+                            $firstNamePhoneRow = true;
+                            $groupedByDate = $userGroup->groupBy('date');
+                        @endphp
 
-                    {{-- Các dòng còn lại (cùng ngày + sân, khác thời gian) --}}
-                    @foreach ($group->slice(1) as $order)
-                        <tr>
-                            <td>
-                                @foreach ($order['times'] as $time)
-                                    <div>{{ $time }}</div>
+                        @foreach ($groupedByDate as $date => $dateGroup)
+                            @php
+                                $rowspanDate = $dateGroup->count();
+                                $firstDateRow = true;
+                                $groupedByType = $dateGroup->groupBy('type_name');
+                            @endphp
+
+                            @foreach ($groupedByType as $type => $typeGroup)
+                                @php
+                                    $rowspanType = $typeGroup->count();
+                                    $firstTypeRow = true;
+                                @endphp
+
+                                @foreach ($typeGroup as $index => $order)
+                                    <tr>
+                                        {{-- Gộp họ tên + SĐT --}}
+                                        @if ($firstNamePhoneRow)
+                                            <td rowspan="{{ $rowspanNamePhone }}">{{ $order['name'] }}</td>
+                                            <td rowspan="{{ $rowspanNamePhone }}">{{ $order['phone'] }}</td>
+                                            @php $firstNamePhoneRow = false; @endphp
+                                        @endif
+
+                                        {{-- Gộp ngày đặt --}}
+                                        @if ($firstDateRow)
+                                            <td rowspan="{{ $rowspanDate }}">{{ \Carbon\Carbon::parse($date)->format('d/m/Y') }}</td>
+                                            @php $firstDateRow = false; @endphp
+                                        @endif
+
+                                        {{-- Gộp loại sân --}}
+                                        @if ($firstTypeRow)
+                                            <td rowspan="{{ $rowspanType }}">{{ $type }}</td>
+                                            @php $firstTypeRow = false; @endphp
+                                        @endif
+
+                                        {{-- Tên sân --}}
+                                        <td>{{ $order['yard_name'] }}</td>
+
+                                        {{-- Thời gian thuê --}}
+                                        <td>
+                                            @foreach ($order['times'] as $time)
+                                                {{ $time }}<br>
+                                            @endforeach
+                                        </td>
+
+                                        {{-- Giá từng khung giờ --}}
+                                        <td>
+                                            @foreach ($order['price_per_slot'] ?? [] as $price)
+                                                {{ number_format($price) }}đ<br>
+                                            @endforeach
+                                        </td>
+
+                                        {{-- Ghi chú --}}
+                                        <td>{{ $order['notes'] ?? 'Không có' }}</td>
+
+                                        {{-- Tùy chọn --}}
+                                        <td>
+                                            <form action="{{ route('xoa-don-tam-thoi') }}" method="POST" onsubmit="return confirm('Bạn có chắc chắn muốn xóa đơn này?')">
+                                                @csrf
+                                                @method('DELETE')
+                                                <input type="hidden" name="index" value="{{ array_search($order, session('orders')) }}">
+                                                <button type="submit" class="delete-btn">Xóa</button>
+                                            </form>
+                                        </td>
+                                    </tr>
                                 @endforeach
-                            </td>
-                            <td>{{ $order['notes'] ?? 'Không có' }}</td>
-                            <td>{{ number_format($order['price']) }}đ</td>
-                            <td>
-                                <form action="{{ route('xoa-don-tam-thoi') }}" method="POST" onsubmit="return confirm('Bạn có chắc chắn muốn xóa đơn này?')">
-                                    @csrf
-                                    @method('DELETE')
-                                    <input type="hidden" name="index" value="{{ array_search($order, session('orders')) }}">
-                                    <button type="submit" class="delete-btn">Xóa</button>
-                                </form>
-                            </td>
-                        </tr>
-                    @endforeach
-                @endforeach
+                            @endforeach
+                        @endforeach
+                    @empty
+                        <tr><td colspan="9">Không có đơn đặt sân nào.</td></tr>
+                    @endforelse
                 </tbody>
-            </table>
 
+                @if(count($orders) > 0)
+                <tfoot>
+                    <tr>
+                        <td colspan="6" style="text-align: right;"><strong>Tổng tiền:</strong></td>
+                        <td colspan="3"><strong>{{ number_format($totalAmount) }}đ</strong></td>
+                    </tr>
+                </tfoot>
+                @endif
+            </table>
+            
             <h4>Điều 2: Thanh toán</h4>
             <p>Bên A cam kết thanh toán phí dịch vụ đặt lịch theo thỏa thuận giữa hai bên.</p>
 

@@ -21,9 +21,8 @@ class AccountRequest extends FormRequest
             'birthdate' => [
                 'required',
                 'date',
-                'before:today',
-                'after_or_equal:' . now()->subYears(100)->toDateString(),
-                'before_or_equal:' . now()->subYears(13)->toDateString(),
+                'before_or_equal:' . now()->subYears(13)->toDateString(), // Phải ít nhất 13 tuổi
+                'after_or_equal:' . now()->subYears(100)->toDateString(), // Không quá 100 tuổi
             ],
             'phonenb'   => ['required', 'regex:/^0[0-9]{9}$/', 'unique:users,phonenb,' . $userId . ',user_id'],
             'email'     => ['required', 'string', 'email', 'max:255', 'unique:users,email,' . $userId . ',user_id'],
@@ -45,8 +44,8 @@ class AccountRequest extends FormRequest
             'birthdate.required'        => 'Ngày sinh là bắt buộc.',
             'birthdate.date'            => 'Ngày sinh không hợp lệ.',
             'birthdate.before'          => 'Ngày sinh phải nhỏ hơn ngày hiện tại.',
-            'birthdate.after_or_equal'  => 'Tuổi tối đa được phép là 100.',
             'birthdate.before_or_equal' => 'Bạn phải ít nhất đủ 13 tuổi.',
+            'birthdate.after_or_equal'  => 'Tuổi tối đa được phép là 100.',
 
             // Số điện thoại
             'phonenb.required' => 'Số điện thoại là bắt buộc.',

@@ -40,7 +40,10 @@
                 <input type="hidden" name="date" value="<?php echo e(request('date')); ?>">
                 <input type="hidden" name="month" value="<?php echo e(request('month')); ?>">
                 <input type="hidden" name="year" value="<?php echo e(request('year')); ?>">
-                <button type="submit" class="update-btn">Xuất file excel</button>
+                <button type="submit" class="delete-btn">
+                    <i class="fa-solid fa-file-export"></i>
+                    Xuất Excel
+                </button>
             </form>
         </div>
     </div>
@@ -59,7 +62,6 @@
                         <input type="hidden" name="month" value="<?php echo e(request('month')); ?>">
                         <input type="hidden" name="year" value="<?php echo e(request('year')); ?>">
 
-                        <label for="keyword">Tìm sân:</label>
                         <input type="text" id="keyword" name="keyword" placeholder="Nhập tên sân cần tìm" value="<?php echo e(request('keyword')); ?>">
                         <button class="update-btn" type="submit">Tìm kiếm</button>
                     </form>
@@ -70,24 +72,44 @@
                 <thead>
                     <tr>
                         <th>STT</th>
+                        <th>Loại sân</th>
                         <th>Tên sân</th>
                         <th>Số đơn đặt</th>
                         <th>Doanh thu</th>
                     </tr>
                 </thead>
                 <tbody>
-                <?php $__currentLoopData = $byYard; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $yardName => $revenue): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                    <tr>
-                        <td><?php echo e($loop->iteration); ?></td>
-                        <td class="left-align"><?php echo e(!empty($yardName) ? $yardName : 'Sân không tồn tại'); ?></td>
-                        <td>
-                            <a href="<?php echo e(route('quan-ly-don-dat-san', ['yard_name' => $yardName])); ?>">
-                                <?php echo e($bookingCountByYard[$yardName] ?? 0); ?>
+                <?php
+                    $stt = 1;
+                ?>
 
-                            </a>
-                        </td>
-                        <td><?php echo e(number_format($revenue, 0, ',', '.')); ?>đ</td>
-                    </tr>
+                <?php $__currentLoopData = $groupByTypeThenYard; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $typeName => $yards): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                    <?php
+                        $rowCount = $yards->count();
+                        $firstTypeRow = true;
+                    ?>
+
+                    <?php $__currentLoopData = $yards; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $yardName => $data): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                        <tr>
+                            <td><?php echo e($stt++); ?></td>
+
+                            
+                            <?php if($firstTypeRow): ?>
+                                <td class="left-align" rowspan="<?php echo e($rowCount); ?>"><?php echo e($typeName); ?></td>
+                                <?php $firstTypeRow = false; ?>
+                            <?php endif; ?>
+
+                            <td class="left-align"><?php echo e($yardName); ?></td>
+
+                            <td>
+                                <a href="<?php echo e(route('quan-ly-don-dat-san', ['yard_name' => $yardName, 'status' => 1])); ?>">
+                                    <?php echo e($data['booking_count']); ?>
+
+                                </a>
+                            </td>
+                            <td><?php echo e(number_format($data['total_revenue'], 0, ',', '.')); ?>đ</td>
+                        </tr>
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                 <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                 </tbody>
             </table>
@@ -103,6 +125,9 @@
             document.getElementById('input-month').style.display = filterType === 'month' ? 'inline-block' : 'none';
             document.getElementById('input-year').style.display = filterType === 'year' ? 'inline-block' : 'none';
         }
+
+        // Gọi khi trang load
+        document.addEventListener('DOMContentLoaded', toggleInputs);
     </script>
 <?php $__env->stopSection(); ?>
 

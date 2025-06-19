@@ -22,9 +22,8 @@
     <div class="admin-top-bar">
         <div class="admin-search">
             <form method="GET" action="<?php echo e(route('quan-ly-loai-san')); ?>">
-                <label for="type_id">Chọn loại sân:</label>
                 <select id="type_id" name="type_id">
-                    <option value="">Tất cả</option>
+                    <option value="">Chọn loại sân</option>
                     <?php $__currentLoopData = $allTypes; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $type): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                         <option value="<?php echo e($type->type_id); ?>" <?php echo e(request('type_id') == $type->type_id ? 'selected' : ''); ?>>
                             <?php echo e($type->name); ?>

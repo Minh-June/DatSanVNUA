@@ -11,7 +11,10 @@ class SuccessController extends Controller
     public function index()
     {
         $orders = session('orders', []);
-        $types = Type::all(); // Lấy tất cả loại sân (nếu cần dùng trong view)
+        $types = Type::all(); // Nếu bạn cần danh sách loại sân cho view
+
+        session(['orders' => $orders]);
+
         return view('client.success', compact('orders', 'types'));
     }
 

@@ -10,13 +10,27 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div id="main">
+    @if (!Auth::check())
+        <script>
+            alert("Phiên đăng nhập hết hạn, vui lòng đăng nhập lại !");
+            window.location.href = "{{ route('dang-nhap') }}";
+        </script>
+    @endif
 
+    <div id="main">
         <!-- Begin: Header -->
         <div id="header">
-            <a class="home-heading" href="{{ Auth::check() && Auth::user()->role != 1 ? route('admin') : route('trang-chu') }}" target="_top">
-                {{ Auth::check() && Auth::user()->role != 1 ? 'QUẢN LÝ SÂN THỂ THAO' : 'TRANG CHỦ' }}
-            </a>       
+            <ul id="nav">
+                <li>
+                    <a class="home-heading" href="{{ Auth::check() && Auth::user()->role != 1 ? route('admin') : route('trang-chu') }}" target="_top">
+                        @if (!Auth::check() || Auth::user()->role == 1)
+                            <i class="fa-solid fa-house"></i>
+                        @endif
+                        {{ Auth::check() && Auth::user()->role != 1 ? 'QUẢN LÝ SÂN THỂ THAO' : 'TRANG CHỦ' }}
+                    </a>
+                </li>
+                <li></li>
+            </ul>     
             <div class="header-login">
                 <form action="{{ route('dang-xuat') }}" method="post" onsubmit="return confirm('Bạn có chắc chắn muốn đăng xuất?');">
                     @csrf
@@ -33,18 +47,12 @@
                     <div class="admin-section-left">
                         <div class="header-section-left">
                             <i class="fa-solid fa-user-tie"></i>
-                            @if (Auth::check())
-                                @php
-                                    $user = Auth::user();
-                                @endphp
-                                <a class="avatar-name" href="{{ route('thong-tin-tai-khoan') }}" target="_self">
-                                    {{ $user->username }}
-                                </a>
-                            @else
-                                <a class="avatar-name" href="{{ route('dang-nhap') }}" target="_self">
-                                    Đăng Nhập
-                                </a>
-                            @endif
+                            @php
+                                $user = Auth::user();
+                            @endphp
+                            <a class="avatar-name" href="{{ route('thong-tin-tai-khoan') }}" target="_self">
+                                {{ $user->username }}
+                            </a>
                         </div>
 
                         <div class="admin-manage">

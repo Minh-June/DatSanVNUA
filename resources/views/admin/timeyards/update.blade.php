@@ -50,22 +50,12 @@
                     name="price"
                     value="{{ old('price', $time->price) }}"
                     required
-                    step="100000"
+                    step="1000"
                     min="0"
                 >
             </div>
 
-            <div class="adminedit-form-group">
-                <label for="date">Ngày áp dụng:</label>
-                <input
-                    type="date"
-                    id="date"
-                    name="date"
-                    value="{{ old('date', $time->date) }}"
-                    required
-                    min="{{ date('Y-m-d') }}"
-                >
-            </div>
+            <input type="hidden" name="date" value="{{ old('date', $time->date) }}">
 
             <div class="adminedit-button">
                 <button class="update-btn" type="submit">Cập nhật</button>

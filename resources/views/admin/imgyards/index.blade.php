@@ -12,7 +12,7 @@
         <script>alert("{{ session('error') }}");</script>
     @endif
 
-    <h2>Quản lý hình ảnh - {{ $selectedYard->name }}</h2>
+    <h2>{{ $selectedYard->type->name }} - {{ $selectedYard->name }}</h2>
 
     <div class="admin-top-bar">
         <div class="admin-search"></div>

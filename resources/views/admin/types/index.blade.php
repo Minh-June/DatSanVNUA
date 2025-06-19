@@ -22,9 +22,8 @@
     <div class="admin-top-bar">
         <div class="admin-search">
             <form method="GET" action="{{ route('quan-ly-loai-san') }}">
-                <label for="type_id">Chọn loại sân:</label>
                 <select id="type_id" name="type_id">
-                    <option value="">Tất cả</option>
+                    <option value="">Chọn loại sân</option>
                     @foreach($allTypes as $type)
                         <option value="{{ $type->type_id }}" {{ request('type_id') == $type->type_id ? 'selected' : '' }}>
                             {{ $type->name }}

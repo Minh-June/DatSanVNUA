@@ -11,7 +11,6 @@
 </head>
 <body>
     <div id="main">
-
         <!-- Begin: Header -->
         <div id="header">
             <ul id="nav">
@@ -32,15 +31,23 @@
         <!-- End: Header -->
 
         <div id="slider">
-            <img src="{{ asset('./image/slider/slider1.jpg') }}" alt="Slider Image" style="max-width: 100%; max-height: 50%;">
+            <div class="slider-track">
+                <img src="{{ asset('image/slider/slider1.jpg') }}" alt="">
+                <img src="{{ asset('image/slider/slider2.jpg') }}" alt="">
+                <img src="{{ asset('image/slider/slider3.jpg') }}" alt="">
+                <img src="{{ asset('image/slider/slider4.jpg') }}" alt="">
+                <img src="{{ asset('image/slider/slider1.jpg') }}" alt=""> <!-- Ảnh đầu được nhân bản để tạo hiệu ứng lặp -->
+            </div>
+            <button class="slider-btn-left"><i class="fa-solid fa-chevron-left"></i></button>
+            <button class="slider-btn-right"><i class="fa-solid fa-chevron-right"></i></button>
         </div>
         
         <!-- Begin: Content -->
         @foreach ($groupedYards as $typeName => $yards)
             <div id="content" class="content-section">
-                <p class="content-heading">
+                <h2 class="content-heading">
                     {{ $typeName }}
-                </p>
+                </h2>
                 <div class="content-list">
                     @foreach ($yards as $yard)
                         <div class="content-item">
@@ -133,6 +140,71 @@
         <!-- End: Footer -->
          
     </div>
-        
+
+    <script>
+        // Trượt slider
+        const track = document.querySelector('.slider-track');
+        const slides = document.querySelectorAll('.slider-track img'); // Tất cả ảnh
+        const totalSlides = slides.length; // Tổng số ảnh (cả ảnh clone)
+        let currentIndex = 0; // Vị trí hiện tại
+
+        // Trượt tự động mỗi 3 giây
+        let autoSlide = setInterval(() => {
+            currentIndex++; // Tăng vị trí
+            track.style.transition = 'transform 0.5s ease-in-out';
+            track.style.transform = `translateX(-${currentIndex * 100}%)`; // Trượt sang trái
+
+            // Nếu đang ở ảnh clone (cuối)
+            if (currentIndex === totalSlides - 1) {
+                setTimeout(() => {
+                    track.style.transition = 'none';              // Tắt hiệu ứng
+                    track.style.transform = 'translateX(0%)';     // Về ảnh đầu
+                    currentIndex = 0;
+                }, 500); // Khớp với thời gian transition
+            }
+        }, 3000);
+
+        // Ấn nút chuyển slider
+        const btnLeft = document.querySelector('.slider-btn-left');
+        const btnRight = document.querySelector('.slider-btn-right');
+
+        if (btnLeft && btnRight) {
+            // Nút sang phải
+            btnRight.addEventListener('click', () => {
+                clearInterval(autoSlide); // Dừng auto
+                currentIndex++;
+                track.style.transition = 'transform 0.5s ease-in-out';
+                track.style.transform = `translateX(-${currentIndex * 100}%)`;
+
+                if (currentIndex === totalSlides - 1) {
+                    setTimeout(() => {
+                        track.style.transition = 'none';
+                        track.style.transform = 'translateX(0%)';
+                        currentIndex = 0;
+                    }, 500);
+                }
+            });
+
+            // Nút sang trái
+            btnLeft.addEventListener('click', () => {
+                clearInterval(autoSlide); // Dừng auto
+
+                if (currentIndex === 0) {
+                    // Nhảy về ảnh cuối thật (trước ảnh clone)
+                    currentIndex = totalSlides - 2;
+                    track.style.transition = 'none';
+                    track.style.transform = `translateX(-${(currentIndex + 1) * 100}%)`;
+                    setTimeout(() => {
+                        track.style.transition = 'transform 0.5s ease-in-out';
+                        track.style.transform = `translateX(-${currentIndex * 100}%)`;
+                    }, 20);
+                } else {
+                    currentIndex--;
+                    track.style.transition = 'transform 0.5s ease-in-out';
+                    track.style.transform = `translateX(-${currentIndex * 100}%)`;
+                }
+            });
+        }
+    </script>
 </body>
 </html>

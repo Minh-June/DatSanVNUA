@@ -15,6 +15,7 @@ class OrderController extends Controller
     {
         $selectedDate = $request->get('selected_date');
         $yardName = $request->get('yard_name');
+        $status = $request->get('status'); // lấy trạng thái
 
         $orders = Order::with(['orderDetails.yard']);
 
@@ -27,6 +28,11 @@ class OrderController extends Controller
             $orders->whereHas('orderDetails.yard', function ($query) use ($yardName) {
                 $query->where('name', $yardName);
             });
+        }
+
+        // Lọc theo trạng thái nếu được truyền
+        if (!is_null($status)) {
+            $orders->where('status', $status);
         }
 
         // Sắp xếp theo trạng thái và ngày

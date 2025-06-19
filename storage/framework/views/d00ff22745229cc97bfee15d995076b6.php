@@ -21,19 +21,30 @@
     <div class="admin-top-bar">
         <div class="admin-search">
             <?php if(!isset($xem_user)): ?>
-            <form method="GET" action="<?php echo e(route('quan-ly-nguoi-dung')); ?>">
-                <label for="type_id">Tìm người dùng:</label>
-                <input type="text" name="keyword" placeholder="Nhập thông tin cần tìm" value="<?php echo e(request('keyword')); ?>" required pattern="^[\p{L}\s]+$" title="Chỉ nhập chữ cái và khoảng trắng">
-                <button class="update-btn" type="submit">Tìm kiếm</button>
-            </form>
+                <form method="GET" action="<?php echo e(route('quan-ly-nguoi-dung')); ?>">
+                    <input
+                        type="text"
+                        name="keyword"
+                        placeholder="Nhập thông tin"
+                        value="<?php echo e(request('keyword')); ?>"
+                        required
+                        pattern="^[\p{L}0-9\s]+$"
+                        title="Chỉ nhập chữ cái, số và khoảng trắng"
+                    />
+                    <button class="update-btn" type="submit">Tìm kiếm</button>
+                </form>
             <?php endif; ?>
         </div>
 
         <div class="admin-add-btn">
             <?php if(isset($xem_user)): ?>
-                <a class="update-btn" href="<?php echo e(route('quan-ly-nguoi-dung')); ?>">Quay lại danh sách</a>
+                <a class="delete-btn"
+                href="<?php echo e(route('reset-mat-khau-nguoi-dung', ['user_id' => $xem_user->user_id])); ?>"
+                onclick="return confirm('Bạn có chắc chắn muốn đặt lại mật khẩu người dùng này không?')">
+                <i class="fa-solid fa-rotate-left"></i> Đặt lại mật khẩu
+                </a>
             <?php else: ?>
-                <a class="update-btn" href="<?php echo e(route('dang-ky')); ?>">Thêm người dùng mới</a>
+                <a class="update-btn" href="<?php echo e(route('dang-ky')); ?>">Thêm người dùng</a>
             <?php endif; ?>
         </div>
     </div>
@@ -77,10 +88,11 @@
                 <tr>
                     <th>STT</th>
                     <th>Họ và tên</th>
+                    <th>SĐT</th>
                     <th>Tên tài khoản</th>
-                    <th>Vai trò</th>
                     <th>Thông tin</th>
-                    <th colspan="2">Tuỳ chọn</th>
+                    <th>Vai trò</th>
+                    <th>Tuỳ chọn</th>
                 </tr>
             </thead>
             <tbody>
@@ -88,8 +100,8 @@
                 <tr>
                     <td><?php echo e($index + 1); ?></td>
                     <td class="left-align"><?php echo e($user->fullname); ?></td>
+                    <td><?php echo e($user->phonenb); ?></td>
                     <td><?php echo e($user->username); ?></td>
-                    <td><?php echo e($user->role == 0 ? 'Admin' : 'Khách hàng'); ?></td>
                     <td>
                         <a href="<?php echo e(route('quan-ly-nguoi-dung', ['xem' => $user->user_id])); ?>">Xem chi tiết</a>
                     </td>

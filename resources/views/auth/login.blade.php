@@ -20,6 +20,10 @@
                 <input type="password" name="password" id="password" placeholder="Mật khẩu" required>
             </div>
 
+            <a href="#" onclick="alert('Vui lòng liên hệ SĐT 0356645445 để được cấp lại mật khẩu !');" class="forgot-password">
+                Quên mật khẩu?
+            </a>
+
             {{-- Hiển thị lỗi ngay trên nút đăng nhập --}}
             @if ($errors->any())
                 <div class="notice">

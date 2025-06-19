@@ -12,7 +12,7 @@
         <script>alert("<?php echo e(session('error')); ?>");</script>
     <?php endif; ?>
 
-    <h2>Quản lý hình ảnh - <?php echo e($selectedYard->name); ?></h2>
+    <h2><?php echo e($selectedYard->type->name); ?> - <?php echo e($selectedYard->name); ?></h2>
 
     <div class="admin-top-bar">
         <div class="admin-search"></div>

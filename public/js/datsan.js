@@ -53,12 +53,38 @@ function changeTimeSlot(button) {
     pricePerSlotInput.value = JSON.stringify(selectedPrices);
 }
 
-window.onload = function() {
+
+// Khóa khung giờ trước 30 phút và các khung giờ đã qua
+window.onload = function () {
     const buttons = document.querySelectorAll('.btn-time:not(.booked)');
-    buttons.forEach(btn => {
+    const selectedDate = document.getElementById('date').value;
+    const today = new Date().toISOString().slice(0, 10);
+
+    if (selectedDate === today) {
+        const now = new Date();
+
+        buttons.forEach(btn => {
+            const timeStr = btn.getAttribute('data-time'); // "06:00 - 07:30"
+            const startTimeStr = timeStr.split(' - ')[0]; // lấy "06:00"
+            const [hour, minute] = startTimeStr.split(':').map(Number);
+
+            const slotTime = new Date();
+            slotTime.setHours(hour, minute, 0, 0);
+
+            const diffInMinutes = (slotTime - now) / (1000 * 60); // phút
+
+            if (diffInMinutes <= 30) {
+                btn.classList.add('booked');
+                btn.disabled = true;
+            }
+        });
+    }
+
+    document.querySelectorAll('.btn-time:not(.booked)').forEach(btn => {
         btn.addEventListener('click', () => changeTimeSlot(btn));
     });
 };
+
 
 function confirmBooking(event) {
     event.preventDefault();

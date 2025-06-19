@@ -87,6 +87,20 @@ html {
     background-color: #fff;
 }
 
+.forgot-password {
+    display: block;
+    text-align: right;
+    color: green;
+    margin-top: 10px;
+    font-size: var(--primary-font-size-admin);
+    text-decoration: none;
+    transition: var(--primary-transition);
+}
+
+.forgot-password:hover {
+    color: var(--primary-color)
+}
+
 .form-title {
     text-align: center;
     margin-bottom: 4px;
@@ -187,7 +201,7 @@ html {
     right: 0;
     height: 56px;
     background-color: var(--primary-color);
-    z-index: 1;
+    z-index: 2;
     display: flex;
     justify-content: space-between;
     line-height: 60px;
@@ -298,11 +312,11 @@ html {
 }
 
 .modal-body {
-    width: 500px;
     padding: 20px;
     font-size: var(--primary-font-size);
     display: flex;
     flex-direction: column;
+    gap: 16px;
 }
 
 .modal-body label {
@@ -313,7 +327,9 @@ html {
 }
 
 .modal-body input[type="date"],
+.modal-body input[type="text"],
 .modal-body select {
+    width: 100%;
     padding: 10px 12px;
     border: 1px solid #ccc;
     border-radius: var(--primary-border-radius);
@@ -378,6 +394,12 @@ html {
     font-size: 25px;
 }
 
+.header__cart-wrap:hover {
+    cursor: pointer;
+    color: var(--primary-color-hover-text);
+    transition: var(--primary-transition);
+}
+
 .header__cart-wrap:hover .header__cart-list {
     display: block;
 }
@@ -386,7 +408,7 @@ html {
     position: absolute;
     right: 1px;
     background-color:#fff;
-    width: 400px;
+    width: 500px;
     border-radius: var(--primary-border-radius);
     box-shadow: var(--primary-box-shadow);
     cursor: default;
@@ -395,7 +417,7 @@ html {
 }
 
 .header__cart-list--no-cart{
-    font-size: 17px;
+    font-size: 18px;
     text-align: center;
     color: #000;
 }
@@ -403,13 +425,13 @@ html {
 .header__cart-heading {
     text-align: center;
     color: #000;
-    font-size: var(--primary-font-size);
-    color: var(--primary-color);
+    font-size: 21px;
+    font-weight: bold;
 }
 
 .header__cart-list-item {
-    font-size: var(--primary-font-size-admin);
-    height: 200px;
+    font-size: 18px;
+    height: 250px;
     padding-left: 0;
     overflow-y: auto;     /* Khi thằng con vượt quá chiều dọc của thằng cha thì hiện thanh cuộn dọc */
 }
@@ -425,32 +447,27 @@ html {
 }
 
 .header__cart-img {
-    width: 150px;
-    height: 130px;
-    margin: 12px;
+    width: 170px;
+    height: 150px;
+    margin: 12px 20px 12px 20px;
     border-radius: var(--primary-border-radius);
     box-shadow: var(--primary-box-shadow);
 }
 
 .header__cart-item-info {
     width: 100%;
-    margin-right: 12px;
+    margin-right: 15px;
 }
 
 .header__cart-item-head {
     display: flex;
+    color: #000;
     align-items: center;
     justify-content: space-between;
 }
 
 .header__cart-item-name {
-    max-height: 64px;     /* Đề phòng nội dung ngắn quá (1 dòng) sẽ bị đẩy cao lên so với "phân loại" */
     color: #000;
-    word-wrap: break-word;      /* Tự xuống dòng khi chạm đến chiều rộng */
-    display: -webkit-box;       /* Hỗ trợ ellipsis cho nhiều dòng */
-    /* -webkit-line-clamp: 3;      Giới hạn tối đa 3 dòng (64px ~ 3 dòng) */
-    -webkit-box-orient: vertical;
-    text-overflow: ellipsis;    /* Hiện dấu ... */
 }
 
 .header__cart-item-price {
@@ -471,6 +488,11 @@ html {
     justify-content: space-between;
 }
 
+.header__cart-item-body-left {
+    display: flex;
+    flex-direction: column;
+}
+
 .header__cart-item-description {
     color: #757575;
 }
@@ -488,7 +510,7 @@ html {
     box-shadow: var(--primary-box-shadow);
     margin: 12px;
     float: right;
-    font-size: var(--primary-font-size-admin);
+    font-size: 18px;
 }
 
 .header__cart-view-cart:hover {
@@ -520,7 +542,7 @@ html {
 }
 
 .header__cart-list-no-cart-msg {
-    font-size: var(--primary-font-size);
+    font-size: 22px;
 }
 
 .header__cart-notice {
@@ -567,15 +589,58 @@ html {
 .login-btn:hover,
 .signup-btn:hover {
     cursor: pointer;
-    color: #C8E6C9;
+    color: var(--primary-color-hover-text);
     transition: var(--primary-transition);
 }
 
 /* Slider */
 #slider {
+    width: 100%;
+    overflow: hidden;
     position: relative;
-    padding-top: 56px;
-    padding-bottom: 40px;
+    height: 623px; /* hoặc chiều cao bạn muốn */
+    margin-bottom: 30px;
+}
+
+.slider-track {
+    display: flex;
+}
+
+.slider-track img {
+    width: 100%;
+    height: 623px;
+    flex-shrink: 0;
+}
+
+/* Nút chuyển slider */
+.slider-btn-left,
+.slider-btn-right {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: rgba(0, 0, 0, 0.2);
+    border: none;
+    color: #e0e0e0;
+    font-size: 25px;
+    padding: 10px;
+    cursor: pointer;
+    z-index: 1;
+    transition: var(--primary-transition);
+    border-radius: var(--primary-border-radius);
+}
+
+.slider-btn-left:hover,
+.slider-btn-right:hover {
+    background-color: rgba(0, 0, 0, 0.5);
+    color: #fff;
+}
+
+.slider-btn-left {
+    left: 20px;
+}
+
+.slider-btn-right {
+    right: 20px;
 }
 
 /* Content */
@@ -587,7 +652,7 @@ html {
 
 .content-heading {
     font-weight: bolder;
-    font-size: 26px;
+    font-size: 30px;
     text-align: center;
     letter-spacing: 4px;
 }
@@ -655,8 +720,8 @@ html {
 }
 
 .contact-infor-header > img {
-    width: 50px;
-    height: 50px;
+    width: 55px;
+    height: 55px;
 }
 
 .contact-infor-text {
@@ -724,12 +789,13 @@ html {
 /* Footer section */
 #footer {
     background-color: var(--primary-color);
-    margin-top: 39px;
+    margin-top: 14px;
     height: 60px;
     line-height: 60px;
     font-size: var(--primary-font-size-admin);
     color: #fff;
     text-align: center;
+    box-shadow: var(--primary-box-shadow);
 }
 
 /* Thanh toán */
@@ -763,20 +829,8 @@ html {
     width: 250px;
 }
 
-.pay_upload {
-    margin-top: 10px;
-}
-
 .pay-btn {
-    margin-top: 10px;
-}
-
-.pay-left-btn {
-    margin-left: 4%;
-}
-
-.pay-right-btn {
-    margin-left: 40%;
+    margin-bottom: 20px;
 }
 
 /* Đặt sân */
@@ -806,10 +860,11 @@ html {
 /* Bảng đặt lịch */
 .order-section-right {
     width: 100%;
-    height: 497px;
+    height: 500px;
     border-radius: var(--primary-border-radius);
     border: 2px solid var(--primary-color);
     box-shadow: var(--primary-box-shadow);
+    margin-bottom: 20px;
 }
 
 .container {
@@ -817,7 +872,7 @@ html {
 }
 
 .container > p {
-    color: var(--primary-color);
+    color: red;
     text-align: center;
     margin-bottom: 20px;
     font-size: 19px;
@@ -900,12 +955,12 @@ html {
 
 .btn-time:hover {
     cursor: pointer;
-    background-color: #C8E6C9;
+    background-color: var(--primary-color-hover-text);
     transition: var(--primary-transition)
 }
 
 .btn-time.selected {
-    background-color: #C8E6C9;
+    background-color: var(--primary-color-hover-text);
 }
 
 .btn-time.booked {
@@ -972,7 +1027,7 @@ html {
 
 .footer-link {
     text-align: center;
-    margin-top: 40px;
+    margin: 30px 0
 }
 
 .footer-links {
@@ -1027,7 +1082,7 @@ html {
 }
 
 .header-section-left {
-    background-color: #C8E6C9;
+    background-color: var(--primary-color-hover-text);
     padding: 12px 0px;
     text-align: center;
     margin-bottom: 10px;
@@ -1048,7 +1103,7 @@ html {
 }
 
 .admin-manage {
-    height: 500px;
+    height: 527px;
     background-color: var(--primary-color);
     border-top-right-radius: 10px;
     border-bottom-right-radius: 10px;
@@ -1060,8 +1115,8 @@ html {
     text-decoration: none;
     color: #fff;
     line-height: 50px;
-    padding-left: 16px;
-    font-size: var(--primary-font-size);  
+    padding-left: 14px;
+    font-size: 21px;  
 }
 
 .admin-manage li {
@@ -1078,7 +1133,7 @@ html {
 
 .admin-section-right {
     width: 1300px;
-    height: 560px;
+    height: 585px;
     margin-left: 10px;
     border-radius: var(--primary-border-radius);
     overflow-y: auto;
@@ -1112,7 +1167,7 @@ html {
 }
 
 .admin-search select {
-    font-size: 14px; 
+    font-size: 15px; 
     padding: 5px;
     border: 1px solid #ddd;
     border-radius: var(--primary-border-radius);
@@ -1160,10 +1215,11 @@ th, td {
 }
 
 th {
-    background-color: #C8E6C9;
+    background-color: var(--primary-color-hover-text);
+    font-size: var(--primary-font-size-admin);
 }
 
-tr:hover {
+tr:hover  {
     background-color: #F5FAFA;
     transition: var(--primary-transition);
 }
@@ -1278,6 +1334,11 @@ form select {
     box-shadow: var(--primary-box-shadow);
 }
 
+.delete-btn i {
+    margin: 3px 0 0 0;
+    font-size: 15px;
+}
+
 .delete-btn:hover {
     cursor: pointer;
     color: #fff;
@@ -1308,7 +1369,7 @@ form select {
 .order-update button:hover {
     cursor: pointer;
     color: #000;
-    background-color: #C8E6C9;
+    background-color: var(--primary-color-hover-text);
     transition: var(--primary-transition);
 }
 

@@ -10,6 +10,13 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
 </head>
 <body>
+    <?php if(!Auth::check() && request()->route()->getName() !== 'dang-nhap'): ?>
+        <script>
+            alert("Phiên đăng nhập hết hạn, vui lòng đăng nhập lại !");
+            window.location.href = "<?php echo e(route('dang-nhap')); ?>";
+        </script>
+    <?php endif; ?>
+
     <div id="main">
         <!-- Begin: Header -->
         <div id="header">
@@ -20,11 +27,9 @@
                     </a>
                 </li>
                 <li>
-                    <?php if(Route::currentRouteName() === 'trang-chu'): ?>
-                        <a class="home-heading search-btn" href="#">
-                            <i class="fa-solid fa-magnifying-glass"></i>TÌM SÂN NHANH
-                        </a>
-                    <?php endif; ?>
+                    <a class="home-heading search-btn" href="#">
+                        <i class="fa-solid fa-magnifying-glass"></i>TÌM SÂN NHANH
+                    </a>
                 </li>
             </ul>
             
@@ -76,7 +81,7 @@
 
                                             <div class="header__cart-item-info">
                                                 <div class="header__cart-item-head">
-                                                    <div class="header__cart-item-name"><?php echo e($order['yard_name']); ?></div>
+                                                    <div class="header__cart-item-name"><?php echo e($order['type_name']); ?></div>
                                                     <div class="header__cart-item-price-wrap">
                                                         <span class="header__cart-item-price"><?php echo e(number_format($order['price'], 0, ',', '.')); ?>đ</span>
                                                         <span class="header__cart-item-multiply">x</span>
@@ -84,10 +89,13 @@
                                                     </div>
                                                 </div>
                                                 <div class="header__cart-item-body">
-                                                    <p class="header__cart-item-remove">
-                                                        Ngày: <?php echo e(\Carbon\Carbon::parse($order['date'])->format('d/m/Y')); ?>
+                                                    <div class="header__cart-item-body-left">
+                                                        <div class="header__cart-item-name"><?php echo e($order['yard_name']); ?></div>
+                                                        <p class="header__cart-item-remove">
+                                                            Ngày: <?php echo e(\Carbon\Carbon::parse($order['date'])->format('d/m/Y')); ?>
 
-                                                    </p>
+                                                        </p>
+                                                    </div>
                                                     <p class="header__cart-item-description">
                                                         <?php echo implode('<br>', $order['times']); ?>
 
@@ -103,25 +111,21 @@
                                 </button>
                             </div>
                         <?php endif; ?>
-
                     </div>
                 </div>
                 
                 <i class="login-btn dash"></i>
                 <i class="avatar fa-solid fa-user-tie"></i>
-                <?php if(Auth::check()): ?>
-                    <?php
-                        $user = Auth::user();
-                    ?>
-                    <a class="signup-btn" 
-                    href="<?php echo e($user->role != 1 ? route('thong-ke-bao-cao') : route('thong-tin-tai-khoan')); ?>" 
-                    target="_self">
-                        <?php echo e($user->username); ?>
+                <?php
+                    $user = Auth::user();
+                ?>
 
-                    </a>
-                <?php else: ?>
-                    <a class="signup-btn" href="<?php echo e(route('dang-nhap')); ?>" target="_self">Đăng nhập</a>
-                <?php endif; ?>
+                <a class="signup-btn"
+                href="<?php echo e(Auth::check() ? ($user->role != 1 ? route('thong-ke-bao-cao') : route('thong-tin-tai-khoan')) : route('dang-nhap')); ?>"
+                target="_self">
+                    <?php echo e(Auth::check() ? $user->username : 'Đăng nhập'); ?>
+
+                </a>
             </div>
         </div>
         <!-- End: Header -->
@@ -153,6 +157,7 @@
                     <div class="form-group">
                         <label class="modal-label" for="type">Chọn loại sân:</label>
                         <select name="type" id="type">
+                            <option value="">Tất cả</option>
                             <?php $__currentLoopData = $types; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $type): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                 <option value="<?php echo e($type->type_id); ?>" <?php echo e(old('type') == $type->type_id ? 'selected' : ''); ?>>
                                     <?php echo e($type->name); ?>
@@ -162,16 +167,12 @@
                         </select>
                     </div>
 
-                    <div class="form-group">
-                        <label class="modal-label" for="type">Khung giờ từ:</label>
-                        <select name="type" id="type">
-                            <?php $__currentLoopData = $types; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $type): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                <option value="<?php echo e($type->type_id); ?>" <?php echo e(old('type') == $type->type_id ? 'selected' : ''); ?>>
-                                    <?php echo e($type->name); ?>
+                    <div class="form-group time-range">
+                        <label for="time_from">Từ:</label>
+                        <input type="text" id="time_from" name="time_from" placeholder="Dạng 06:00" required>
 
-                                </option>
-                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                        </select>
+                        <label for="time_to">đến</label>
+                        <input type="text" id="time_to" name="time_to" placeholder="Dạng 22:30" required>
                     </div>
 
                     <button type="submit" class="order-football-btn">Tìm kiếm</button>
@@ -180,6 +181,7 @@
     </div>
 
     <script>
+        // Hiện Model tìm kiếm
         const modal = document.querySelector('.js-modal');
         const modalContainer = document.querySelector('.js-modal-container');
         const modalClose = document.querySelector('.js-modal-close');
@@ -226,6 +228,70 @@
                 event.preventDefault();
             }
         });
+
+        // Trượt slider
+        const track = document.querySelector('.slider-track');
+        const slides = document.querySelectorAll('.slider-track img'); // Tất cả ảnh
+        const totalSlides = slides.length; // Tổng số ảnh (cả ảnh clone)
+        let currentIndex = 0; // Vị trí hiện tại
+
+        // Trượt tự động mỗi 3 giây
+        let autoSlide = setInterval(() => {
+            currentIndex++; // Tăng vị trí
+            track.style.transition = 'transform 0.5s ease-in-out';
+            track.style.transform = `translateX(-${currentIndex * 100}%)`; // Trượt sang trái
+
+            // Nếu đang ở ảnh clone (cuối)
+            if (currentIndex === totalSlides - 1) {
+                setTimeout(() => {
+                    track.style.transition = 'none';              // Tắt hiệu ứng
+                    track.style.transform = 'translateX(0%)';     // Về ảnh đầu
+                    currentIndex = 0;
+                }, 500); // Khớp với thời gian transition
+            }
+        }, 3000);
+
+        // Ấn nút chuyển slider
+        const btnLeft = document.querySelector('.slider-btn-left');
+        const btnRight = document.querySelector('.slider-btn-right');
+
+        if (btnLeft && btnRight) {
+            // Nút sang phải
+            btnRight.addEventListener('click', () => {
+                clearInterval(autoSlide); // Dừng auto
+                currentIndex++;
+                track.style.transition = 'transform 0.5s ease-in-out';
+                track.style.transform = `translateX(-${currentIndex * 100}%)`;
+
+                if (currentIndex === totalSlides - 1) {
+                    setTimeout(() => {
+                        track.style.transition = 'none';
+                        track.style.transform = 'translateX(0%)';
+                        currentIndex = 0;
+                    }, 500);
+                }
+            });
+
+            // Nút sang trái
+            btnLeft.addEventListener('click', () => {
+                clearInterval(autoSlide); // Dừng auto
+
+                if (currentIndex === 0) {
+                    // Nhảy về ảnh cuối thật (trước ảnh clone)
+                    currentIndex = totalSlides - 2;
+                    track.style.transition = 'none';
+                    track.style.transform = `translateX(-${(currentIndex + 1) * 100}%)`;
+                    setTimeout(() => {
+                        track.style.transition = 'transform 0.5s ease-in-out';
+                        track.style.transform = `translateX(-${currentIndex * 100}%)`;
+                    }, 20);
+                } else {
+                    currentIndex--;
+                    track.style.transition = 'transform 0.5s ease-in-out';
+                    track.style.transform = `translateX(-${currentIndex * 100}%)`;
+                }
+            });
+        }
     </script>
 </body>
 </html>

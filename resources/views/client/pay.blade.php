@@ -3,13 +3,13 @@
 @section('title', 'Thanh toán')
 
 @section('content')
-    @if(session('success'))
-        <script>alert("{{ session('success') }}");</script>
-    @endif
+@if(session('success'))
+    <script>alert("{{ session('success') }}");</script>
+@endif
 
-    @if(session('error'))
-        <script>alert("{{ session('error') }}");</script>
-    @endif
+@if(session('error'))
+    <script>alert("{{ session('error') }}");</script>
+@endif
 
 <div id="content" class="order-section">
     <h2 class="order-heading">THANH TOÁN</h2>
@@ -36,10 +36,10 @@
         <table id="ListCustomers">
             <thead>
                 <tr>
-                    <th>STT</th>
-                    <th>Ngày đặt</th>
                     <th>Họ và tên</th>
                     <th>SĐT</th>
+                    <th>Ngày đặt</th>
+                    <th>Loại sân</th>
                     <th>Tên sân</th>
                     <th>Thời gian thuê</th>
                     <th>Giá từng khung giờ</th>
@@ -49,69 +49,80 @@
             <tbody>
                 @php
                     $totalAmount = 0;
-                    $groupedOrders = collect($orders)->groupBy(fn($o) => $o['date'] . '-' . $o['yard_name']);
-                    $stt = 1;
+                    $groupedByUser = collect($orders)->groupBy(fn($o) => $o['name'] . '-' . $o['phone']);
                 @endphp
 
-                @forelse ($groupedOrders as $groupKey => $group)
+                @forelse ($groupedByUser as $userGroup)
                     @php
-                        $first = $group->first();
-                        $totalAmount += $group->sum('price');
+                        $rowspanNamePhone = $userGroup->count();
+                        $firstNamePhoneRow = true;
+                        $groupedByDate = $userGroup->groupBy('date');
                     @endphp
-                    <tr>
-                        <td rowspan="{{ $group->count() }}">{{ $stt++ }}</td>
-                        <td rowspan="{{ $group->count() }}">{{ \Carbon\Carbon::parse($first['date'])->format('d/m/Y') }}</td>
-                        <td rowspan="{{ $group->count() }}">{{ $first['name'] }}</td>
-                        <td rowspan="{{ $group->count() }}">{{ $first['phone'] }}</td>
-                        <td rowspan="{{ $group->count() }}">{{ $first['yard_name'] }}</td>
 
-                        {{-- Cột đầu tiên của thời gian và giá --}}
-                        <td>
-                            @foreach ($first['times'] as $time)
-                                {{ $time }}<br>
+                    @foreach ($groupedByDate as $date => $dateGroup)
+                        @php
+                            $rowspanDate = $dateGroup->count();
+                            $firstDateRow = true;
+                            $groupedByType = $dateGroup->groupBy('type_name');
+                        @endphp
+
+                        @foreach ($groupedByType as $type => $typeGroup)
+                            @php
+                                $rowspanType = $typeGroup->count();
+                                $firstTypeRow = true;
+                            @endphp
+
+                            @foreach ($typeGroup as $order)
+                                <tr>
+                                    {{-- Gộp họ tên + SĐT --}}
+                                    @if ($firstNamePhoneRow)
+                                        <td rowspan="{{ $rowspanNamePhone }}">{{ $order['name'] }}</td>
+                                        <td rowspan="{{ $rowspanNamePhone }}">{{ $order['phone'] }}</td>
+                                        @php $firstNamePhoneRow = false; @endphp
+                                    @endif
+
+                                    {{-- Gộp ngày đặt --}}
+                                    @if ($firstDateRow)
+                                        <td rowspan="{{ $rowspanDate }}">{{ \Carbon\Carbon::parse($date)->format('d/m/Y') }}</td>
+                                        @php $firstDateRow = false; @endphp
+                                    @endif
+
+                                    {{-- Gộp loại sân --}}
+                                    @if ($firstTypeRow)
+                                        <td rowspan="{{ $rowspanType }}">{{ $type }}</td>
+                                        @php $firstTypeRow = false; @endphp
+                                    @endif
+
+                                    <td>{{ $order['yard_name'] }}</td>
+
+                                    <td>
+                                        @foreach ($order['times'] as $time)
+                                            {{ $time }}<br>
+                                        @endforeach
+                                    </td>
+
+                                    <td>
+                                        @foreach ($order['price_per_slot'] ?? [] as $price)
+                                            {{ number_format($price) }}đ<br>
+                                        @endforeach
+                                    </td>
+
+                                    <td>{{ $order['notes'] ?? 'Không có' }}</td>
+                                </tr>
+                                @php $totalAmount += $order['price'] ?? 0; @endphp
                             @endforeach
-                        </td>
-                        <td>
-                            @if(!empty($first['price_per_slot']) && is_array($first['price_per_slot']))
-                                @foreach($first['price_per_slot'] as $price)
-                                    {{ number_format($price) }}đ<br>
-                                @endforeach
-                            @else
-                                Không có dữ liệu
-                            @endif
-                        </td>
-                        <td>{{ $first['notes'] ?? 'Không có' }}</td>
-                    </tr>
-
-                    {{-- Các dòng còn lại của nhóm (bỏ cột đã rowspan) --}}
-                    @foreach ($group->slice(1) as $order)
-                        <tr>
-                            <td>
-                                @foreach ($order['times'] as $time)
-                                    {{ $time }}<br>
-                                @endforeach
-                            </td>
-                            <td>
-                                @if(!empty($order['price_per_slot']) && is_array($order['price_per_slot']))
-                                    @foreach($order['price_per_slot'] as $price)
-                                        {{ number_format($price) }}đ<br>
-                                    @endforeach
-                                @else
-                                    Không có dữ liệu
-                                @endif
-                            </td>
-                            <td>{{ $order['notes'] ?? 'Không có' }}</td>
-                        </tr>
+                        @endforeach
                     @endforeach
                 @empty
                     <tr><td colspan="8">Không có đơn đặt sân nào.</td></tr>
                 @endforelse
             </tbody>
+
             @if(count($orders) > 0)
             <tfoot>
                 <tr>
-                    <td colspan="6" style="text-align: right;">Tổng tiền:</td>
-                    <td colspan="2">{{ number_format($totalAmount) }}đ</td>
+                    <td colspan="6" style="text-align: right;"><strong>Tổng tiền:</strong></td>
+                    <td colspan="2"><strong>{{ number_format($totalAmount) }}đ</strong></td>
                 </tr>
             </tfoot>
             @endif

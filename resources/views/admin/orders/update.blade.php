@@ -29,8 +29,9 @@
         <thead>
             <tr>
                 <th>STT</th>
-                <th>Tên sân</th>
                 <th>Ngày thuê</th>
+                <th>Loại sân</th>
+                <th>Tên sân</th>
                 <th>Khung giờ</th>
                 <th>Giá</th>
                 <th>Ghi chú</th>
@@ -41,8 +42,9 @@
             @foreach ($order->orderDetails as $detail)
                 <tr>
                     <td>{{ $loop->iteration }}</td>
-                    <td class="left-align">{{ $detail->yard->name ?? 'Sân không tồn tại' }}</td>
                     <td>{{ \Carbon\Carbon::parse($detail->date)->format('d/m/Y') }}</td>
+                    <td class="left-align">{{ $detail->yard->type->name ?? 'Loại sân không tồn tại' }}</td>
+                    <td class="left-align">{{ $detail->yard->name ?? 'Sân không tồn tại' }}</td>
                     <td>{{ optional($detail->time)->time ?? $detail->time }}</td>
                     <td>{{ number_format($detail->price, 0, ',', '.') }}đ</td>
                     <td>{{ $detail->notes ?: 'Không có' }}</td>
@@ -52,7 +54,7 @@
                         </form>
                     </td>
                     <td>
-                        <form method="POST" action="{{ route('xoa-chi-tiet-don', $detail->order_detail_id) }}" onsubmit="return confirm('Bạn có chắc muốn xóa chi tiết này?')">
+                        <form method="POST" action="{{ route('xoa-chi-tiet-don', $detail->order_detail_id) }}" onsubmit="return confirm('Bạn có chắc chắn muốn xóa chi tiết đơn này không?')">
                             @csrf
                             @method('DELETE')
                             <button type="submit" class="delete-btn">Xóa</button>
@@ -63,8 +65,8 @@
         </tbody>
         <tfoot>
             <tr>
-                <td colspan="6" style="text-align: right;">Tổng tiền:</td>
-                <td colspan="2">{{ number_format($totalPrice, 0, ',', '.') }}đ</td>
+                <td colspan="6" style="text-align: right;"><strong>Tổng tiền:</strong></td>
+                <td colspan="2"><strong>{{ number_format($totalPrice, 0, ',', '.') }}đ</strong></td>
             </tr>
         </tfoot>
     </table>

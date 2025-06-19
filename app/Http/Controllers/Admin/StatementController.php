@@ -58,7 +58,7 @@ class StatementController extends Controller
             $query->where('yard_id', $yardId);
         }
 
-        // Nếu nhập keyword tìm theo tên sân (dùng whereHas để lọc theo quan hệ yard)
+        // Nếu nhập keyword tìm theo tên sân
         if ($keyword) {
             $query->whereHas('yard', function ($q) use ($keyword) {
                 $q->where('name', 'like', '%' . $keyword . '%');
@@ -66,16 +66,21 @@ class StatementController extends Controller
         }
 
         $orderDetails = $query->get();
+
         $totalRevenue = $orderDetails->sum('price');
 
-        // Gom doanh thu theo tên sân
-        $byYard = $orderDetails->groupBy('yard.name')->map(function ($group) {
-            return $group->sum('price');
-        });
-
-        // đếm số dòng OrderDetail
-        $bookingCountByYard = $orderDetails->groupBy('yard.name')->map(function ($group) {
-            return $group->pluck('order_id')->unique()->count();
+        // Nhóm theo loại sân, rồi theo tên sân
+        $groupByTypeThenYard = $orderDetails->groupBy(function ($item) {
+            return $item->yard->type->name ?? 'Không xác định loại sân';
+        })->map(function ($group) {
+            return $group->groupBy(function ($item) {
+                return $item->yard->name ?? 'Sân không tồn tại';
+            })->map(function ($yardGroup) {
+                return [
+                    'total_revenue' => $yardGroup->sum('price'),
+                    'booking_count' => $yardGroup->pluck('order_id')->unique()->count(),
+                ];
+            });
         });
 
         // Dữ liệu cho dropdown
@@ -83,7 +88,7 @@ class StatementController extends Controller
         $allYards = Yard::orderBy('name')->get();
 
         return view('admin.statements.index', compact(
-            'totalRevenue', 'byYard', 'allTypes', 'allYards', 'bookingCountByYard'
+            'totalRevenue', 'groupByTypeThenYard', 'allTypes', 'allYards'
         ));
     }
 

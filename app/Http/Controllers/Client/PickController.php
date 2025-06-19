@@ -20,15 +20,19 @@ class PickController extends Controller
             return redirect()->back()->with('error', 'Sân không tồn tại');
         }
 
+        $type_id = $yard->type_id;
+
+        $types = Type::all();
+
         $selected_date = $request->query('date', date('Y-m-d'));
 
-        // 1. Lấy tất cả khung giờ sân theo ngày và sắp xếp theo thứ tự tăng dần
+        // 1. Lấy tất cả khung giờ sân theo ngày
         $times = Time::where('yard_id', $yard_id)
             ->where('date', $selected_date)
-            ->orderBy('time', 'asc') // ✅ Sắp xếp theo thứ tự thời gian
+            ->orderBy('time', 'asc')
             ->get();
 
-        // 2. Lấy các khung giờ đã được admin xác nhận (status = 1)
+        // 2. Lấy các khung giờ đã được admin xác nhận
         $adminBookedTimes = OrderDetail::join('orders', 'order_details.order_id', '=', 'orders.order_id')
             ->where('order_details.yard_id', $yard_id)
             ->where('order_details.date', $selected_date)
@@ -50,23 +54,15 @@ class PickController extends Controller
         }
         $sessionBookedTimes = array_unique($sessionBookedTimes);
 
-        $yard_name = $yard->name;
+        $yard_name = $request->query('yard_name', $yard->name); // nhận từ query hoặc từ model
+        $type_name = $request->query('type_name', optional($yard->type)->name); // nếu không có thì dùng từ model
         $yard_image = $yard->images->first();
         $user = auth()->check() ? auth()->user() : null;
         $types = Type::all();
 
         return view('client.pick', compact(
-            'yard',
-            'yard_name',
-            'yard_image',
-            'times',
-            'adminBookedTimes',
-            'sessionBookedTimes',
-            'selected_date',
-            'userId',
-            'yard_id',
-            'user',
-            'types'
+            'type_id', 'yard_id', 'yard_name', 'type_name', 'yard_image',
+            'times', 'adminBookedTimes', 'sessionBookedTimes', 'user', 'userId', 'selected_date', 'yard', 'types'
         ));
     }
     
@@ -81,7 +77,6 @@ class PickController extends Controller
 
         $total_price = (int) $request->input('total_price');
 
-        // Lấy mảng giá từng slot từ input, dạng JSON string -> decode thành mảng số nguyên
         $price_per_slot = $request->input('price_per_slot', '[]');
         $price_per_slot_array = json_decode($price_per_slot, true);
         if (!is_array($price_per_slot_array) || count($price_per_slot_array) !== count($selected_times)) {
@@ -95,12 +90,14 @@ class PickController extends Controller
             'user_id' => $user->user_id,
             'yard_id' => $yard->yard_id,
             'yard_name' => $yard->name,
+            'type_id' => $yard->type_id,
+            'type_name' => $request->input('type_name'),
             'name' => $user->fullname,
             'phone' => $user->phonenb,
             'times' => $selected_times,
             'date' => $request->input('date'),
             'price' => $total_price,
-            'price_per_slot' => $price_per_slot_array, // lưu mảng giá từng slot
+            'price_per_slot' => $price_per_slot_array,
             'notes' => $request->input('notes'),
             'created_at' => $created_at,
         ];
@@ -111,5 +108,4 @@ class PickController extends Controller
 
         return redirect()->route('xac-nhan-dat-san');
     }
-
 }

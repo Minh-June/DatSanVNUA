@@ -17,7 +17,7 @@
         <div class="admin-search">
             <form method="GET" action="<?php echo e(route('quan-ly-don-dat-san')); ?>">
                 <input type="hidden" name="yard_name" value="<?php echo e(request('yard_name')); ?>">
-                <label for="selected_date">Chọn ngày:</label>
+                <label for="selected_date">Ngày:</label>
                 <input type="date" id="selected_date" name="selected_date" value="<?php echo e(request('selected_date', now()->toDateString())); ?>">
                 <button class="update-btn" type="submit">Tìm kiếm</button>
             </form>

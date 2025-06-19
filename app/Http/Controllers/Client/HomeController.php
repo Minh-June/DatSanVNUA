@@ -64,7 +64,9 @@ class HomeController extends Controller
         ]);
     }
 
-    public function search(SearchRequest $request)
+    public function search(Request $request)
     {
+
     }
+
 }

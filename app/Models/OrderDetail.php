@@ -16,6 +16,7 @@ class OrderDetail extends Model
         'date',     // Ngày đặt sân
         'time',     // Khung giờ của sân
         'yard_id',
+        'type_id',
         'price',    // Giá của khung giờ
         'notes',    // Ghi chú của người dùng
     ];
@@ -30,5 +31,11 @@ class OrderDetail extends Model
     public function yard()
     {
         return $this->belongsTo(Yard::class, 'yard_id', 'yard_id');
+    }
+
+    // Quan hệ: Một chi tiết đơn hàng thuộc về một loại sân
+    public function type()
+    {
+        return $this->belongsTo(Type::class, 'type_id', 'type_id');
     }
 }

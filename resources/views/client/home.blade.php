@@ -4,7 +4,15 @@
 
 @section('content')
         <div id="slider">
-            <img src="{{ asset('image/slider/slider1.jpg') }}" alt="Slider Image" style="width: 100%; height: auto;">
+            <div class="slider-track">
+                <img src="{{ asset('image/slider/slider1.jpg') }}" alt="">
+                <img src="{{ asset('image/slider/slider2.jpg') }}" alt="">
+                <img src="{{ asset('image/slider/slider3.jpg') }}" alt="">
+                <img src="{{ asset('image/slider/slider4.jpg') }}" alt="">
+                <img src="{{ asset('image/slider/slider1.jpg') }}" alt=""> <!-- Ảnh đầu được nhân bản để tạo hiệu ứng lặp -->
+            </div>
+            <button class="slider-btn-left"><i class="fa-solid fa-chevron-left"></i></button>
+            <button class="slider-btn-right"><i class="fa-solid fa-chevron-right"></i></button>
         </div>
         
         <!-- Begin: Content -->
@@ -21,7 +29,7 @@
                                 <h3 class="content-body-name">
                                     {{ $yard->name }}
                                 </h3>
-                                <a href="{{ route('dat-san', ['yard_id' => $yard->yard_id]) }}" class="order-football-btn">Chọn sân</a>
+                                <a href="{{ route('dat-san', ['yard_id' => $yard->yard_id, 'type_id' => $yard->type_id]) }}" class="order-football-btn">Chọn sân</a>
                             </div>
                         </div>
                     @endforeach

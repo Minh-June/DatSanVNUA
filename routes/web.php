@@ -74,6 +74,7 @@ Route::get('/admin/quan-ly-nguoi-dung', [UserController::class, 'index'])->name(
 Route::post('/admin/quan-ly-nguoi-dung/cap-nhat-vai-tro-nguoi-dung/{user_id}', [UserController::class, 'updateRole'])->name('cap-nhat-vai-tro-nguoi-dung');
 Route::delete('/admin/quan-ly-nguoi-dung/xoa-nguoi-dung/{user_id}', [UserController::class, 'delete'])->name('xoa-nguoi-dung');
 Route::get('/admin/quan-ly-nguoi-dung/xem-thong-tin-nguoi-dung/{user_id}', [UserController::class, 'show'])->name('xem-thong-tin-nguoi-dung');
+Route::get('/admin/quan-ly-nguoi-dung/reset-mat-khau-nguoi-dung/{user_id}', [UserController::class, 'reset'])->name('reset-mat-khau-nguoi-dung');
 
 // Route quản lý loại sân
 Route::get('/admin/quan-ly-loai-san', [TypeController::class, 'index'])->name('quan-ly-loai-san');

@@ -48,17 +48,14 @@ class YardController extends Controller
     }
 
     // Lưu sân mới
-    public function store(StoreRequest $request) {
-        if (Yard::where('name', $request->name)->exists()) {
-            return redirect()->back()->with('error', 'Tên sân đã tồn tại, vui lòng nhập lại tên sân khác.');
-        }
-
+    public function store(StoreRequest $request)
+    {
         Yard::create([
             'type_id' => $request->type_id,
             'name' => $request->name,
         ]);
 
-        return redirect()->route('quan-ly-san')->with('success', 'Đã thêm sân thành công.');
+        return redirect()->route('quan-ly-san')->with('success', 'Thêm sân thành công !');
     }
 
     // Hiển thị form chỉnh sửa sân
@@ -68,28 +65,23 @@ class YardController extends Controller
         return view('admin.yards.update', compact('yard', 'types'));
     }
 
-    // Cập nhật thông tin sân
-    public function update(UpdateRequest $request, $yard_id) {
+    public function update(UpdateRequest $request, $yard_id)
+    {
         $yard = Yard::findOrFail($yard_id);
 
-        // Kiểm tra trùng tên ngoại trừ chính nó
-        if (Yard::where('name', $request->name)->where('yard_id', '!=', $yard_id)->exists()) {
-            return redirect()->back()->with('error', 'Tên sân đã tồn tại, vui lòng nhập lại tên sân khác.');
-        }
-
         $yard->update([
-            'type_id' => $request->type_id,
-            'name' => $request->name,
+            'type_id' => $request->input('type_id'),
+            'name'    => $request->input('name'),
         ]);
 
-        return redirect()->route('quan-ly-san')->with('success', 'Đã cập nhật sân thành công.');
+        return redirect()->route('quan-ly-san')->with('success', 'Cập nhật sân thành công !');
     }
 
-    // XĂ³a sĂ¢n
+    // Xóa sân
     public function delete($yard_id, Request $request) {
         $yard = Yard::findOrFail($yard_id);
         $yard->delete();
 
-        return redirect()->route('quan-ly-san', ['type_id' => $request->type_id])->with('success', 'Đã xóa sân thành công.');
+        return redirect()->route('quan-ly-san', ['type_id' => $request->type_id])->with('success', 'Đã xóa sân thành công !');
     }
 }

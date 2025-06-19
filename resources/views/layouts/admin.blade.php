@@ -14,7 +14,6 @@
 </head>
 <body>
     <div id="main">
-        
         <!-- Begin: Header -->
         <div id="header">
             <a class="home-heading" href="{{ route('admin') }}" target="_self">QUẢN LÝ SÂN THỂ THAO</a>
@@ -36,16 +35,13 @@
                         <div class="header-section-left">
                             <i class="avatar fa-solid fa-user-tie"></i>
                             @if (Auth::check())
-                                @php
-                                    $user = Auth::user();
-                                @endphp
                                 <a class="avatar-name" href="{{ route('thong-tin-tai-khoan') }}" target="_self">
-                                    {{ $user->username }}
+                                    {{ Auth::user()->username }}
                                 </a>
                             @else
-                                <a class="avatar-name" href="{{ route('dang-nhap') }}" target="_self">
-                                    Đăng Nhập
-                                </a>
+                                <script>
+                                    window.location.href = "{{ route('dang-nhap') }}";
+                                </script>
                             @endif
                         </div>
                         
@@ -92,23 +88,25 @@
     </div>
     @stack('scripts')
 
-    <!-- Khung popup hiển thị ảnh -->
+    <!-- Xem ảnh trong admin -->
     <div id="image-popup" onclick="hideImage()" style="
         display: none;
         position: fixed;
-        z-index: 2;
-        top: 0; left: 0; right: 0; bottom: 0;
-        background: rgba(0,0,0,0.7);
+        z-index: 9999;
+        top: 0; left: 0; width: 100%; height: 100%;
+        background-color: rgba(0,0,0,0.8);
         justify-content: center;
         align-items: center;
     ">
-        <img id="popup-img" src="" style="height: auto; width: auto; box-shadow: 0 0 10px #000;">
+        <img id="popup-img" src="" style="max-width: 90%; max-height: 90%; box-shadow: 0 0 10px #000;" onclick="event.stopPropagation()">
     </div>
 
     <script>
         function showImage(src) {
-            document.getElementById('popup-img').src = src;
-            document.getElementById('image-popup').style.display = 'flex';
+            const popup = document.getElementById('image-popup');
+            const popupImg = document.getElementById('popup-img');
+            popupImg.src = src;
+            popup.style.display = 'flex';
         }
 
         function hideImage() {

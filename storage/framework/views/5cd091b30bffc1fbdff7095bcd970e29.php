@@ -10,14 +10,28 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div id="main">
+    <?php if(!Auth::check()): ?>
+        <script>
+            alert("Phiên đăng nhập hết hạn, vui lòng đăng nhập lại !");
+            window.location.href = "<?php echo e(route('dang-nhap')); ?>";
+        </script>
+    <?php endif; ?>
 
+    <div id="main">
         <!-- Begin: Header -->
         <div id="header">
-            <a class="home-heading" href="<?php echo e(Auth::check() && Auth::user()->role != 1 ? route('admin') : route('trang-chu')); ?>" target="_top">
-                <?php echo e(Auth::check() && Auth::user()->role != 1 ? 'QUẢN LÝ SÂN THỂ THAO' : 'TRANG CHỦ'); ?>
+            <ul id="nav">
+                <li>
+                    <a class="home-heading" href="<?php echo e(Auth::check() && Auth::user()->role != 1 ? route('admin') : route('trang-chu')); ?>" target="_top">
+                        <?php if(!Auth::check() || Auth::user()->role == 1): ?>
+                            <i class="fa-solid fa-house"></i>
+                        <?php endif; ?>
+                        <?php echo e(Auth::check() && Auth::user()->role != 1 ? 'QUẢN LÝ SÂN THỂ THAO' : 'TRANG CHỦ'); ?>
 
-            </a>       
+                    </a>
+                </li>
+                <li></li>
+            </ul>     
             <div class="header-login">
                 <form action="<?php echo e(route('dang-xuat')); ?>" method="post" onsubmit="return confirm('Bạn có chắc chắn muốn đăng xuất?');">
                     <?php echo csrf_field(); ?>
@@ -34,19 +48,13 @@
                     <div class="admin-section-left">
                         <div class="header-section-left">
                             <i class="fa-solid fa-user-tie"></i>
-                            <?php if(Auth::check()): ?>
-                                <?php
-                                    $user = Auth::user();
-                                ?>
-                                <a class="avatar-name" href="<?php echo e(route('thong-tin-tai-khoan')); ?>" target="_self">
-                                    <?php echo e($user->username); ?>
+                            <?php
+                                $user = Auth::user();
+                            ?>
+                            <a class="avatar-name" href="<?php echo e(route('thong-tin-tai-khoan')); ?>" target="_self">
+                                <?php echo e($user->username); ?>
 
-                                </a>
-                            <?php else: ?>
-                                <a class="avatar-name" href="<?php echo e(route('dang-nhap')); ?>" target="_self">
-                                    Đăng Nhập
-                                </a>
-                            <?php endif; ?>
+                            </a>
                         </div>
 
                         <div class="admin-manage">

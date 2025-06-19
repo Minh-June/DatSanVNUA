@@ -3,13 +3,13 @@
 <?php $__env->startSection('title', 'Thanh toán'); ?>
 
 <?php $__env->startSection('content'); ?>
-    <?php if(session('success')): ?>
-        <script>alert("<?php echo e(session('success')); ?>");</script>
-    <?php endif; ?>
+<?php if(session('success')): ?>
+    <script>alert("<?php echo e(session('success')); ?>");</script>
+<?php endif; ?>
 
-    <?php if(session('error')): ?>
-        <script>alert("<?php echo e(session('error')); ?>");</script>
-    <?php endif; ?>
+<?php if(session('error')): ?>
+    <script>alert("<?php echo e(session('error')); ?>");</script>
+<?php endif; ?>
 
 <div id="content" class="order-section">
     <h2 class="order-heading">THANH TOÁN</h2>
@@ -36,10 +36,10 @@
         <table id="ListCustomers">
             <thead>
                 <tr>
-                    <th>STT</th>
-                    <th>Ngày đặt</th>
                     <th>Họ và tên</th>
                     <th>SĐT</th>
+                    <th>Ngày đặt</th>
+                    <th>Loại sân</th>
                     <th>Tên sân</th>
                     <th>Thời gian thuê</th>
                     <th>Giá từng khung giờ</th>
@@ -49,69 +49,80 @@
             <tbody>
                 <?php
                     $totalAmount = 0;
-                    $groupedOrders = collect($orders)->groupBy(fn($o) => $o['date'] . '-' . $o['yard_name']);
-                    $stt = 1;
+                    $groupedByUser = collect($orders)->groupBy(fn($o) => $o['name'] . '-' . $o['phone']);
                 ?>
 
-                <?php $__empty_1 = true; $__currentLoopData = $groupedOrders; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $groupKey => $group): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
+                <?php $__empty_1 = true; $__currentLoopData = $groupedByUser; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $userGroup): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
                     <?php
-                        $first = $group->first();
-                        $totalAmount += $group->sum('price');
+                        $rowspanNamePhone = $userGroup->count();
+                        $firstNamePhoneRow = true;
+                        $groupedByDate = $userGroup->groupBy('date');
                     ?>
-                    <tr>
-                        <td rowspan="<?php echo e($group->count()); ?>"><?php echo e($stt++); ?></td>
-                        <td rowspan="<?php echo e($group->count()); ?>"><?php echo e(\Carbon\Carbon::parse($first['date'])->format('d/m/Y')); ?></td>
-                        <td rowspan="<?php echo e($group->count()); ?>"><?php echo e($first['name']); ?></td>
-                        <td rowspan="<?php echo e($group->count()); ?>"><?php echo e($first['phone']); ?></td>
-                        <td rowspan="<?php echo e($group->count()); ?>"><?php echo e($first['yard_name']); ?></td>
 
-                        
-                        <td>
-                            <?php $__currentLoopData = $first['times']; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $time): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                <?php echo e($time); ?><br>
+                    <?php $__currentLoopData = $groupedByDate; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $date => $dateGroup): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                        <?php
+                            $rowspanDate = $dateGroup->count();
+                            $firstDateRow = true;
+                            $groupedByType = $dateGroup->groupBy('type_name');
+                        ?>
+
+                        <?php $__currentLoopData = $groupedByType; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $type => $typeGroup): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                            <?php
+                                $rowspanType = $typeGroup->count();
+                                $firstTypeRow = true;
+                            ?>
+
+                            <?php $__currentLoopData = $typeGroup; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $order): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                <tr>
+                                    
+                                    <?php if($firstNamePhoneRow): ?>
+                                        <td rowspan="<?php echo e($rowspanNamePhone); ?>"><?php echo e($order['name']); ?></td>
+                                        <td rowspan="<?php echo e($rowspanNamePhone); ?>"><?php echo e($order['phone']); ?></td>
+                                        <?php $firstNamePhoneRow = false; ?>
+                                    <?php endif; ?>
+
+                                    
+                                    <?php if($firstDateRow): ?>
+                                        <td rowspan="<?php echo e($rowspanDate); ?>"><?php echo e(\Carbon\Carbon::parse($date)->format('d/m/Y')); ?></td>
+                                        <?php $firstDateRow = false; ?>
+                                    <?php endif; ?>
+
+                                    
+                                    <?php if($firstTypeRow): ?>
+                                        <td rowspan="<?php echo e($rowspanType); ?>"><?php echo e($type); ?></td>
+                                        <?php $firstTypeRow = false; ?>
+                                    <?php endif; ?>
+
+                                    <td><?php echo e($order['yard_name']); ?></td>
+
+                                    <td>
+                                        <?php $__currentLoopData = $order['times']; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $time): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                            <?php echo e($time); ?><br>
+                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                    </td>
+
+                                    <td>
+                                        <?php $__currentLoopData = $order['price_per_slot'] ?? []; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $price): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                            <?php echo e(number_format($price)); ?>đ<br>
+                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                    </td>
+
+                                    <td><?php echo e($order['notes'] ?? 'Không có'); ?></td>
+                                </tr>
+                                <?php $totalAmount += $order['price'] ?? 0; ?>
                             <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                        </td>
-                        <td>
-                            <?php if(!empty($first['price_per_slot']) && is_array($first['price_per_slot'])): ?>
-                                <?php $__currentLoopData = $first['price_per_slot']; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $price): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                    <?php echo e(number_format($price)); ?>đ<br>
-                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                            <?php else: ?>
-                                Không có dữ liệu
-                            <?php endif; ?>
-                        </td>
-                        <td><?php echo e($first['notes'] ?? 'Không có'); ?></td>
-                    </tr>
-
-                    
-                    <?php $__currentLoopData = $group->slice(1); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $order): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                        <tr>
-                            <td>
-                                <?php $__currentLoopData = $order['times']; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $time): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                    <?php echo e($time); ?><br>
-                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                            </td>
-                            <td>
-                                <?php if(!empty($order['price_per_slot']) && is_array($order['price_per_slot'])): ?>
-                                    <?php $__currentLoopData = $order['price_per_slot']; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $price): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                        <?php echo e(number_format($price)); ?>đ<br>
-                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                                <?php else: ?>
-                                    Không có dữ liệu
-                                <?php endif; ?>
-                            </td>
-                            <td><?php echo e($order['notes'] ?? 'Không có'); ?></td>
-                        </tr>
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                     <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                 <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                     <tr><td colspan="8">Không có đơn đặt sân nào.</td></tr>
                 <?php endif; ?>
             </tbody>
+
             <?php if(count($orders) > 0): ?>
             <tfoot>
                 <tr>
-                    <td colspan="6" style="text-align: right;">Tổng tiền:</td>
-                    <td colspan="2"><?php echo e(number_format($totalAmount)); ?>đ</td>
+                    <td colspan="6" style="text-align: right;"><strong>Tổng tiền:</strong></td>
+                    <td colspan="2"><strong><?php echo e(number_format($totalAmount)); ?>đ</strong></td>
                 </tr>
             </tfoot>
             <?php endif; ?>

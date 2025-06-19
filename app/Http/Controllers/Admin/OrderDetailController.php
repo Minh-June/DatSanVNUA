@@ -114,7 +114,16 @@ class OrderDetailController extends Controller
         $order_id = $detail->order_id;
         $detail->delete();
 
+        // Kiểm tra nếu đơn không còn chi tiết nào nữa thì chuyển về danh sách đơn
+        $remainingDetails = OrderDetail::where('order_id', $order_id)->count();
+
+        if ($remainingDetails === 0) {
+            return redirect()->route('quan-ly-don-dat-san')
+                ->with('success', 'Đã xóa hết chi tiết đơn. Đơn này không còn chi tiết nào.');
+        }
+
+        // Nếu vẫn còn chi tiết thì quay lại trang cập nhật đơn
         return redirect()->route('cap-nhat-don-dat-san', $order_id)
-            ->with('success', 'Đã xóa chi tiết đơn thành công !');
+            ->with('success', 'Đã xóa chi tiết đơn thành công!');
     }
 }

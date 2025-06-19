@@ -9,6 +9,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Requests\Client\AccountRequest;
 
 class AccountController extends Controller
 {
@@ -16,7 +17,9 @@ class AccountController extends Controller
     {
         $user = Auth::user();
 
-        $ordersQuery = $user->orders()->with('orderDetails.yard');
+        $ordersQuery = $user->orders()
+            ->with('orderDetails.yard.type')
+            ->orderBy('date', 'desc');
 
         if ($request->has('date') && $request->date != '') {
             $date = $request->date;

@@ -21,19 +21,30 @@
     <div class="admin-top-bar">
         <div class="admin-search">
             @if(!isset($xem_user))
-            <form method="GET" action="{{ route('quan-ly-nguoi-dung') }}">
-                <label for="type_id">Tìm người dùng:</label>
-                <input type="text" name="keyword" placeholder="Nhập thông tin cần tìm" value="{{ request('keyword') }}" required pattern="^[\p{L}\s]+$" title="Chỉ nhập chữ cái và khoảng trắng">
-                <button class="update-btn" type="submit">Tìm kiếm</button>
-            </form>
+                <form method="GET" action="{{ route('quan-ly-nguoi-dung') }}">
+                    <input
+                        type="text"
+                        name="keyword"
+                        placeholder="Nhập thông tin"
+                        value="{{ request('keyword') }}"
+                        required
+                        pattern="^[\p{L}0-9\s]+$"
+                        title="Chỉ nhập chữ cái, số và khoảng trắng"
+                    />
+                    <button class="update-btn" type="submit">Tìm kiếm</button>
+                </form>
             @endif
         </div>
 
         <div class="admin-add-btn">
             @if(isset($xem_user))
-                <a class="update-btn" href="{{ route('quan-ly-nguoi-dung') }}">Quay lại danh sách</a>
+                <a class="delete-btn"
+                href="{{ route('reset-mat-khau-nguoi-dung', ['user_id' => $xem_user->user_id]) }}"
+                onclick="return confirm('Bạn có chắc chắn muốn đặt lại mật khẩu người dùng này không?')">
+                <i class="fa-solid fa-rotate-left"></i> Đặt lại mật khẩu
+                </a>
             @else
-                <a class="update-btn" href="{{ route('dang-ky') }}">Thêm người dùng mới</a>
+                <a class="update-btn" href="{{ route('dang-ky') }}">Thêm người dùng</a>
             @endif
         </div>
     </div>
@@ -77,10 +88,11 @@
                 <tr>
                     <th>STT</th>
                     <th>Họ và tên</th>
+                    <th>SĐT</th>
                     <th>Tên tài khoản</th>
-                    <th>Vai trò</th>
                     <th>Thông tin</th>
-                    <th colspan="2">Tuỳ chọn</th>
+                    <th>Vai trò</th>
+                    <th>Tuỳ chọn</th>
                 </tr>
             </thead>
             <tbody>
@@ -88,8 +100,8 @@
                 <tr>
                     <td>{{ $index + 1 }}</td>
                     <td class="left-align">{{ $user->fullname }}</td>
+                    <td>{{ $user->phonenb }}</td>
                     <td>{{ $user->username }}</td>
-                    <td>{{ $user->role == 0 ? 'Admin' : 'Khách hàng' }}</td>
                     <td>
                         <a href="{{ route('quan-ly-nguoi-dung', ['xem' => $user->user_id]) }}">Xem chi tiết</a>
                     </td>

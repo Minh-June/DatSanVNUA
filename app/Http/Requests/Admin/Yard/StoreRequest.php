@@ -3,12 +3,13 @@
 namespace App\Http\Requests\Admin\Yard;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class StoreRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return true; // Có thể kiểm tra quyền tại đây nếu cần
+        return true;
     }
 
     public function rules(): array
@@ -19,7 +20,10 @@ class StoreRequest extends FormRequest
                 'required',
                 'string',
                 'max:255',
-                'regex:/^[\p{L}0-9\s\-\(\)]+$/u', // Cho phép chữ, số, khoảng trắng, -, (, )
+                'regex:/^[\p{L}0-9\s\-\(\)]+$/u',
+                Rule::unique('yards')->where(function ($query) {
+                    return $query->where('type_id', $this->type_id);
+                }),
             ],
         ];
     }
@@ -27,10 +31,11 @@ class StoreRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'name.required' => 'Tên sân không được để trống.',
-            'name.regex' => 'Tên sân không được chứa ký tự đặc biệt.',
             'type_id.required' => 'Vui lòng chọn thể loại sân.',
             'type_id.exists' => 'Thể loại sân không hợp lệ.',
+            'name.required' => 'Tên sân không được để trống.',
+            'name.regex' => 'Tên sân không được chứa ký tự đặc biệt.',
+            'name.unique' => 'Tên sân đã tồn tại trong thể loại sân đã chọn. Vui long nhập tên sân khác !',
         ];
     }
 }

@@ -26,4 +26,33 @@ class Time extends Model
     {
         return $this->belongsTo(Yard::class, 'yard_id', 'yard_id');
     }
+
+    // Hàm tĩnh sao chép khung giờ hôm qua sang ngày hôm nay nếu chưa có
+    public static function cloneFromDateToDate($yard_id, $fromDate, $toDate): int
+    {
+        $source = self::where('yard_id', $yard_id)
+            ->whereDate('date', $fromDate)
+            ->orderBy('time')
+            ->get();
+
+        $count = 0;
+        foreach ($source as $time) {
+            $exists = self::where('yard_id', $yard_id)
+                ->where('date', $toDate)
+                ->where('time', $time->time)
+                ->exists();
+
+            if (!$exists) {
+                self::create([
+                    'yard_id' => $yard_id,
+                    'time' => $time->time,
+                    'price' => $time->price,
+                    'date' => $toDate,
+                ]);
+                $count++;
+            }
+        }
+
+        return $count;
+    }
 }

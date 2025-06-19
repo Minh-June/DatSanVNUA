@@ -22,44 +22,27 @@ class TimeController extends Controller
             $times = Time::join('yards', 'times.yard_id', '=', 'yards.yard_id')
                         ->where('times.yard_id', $yard_id)
                         ->whereDate('times.date', $date)
-                        ->orderBy('times.time', 'asc') // Sắp xếp theo thời gian tăng dần
-                        ->select('times.*') // Đảm bảo chỉ lấy các cột từ bảng times
+                        ->orderBy('times.time', 'asc')
+                        ->select('times.*')
                         ->get();
 
-            // Nếu không có khung giờ nào cho ngày đã chọn → sao chép từ ngày gần nhất trước đó
             if ($times->isEmpty()) {
-                $latestDate = Time::where('yard_id', $yard_id)
-                                ->whereDate('date', '<', $date)
-                                ->orderBy('date', 'desc')
-                                ->value('date');
+                $yesterday = date('Y-m-d', strtotime($date . ' -1 day'));
+                Time::cloneFromDateToDate($yard_id, $yesterday, $date);
 
-                if ($latestDate) {
-                    $latestTimes = Time::where('yard_id', $yard_id)
-                                    ->whereDate('date', $latestDate)
-                                    ->orderBy('time', 'asc')
-                                    ->get();
-
-                    foreach ($latestTimes as $time) {
-                        Time::create([
-                            'yard_id' => $time->yard_id,
-                            'time'    => $time->time,
-                            'price'   => $time->price,
-                            'date'    => $date,
-                        ]);
-                    }
-
-                    // Lấy lại dữ liệu sau khi sao chép
-                    $times = Time::join('yards', 'times.yard_id', '=', 'yards.yard_id')
-                                ->where('times.yard_id', $yard_id)
-                                ->whereDate('times.date', $date)
-                                ->orderBy('times.time', 'asc')
-                                ->select('times.*')
-                                ->get();
-                }
+                $times = Time::join('yards', 'times.yard_id', '=', 'yards.yard_id')
+                            ->where('times.yard_id', $yard_id)
+                            ->whereDate('times.date', $date)
+                            ->orderBy('times.time', 'asc')
+                            ->select('times.*')
+                            ->get();
             }
         }
 
-        return view('admin.timeyards.index', compact('times', 'yards', 'yard_id', 'date'));
+        // Thêm biến xác định ngày quá khứ
+        $isPastDate = strtotime($date) < strtotime(date('Y-m-d'));
+
+        return view('admin.timeyards.index', compact('times', 'yards', 'yard_id', 'date', 'isPastDate'));
     }
 
     public function create(Request $request)

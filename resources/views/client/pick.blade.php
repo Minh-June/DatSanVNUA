@@ -11,7 +11,7 @@
 @endif
 
 <div id="content" class="order-section">
-    <h2 class="order-heading">{{ $yard_name }}</h2>
+    <h2 class="order-heading">{{ $type_name }} - {{ $yard_name }}</h2>
     <div class="order-content">
         <div class="order-section-left">
             @if ($yard_image)
@@ -26,6 +26,7 @@
                 <p>* Lưu ý: Nếu bạn muốn đặt sân ngoài khung giờ có sẵn, vui lòng liên hệ chủ sân qua SĐT: 0356645445</p>
                 <form action="{{ route('luu-thong-tin-don-dat-san') }}" method="POST" id="orderForm" onsubmit="return confirmBooking(event)">
                     @csrf
+                    <input type="hidden" name="type_name" value="{{ $type_name }}">
                     <div class="form-order-days">
                         <label for="date">Chọn ngày:</label>
                         <input type="hidden" id="yard_id_input" value="{{ $yard_id }}">
@@ -56,6 +57,8 @@
 
                     <input type="hidden" name="user_id" value="{{ $userId  }}">
                     <input type="hidden" name="yard_id" value="{{ $yard_id }}">
+                    <input type="hidden" name="type_id" value="{{ $type_id }}">
+                    <input type="hidden" name="type_name" value="{{ $type_name }}">
                     <input type="hidden" name="total_price" id="total_price_input" value="0">
                     <div id="selected_times"></div>
                     <input type="hidden" name="continue_booking" id="continue_booking">
@@ -75,7 +78,7 @@
     <div class="clear"></div>
 </div>
 
-<!-- Lightbox hiển thị tất cả ảnh sân -->
+    <!-- Hiển thị tất cả ảnh sân -->
     <div id="multi-image-popup" onclick="hideAllImages()" style="
         display: none;
         position: fixed;
@@ -85,11 +88,16 @@
         justify-content: center;
         align-items: center;
     ">
-        <div onclick="event.stopPropagation()" style="display: flex; gap: 15px;">
+        <div onclick="event.stopPropagation()" style="
+            display: flex; 
+            gap: 15px;
+            max-width: 90%;
+            overflow-x: auto;
+        ">
             @foreach ($yard->images as $img)
                 <img src="{{ asset(Storage::url($img->image)) }}"
                     alt="Ảnh sân"
-                    style="max-height: 700px; max-width: 525px; box-shadow: 0 0 10px #000;">
+                    style="max-height: 600px; max-width: 500px; box-shadow: 0 0 10px #000;">
             @endforeach
         </div>
     </div>

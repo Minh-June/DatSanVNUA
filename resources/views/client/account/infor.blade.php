@@ -3,6 +3,12 @@
 @section('title', 'Quản lý thông tin cá nhân')
 
 @section('content')  
+    @php
+        use Carbon\Carbon;
+        $maxDate = Carbon::now()->subYears(13)->format('Y-m-d');         // Phải đủ 13 tuổi
+        $minDate = Carbon::now()->subYears(100)->format('Y-m-d');       // Không quá 100 tuổi
+    @endphp
+
     @if ($errors->any())
         <script>
             @foreach ($errors->all() as $error)
@@ -39,7 +45,12 @@
 
             <div class="adminedit-form-group">
                 <label for="birthdate">Ngày sinh:</label>
-                <input type="date" name="birthdate" value="{{ $user->birthdate }}" required>
+                <input type="date"
+                       name="birthdate"
+                       value="{{ old('birthdate', $user->birthdate) }}"
+                       min="{{ $minDate }}"
+                       max="{{ $maxDate }}"
+                       required>
             </div>
 
             <div class="adminedit-form-group">
@@ -57,5 +68,4 @@
             </div>
         </form>
     </div>
-
 @endsection
