@@ -3,19 +3,20 @@
 @section('title', 'Đăng Ký')
 
 @section('content')
-    <!-- Hiển thị thông báo thành công -->
+
     @if(session('success'))
-        <script>
-            alert("{{ session('success') }}");
-        </script>
+        <script>alert("{{ session('success') }}");</script>
     @endif
 
-    <!-- Hiển thị thông báo lỗi -->
     @if(session('error'))
-        <script>
-            alert("{{ session('error') }}");
-        </script>
+        <script>alert("{{ session('error') }}");</script>
     @endif
+
+    @php
+        use Carbon\Carbon;
+        $maxDate = Carbon::now()->subYears(13)->format('Y-m-d');      // Phải đủ 13 tuổi
+        $minDate = Carbon::now()->subYears(100)->format('Y-m-d');     // Không quá 100 tuổi
+    @endphp
 
     <div class="container-access-register" id="signUp">
         <h2 class="form-title">Đăng Ký</h2>
@@ -52,7 +53,14 @@
             <div class="input-group">
                 <i class="fa-solid fa-calendar"></i>
                 <label class="input-group-select" for="birthdate">Ngày sinh:</label>
-                <input class="login-time-select" type="date" id="birthdate" name="birthdate" required>
+                <input class="login-time-select"
+                    type="date"
+                    id="birthdate"
+                    name="birthdate"
+                    min="{{ $minDate }}"
+                    max="{{ $maxDate }}"
+                    value="{{ old('birthdate') }}"
+                    required>
             </div>
         
             <div class="input-group">
@@ -83,7 +91,7 @@
         </form>        
 
         <div class="links">
-            <p>Bạn đã có tài khoản?</p>
+            <p>Bạn đã có tài khoản ?</p>
             <a href="{{ route('dang-nhap') }}"><button id="signUpButton">Đăng Nhập</button></a>
         </div>
 

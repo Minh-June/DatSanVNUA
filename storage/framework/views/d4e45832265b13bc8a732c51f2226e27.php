@@ -78,12 +78,12 @@
 
                                         
                                         <?php if($firstTypeRow): ?>
-                                            <td rowspan="<?php echo e($rowspanType); ?>"><?php echo e($type); ?></td>
+                                            <td class="left-align" rowspan="<?php echo e($rowspanType); ?>"><?php echo e($type); ?></td>
                                             <?php $firstTypeRow = false; ?>
                                         <?php endif; ?>
 
                                         
-                                        <td><?php echo e($order['yard_name']); ?></td>
+                                        <td class="left-align"><?php echo e($order['yard_name']); ?></td>
 
                                         
                                         <td>
@@ -116,7 +116,7 @@
                             <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                         <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                     <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
-                        <tr><td colspan="9">Không có đơn đặt sân nào.</td></tr>
+                        <tr><td colspan="9">Không có đơn đặt sân nào !</td></tr>
                     <?php endif; ?>
                 </tbody>
 

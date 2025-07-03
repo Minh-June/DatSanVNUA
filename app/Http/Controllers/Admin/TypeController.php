@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Requests\Admin\Type\StoreRequest;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Type;
@@ -32,7 +33,7 @@ class TypeController extends Controller
         return view('admin.types.create');  // Đảm bảo bạn đã có view 'create' cho trang tạo mới
     }
 
-    public function store(Request $request)
+    public function store(StoreRequest  $request)
     {
         $request->validate([
             'name' => [
@@ -58,7 +59,6 @@ class TypeController extends Controller
         return redirect()->route('quan-ly-loai-san')->with('success', 'Thêm loại sân thành công!');
     }
 
-    // Hiển thị form sửa loại sân
     public function edit($type_id)
     {
         $type = Type::find($type_id);  // Tìm loại sân theo ID
@@ -68,7 +68,6 @@ class TypeController extends Controller
         return view('admin.types.update', compact('type')); // Truyền dữ liệu vào view để chỉnh sửa
     }
 
-    // Cập nhật loại sân
     public function update(Request $request, $type_id)
     {
         $type = Type::find($type_id);

@@ -62,8 +62,8 @@
                                 </td>
                             @endif
 
-                            <td>{{ $firstDetail->yard->type->name ?? 'Không xác định' }}</td>
-                            <td>{{ $firstDetail->yard->name ?? 'Không xác định' }}</td>
+                            <td class="left-align">{{ $firstDetail->yard->type->name ?? 'Không xác định' }}</td>
+                            <td class="left-align">{{ $firstDetail->yard->name ?? 'Không xác định' }}</td>
                             <td>{!! $timeString !!}</td>
 
                             @if($isFirstGroup)
@@ -83,10 +83,17 @@
                                 </td>
                                 <td rowspan="{{ $rowspan }}">
                                     @switch($order->status)
-                                        @case(0) Chờ xác nhận @break
-                                        @case(1) Đã xác nhận @break
-                                        @case(2) Đơn đã bị hủy @break
-                                        @default Không xác định
+                                        @case(0)
+                                            <span class="status status-pending">Chờ xác nhận</span>
+                                            @break
+                                        @case(1)
+                                            <span class="status status-confirmed">Đã xác nhận</span>
+                                            @break
+                                        @case(2)
+                                            <span class="status status-cancelled">Đơn đã bị hủy</span>
+                                            @break
+                                        @default
+                                            <span class="status status-unknown">Không xác định</span>
                                     @endswitch
                                 </td>
                             @endif

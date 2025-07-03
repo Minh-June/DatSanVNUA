@@ -19,12 +19,15 @@ class UserController extends Controller
             $query->where(function ($q) use ($keyword) {
                 $q->whereRaw('LOWER(fullname) LIKE ?', ['%' . $keyword . '%'])
                 ->orWhereRaw('LOWER(username) LIKE ?', ['%' . $keyword . '%'])
-                ->orWhere('phonenb', 'like', '%' . $keyword . '%'); // ✅ Thêm dòng này
+                ->orWhere('phonenb', 'like', '%' . $keyword . '%');
 
+                // Tìm theo tên vai trò
                 if (str_contains($keyword, 'admin')) {
                     $q->orWhere('role', 0);
-                } elseif (str_contains($keyword, 'khách') || str_contains($keyword, 'user')) {
+                } elseif (str_contains($keyword, 'kha') || str_contains($keyword, 'user')) {
                     $q->orWhere('role', 1);
+                } elseif (str_contains($keyword, 'can') || str_contains($keyword, 'can bo')) {
+                    $q->orWhere('role', 2);
                 }
             });
         }
@@ -48,14 +51,14 @@ class UserController extends Controller
     public function updateRole(Request $request, $user_id)
     {
         $request->validate([
-            'role' => 'required|in:0,1',
+            'role' => 'required|in:0,1,2',
         ]);
 
         $user = User::findOrFail($user_id);
         $user->role = (int) $request->role;
         $user->save();
 
-        return redirect()->route('quan-ly-nguoi-dung')->with('success', 'Đã cập nhật vai trò người dùng!');
+        return redirect()->route('quan-ly-nguoi-dung')->with('success', 'Đã cập nhật vai trò người dùng !');
     }
 
     public function delete($user_id)

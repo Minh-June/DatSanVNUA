@@ -38,7 +38,10 @@
                 <th>Thành tiền</th>
                 <th>Ảnh thanh toán</th>
                 <th>Thông tin</th>
-                <th colspan="2">Tùy chọn</th>
+                <th>Tùy chọn</th>
+                <?php if(Auth::user()->role == 0): ?>
+                    <th>Xóa</th>
+                <?php endif; ?>
             </tr>
 
             <?php $__currentLoopData = $orders; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $order): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
@@ -78,13 +81,15 @@
                             <button type="submit" class="update-btn">Cập nhật</button>
                         </form>
                     </td>
-                    <td>
-                        <form method="POST" action="<?php echo e(route('xoa-don-dat-san', $order->order_id)); ?>" onsubmit="return confirm('Bạn có chắc muốn xóa đơn này?')">
-                            <?php echo csrf_field(); ?>
-                            <?php echo method_field('DELETE'); ?>
-                            <button type="submit" class="delete-btn">Xóa</button>
-                        </form>
-                    </td>
+                    <?php if(Auth::user()->role == 0): ?>
+                        <td>
+                            <form method="POST" action="<?php echo e(route('xoa-don-dat-san', $order->order_id)); ?>" onsubmit="return confirm('Bạn có chắc muốn xóa đơn này?')">
+                                <?php echo csrf_field(); ?>
+                                <?php echo method_field('DELETE'); ?>
+                                <button type="submit" class="delete-btn">Xóa</button>
+                            </form>
+                        </td>
+                    <?php endif; ?>
                 </tr>
             <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
         </table>

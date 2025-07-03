@@ -3,13 +3,13 @@
 @section('title', 'Thanh toán')
 
 @section('content')
-@if(session('success'))
-    <script>alert("{{ session('success') }}");</script>
-@endif
-
-@if(session('error'))
-    <script>alert("{{ session('error') }}");</script>
-@endif
+    @if(session('success'))
+        <script>alert("{{ session('success') }}");</script>
+    @endif  
+    
+    @if(session('error'))
+        <script>alert("{{ session('error') }}");</script>
+    @endif
 
 <div id="content" class="order-section">
     <h2 class="order-heading">THANH TOÁN</h2>
@@ -89,11 +89,11 @@
 
                                     {{-- Gộp loại sân --}}
                                     @if ($firstTypeRow)
-                                        <td rowspan="{{ $rowspanType }}">{{ $type }}</td>
+                                        <td class="left-align" rowspan="{{ $rowspanType }}">{{ $type }}</td>
                                         @php $firstTypeRow = false; @endphp
                                     @endif
 
-                                    <td>{{ $order['yard_name'] }}</td>
+                                    <td class="left-align">{{ $order['yard_name'] }}</td>
 
                                     <td>
                                         @foreach ($order['times'] as $time)

@@ -8,7 +8,7 @@ class StoreRequest extends FormRequest
 {
     public function authorize()
     {
-        return true;// Cần xác định quyền người dùng tại đây nếu cần
+        return true;
     }
 
     public function rules()
@@ -18,9 +18,18 @@ class StoreRequest extends FormRequest
                 'required',
                 'string',
                 'max:255',
-                'regex:/^[\p{L}\s]+$/u', // Không cho phép số & ký tự đặc biệt
-                'unique:types,name,' . $this->route('type_id'), // Cho UpdateRequest
+                'regex:/^[\p{L}\s]+$/u', // Chỉ cho chữ cái và khoảng trắng
+                'unique:types,name', // Kiểm tra trùng tên trong bảng types
             ],
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'name.required' => 'Vui lòng nhập tên loại sân !',
+            'name.regex' => 'Tên loại sân không được chứa số hoặc ký tự đặc biệt !',
+            'name.unique' => 'Tên sân đã tồn tại, vui lòng đặt tên khác !',
         ];
     }
 }

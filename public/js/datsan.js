@@ -2,12 +2,15 @@ let selectedTimes = [];
 let selectedPrices = [];
 let totalPrice = 0;
 
+// Hàm này sẽ được gọi khi người dùng thay đổi ngày đặt sân
 function onDateChange() {
     const yardId = document.getElementById('yard_id_input').value;
     const selectedDate = document.getElementById('date').value;
     window.location.href = `/trang-chu/dat-san/${yardId}?date=${selectedDate}`;
 }
 
+// Hàm này sẽ được gọi khi người dùng chọn khung giờ
+// Thêm hoặc bỏ chọn khung giờ, cập nhật tổng tiền và các input hidden
 function changeTimeSlot(button) {
     const time = button.getAttribute('data-time');
     const price = parseInt(button.getAttribute('data-price'));
@@ -85,7 +88,7 @@ window.onload = function () {
     });
 };
 
-
+// Xác nhận đặt sân lưu vào session
 function confirmBooking(event) {
     event.preventDefault();
 

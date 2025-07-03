@@ -370,7 +370,7 @@ html {
     border: none;
     border-radius: var(--primary-border-radius);
     box-shadow: var(--primary-box-shadow);
-    font-size: 15px;
+    font-size: 18px;
     cursor: pointer;
     transition: var(--primary-transition);
 }
@@ -408,7 +408,7 @@ html {
     position: absolute;
     right: 1px;
     background-color:#fff;
-    width: 500px;
+    width: 480px;
     border-radius: var(--primary-border-radius);
     box-shadow: var(--primary-box-shadow);
     cursor: default;
@@ -425,7 +425,7 @@ html {
 .header__cart-heading {
     text-align: center;
     color: #000;
-    font-size: 21px;
+    font-size: 22px;
     font-weight: bold;
 }
 
@@ -705,6 +705,7 @@ html {
 
 /* Contact form */
 .contact-content{
+    display: flex;
     margin-top: 40px;
     margin-bottom: 50px;
 }
@@ -716,12 +717,13 @@ html {
 
 .contact-infor-header {
     display: flex;
-    padding-bottom: 12px;
+    padding-bottom: 15px;
+    margin-left: 11%;
 }
 
 .contact-infor-header > img {
-    width: 55px;
-    height: 55px;
+    width: 60px;
+    height: 60px;
 }
 
 .contact-infor-text {
@@ -732,10 +734,13 @@ html {
     letter-spacing: 1.8px;
 }
 
-.contact-infor i[class*="fa-"] {
+.contact-infor i[class*="fa-location-dot"], 
+.contact-infor i[class*="fa-phone"], 
+.contact-infor i[class*="fa-envelope"], 
+.contact-infor i[class*="fa-globe"] {
     width: 30px;
     display: inline-block;
-    margin-left: 17px;
+    margin-left: 14%;
 }
 
 .contact-infor .website-label {
@@ -748,6 +753,7 @@ html {
 }
 
 .contact-infor a {
+    font-size: var(--primary-font-size);
     text-decoration: none;
 }
 
@@ -755,35 +761,26 @@ html {
     color: var(--primary-color);
 }
 
-.contact-form .form-control {
-    padding: 10px;
-    border: 1px solid var(--primary-color);
-    width: 100%;
-    border-radius: var(--primary-border-radius);
-    margin-bottom: 5px;
-    box-shadow: var(--secondary-box-shadow);
-    font-size: 14px;
-}
-
-.contact-btn {
-    background-color: var(--primary-color);
-    color: #fff;
+.contact-hour {
+    margin: 10px 0 0 14%;
     font-size: var(--primary-font-size);
-    text-decoration: none;
-    padding: 5px 10%;
-    border-radius: var(--primary-border-radius);
-    border: none;
-    box-shadow: var(--primary-box-shadow);
 }
 
-.contact-btn:hover {
-    cursor: pointer;
-    background-color: var(--primary-color-hover);
+.contact-hour > a {
+    margin-right: 6px;
+    color: green;
+}
+
+.contact-hour > a:hover {
+    color: var(--primary-color);
     transition: var(--primary-transition);
 }
 
-.pull-right {
-    float: right !important;
+.contact-form > iframe {
+    border-radius: var(--primary-border-radius);
+    box-shadow: var(--primary-box-shadow);
+    width: 100%;
+    height: 360px;
 }
 
 /* Footer section */
@@ -835,14 +832,14 @@ html {
 
 /* Đặt sân */
 .order-section {
-    width: 92%;
+    width: 91%;
     margin-top: 80px;
     margin-left: auto;
     margin-right: auto;
 }
 
 .order-heading {
-    font-size: 28px;
+    font-size: 30px;
     margin-bottom: 20px;
     text-align: center;
     letter-spacing: 4px;
@@ -978,7 +975,7 @@ html {
 }
 
 .order-successfully-infor {
-    margin: 0 60px 40px 60px;
+    margin: 0 40px 40px 40px;
 }
 
 .order-successfully-infor > h4 {
@@ -1122,13 +1119,28 @@ html {
 .admin-manage li {
     list-style: none;
     position: relative;
+    font-size: 21px;
+    line-height: 50px;
+    color: #fff;
+    cursor: pointer;
+    transition: var(--primary-transition);
 }
 
-.admin-manage li a:hover {
-    color: #fff;
+.admin-manage li:hover,
+.admin-manage li.active {
     background-color: var(--primary-color-hover);
-    display: block;
+    color: #fff;
     transition: var(--primary-transition);
+    border-radius: 4px;
+}
+
+/* Xóa nền và màu trong thẻ <a> */
+.admin-manage li a {
+    text-decoration: none;
+    color: inherit; /* lấy màu từ li */
+    display: block;
+    width: 100%;
+    height: 100%;
 }
 
 .admin-section-right {
@@ -1174,6 +1186,7 @@ html {
     box-shadow: var(--secondary-box-shadow);
 }
 
+/* Bảng dữ liệu */
 #ListCustomers {
     font-size: 18px;
     margin-left: 3%;
@@ -1222,6 +1235,24 @@ th {
 tr:hover  {
     background-color: #F5FAFA;
     transition: var(--primary-transition);
+}
+
+.status {
+    padding: 4px 8px;
+    border-radius: var(--primary-border-radius);
+    box-shadow: var(--secondary-box-shadow);
+}
+
+.status-pending {
+    background-color: var(--primary-color-hover-text);
+}
+
+.status-confirmed {
+    background-color: #fff3cd;
+}
+
+.status-cancelled {
+    background-color: #f8d7da;
 }
 
 form select {

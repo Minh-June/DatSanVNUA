@@ -3,18 +3,12 @@
 @section('title', 'Thêm loại sân')
 
 @section('content')
-    <!-- Hiển thị thông báo -->
     @if(session('success'))
-        <script>
-            alert("{{ session('success') }}");
-        </script>
+        <script>alert("{{ session('success') }}");</script>
     @endif
 
-    <!-- Hiển thị thông báo lỗi -->
     @if ($errors->any())
-        <script>
-            alert("{{ $errors->first() }}");
-        </script>
+        <script>alert("{{ $errors->first() }}");</script>
     @endif
 
     <h2>Thêm loại sân</h2>

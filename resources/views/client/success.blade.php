@@ -78,12 +78,12 @@
 
                                         {{-- Gộp loại sân --}}
                                         @if ($firstTypeRow)
-                                            <td rowspan="{{ $rowspanType }}">{{ $type }}</td>
+                                            <td class="left-align" rowspan="{{ $rowspanType }}">{{ $type }}</td>
                                             @php $firstTypeRow = false; @endphp
                                         @endif
 
                                         {{-- Tên sân --}}
-                                        <td>{{ $order['yard_name'] }}</td>
+                                        <td class="left-align">{{ $order['yard_name'] }}</td>
 
                                         {{-- Thời gian thuê --}}
                                         <td>
@@ -116,7 +116,7 @@
                             @endforeach
                         @endforeach
                     @empty
-                        <tr><td colspan="9">Không có đơn đặt sân nào.</td></tr>
+                        <tr><td colspan="9">Không có đơn đặt sân nào !</td></tr>
                     @endforelse
                 </tbody>
 

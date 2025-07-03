@@ -64,8 +64,8 @@
                                 </td>
                             <?php endif; ?>
 
-                            <td><?php echo e($firstDetail->yard->type->name ?? 'Không xác định'); ?></td>
-                            <td><?php echo e($firstDetail->yard->name ?? 'Không xác định'); ?></td>
+                            <td class="left-align"><?php echo e($firstDetail->yard->type->name ?? 'Không xác định'); ?></td>
+                            <td class="left-align"><?php echo e($firstDetail->yard->name ?? 'Không xác định'); ?></td>
                             <td><?php echo $timeString; ?></td>
 
                             <?php if($isFirstGroup): ?>
@@ -85,10 +85,17 @@
                                 </td>
                                 <td rowspan="<?php echo e($rowspan); ?>">
                                     <?php switch($order->status):
-                                        case (0): ?> Chờ xác nhận <?php break; ?>
-                                        <?php case (1): ?> Đã xác nhận <?php break; ?>
-                                        <?php case (2): ?> Đơn đã bị hủy <?php break; ?>
-                                        <?php default: ?> Không xác định
+                                        case (0): ?>
+                                            <span class="status status-pending">Chờ xác nhận</span>
+                                            <?php break; ?>
+                                        <?php case (1): ?>
+                                            <span class="status status-confirmed">Đã xác nhận</span>
+                                            <?php break; ?>
+                                        <?php case (2): ?>
+                                            <span class="status status-cancelled">Đơn đã bị hủy</span>
+                                            <?php break; ?>
+                                        <?php default: ?>
+                                            <span class="status status-unknown">Không xác định</span>
                                     <?php endswitch; ?>
                                 </td>
                             <?php endif; ?>

@@ -54,7 +54,7 @@
             @php
                 $index = 0;
                 // Nhóm sân theo loại sân (type name)
-                $yardsGrouped = $yards->groupBy(fn($yard) => $yard->type->name);
+                $yardsGrouped = $yardsGrouped = $yards->groupBy(fn($yard) => $yard->type->name ?? 'Không tồn tại');
             @endphp
 
             @foreach ($yardsGrouped as $typeName => $yardsOfType)

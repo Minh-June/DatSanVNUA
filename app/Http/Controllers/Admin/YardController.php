@@ -11,7 +11,6 @@ use App\Http\Requests\Admin\Yard\UpdateRequest;
 
 class YardController extends Controller
 {
-    // Hiển thị danh sách sân
     public function index(Request $request) {
         $query = Yard::with('type')->orderBy('name', 'asc');
 
@@ -38,16 +37,14 @@ class YardController extends Controller
         $yard->save();
 
         return redirect()->route('quan-ly-san', ['type_id' => request('type_id')])
-            ->with('success', 'Cập nhật trạng thái sân thành công!');
+            ->with('success', 'Cập nhật trạng thái sân thành công !');
     }
 
-    // Hiển thị form thêm sân
     public function create() {
         $types = Type::orderBy('name', 'asc')->get();
         return view('admin.yards.create', compact('types'));
     }
 
-    // Lưu sân mới
     public function store(StoreRequest $request)
     {
         Yard::create([
@@ -58,7 +55,6 @@ class YardController extends Controller
         return redirect()->route('quan-ly-san')->with('success', 'Thêm sân thành công !');
     }
 
-    // Hiển thị form chỉnh sửa sân
     public function edit($yard_id) {
         $yard = Yard::findOrFail($yard_id);
         $types = Type::orderBy('name', 'asc')->get();
@@ -77,7 +73,6 @@ class YardController extends Controller
         return redirect()->route('quan-ly-san')->with('success', 'Cập nhật sân thành công !');
     }
 
-    // Xóa sân
     public function delete($yard_id, Request $request) {
         $yard = Yard::findOrFail($yard_id);
         $yard->delete();

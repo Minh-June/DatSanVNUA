@@ -9,7 +9,6 @@ use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Http\Requests\Client\AccountRequest;
 
 class AccountController extends Controller
 {

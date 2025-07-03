@@ -35,7 +35,7 @@ class StoreRequest extends FormRequest
             'type_id.exists' => 'Thể loại sân không hợp lệ.',
             'name.required' => 'Tên sân không được để trống.',
             'name.regex' => 'Tên sân không được chứa ký tự đặc biệt.',
-            'name.unique' => 'Tên sân đã tồn tại trong thể loại sân đã chọn. Vui long nhập tên sân khác !',
+            'name.unique' => 'Tên sân đã tồn tại trong thể loại sân đã chọn. Vui lòng nhập tên sân khác !',
         ];
     }
 }

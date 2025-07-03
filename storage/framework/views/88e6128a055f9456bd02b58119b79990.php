@@ -15,7 +15,7 @@
         </script>
     <?php endif; ?>
 
-    <h2><?php echo e($times->first()->yard->type->name ?? ''); ?> - <?php echo e($times->first()->yard->name ?? ''); ?> </h2>
+    <h2><?php echo e($yard->type->name ?? 'Loại sân không xác định'); ?> - <?php echo e($yard->name ?? 'Không xác định'); ?></h2>
 
     <div class="admin-top-bar">
         <?php if(request('yard_id')): ?>

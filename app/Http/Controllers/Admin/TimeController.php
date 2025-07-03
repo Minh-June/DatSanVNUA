@@ -13,12 +13,15 @@ class TimeController extends Controller
 {
     public function index(Request $request)
     {
-        $yards = Yard::orderBy('name', 'asc')->get();
+        $yards = Yard::with('type')->orderBy('name', 'asc')->get(); // Thêm with('type') nếu cần
         $yard_id = $request->yard_id;
         $date = $request->date ?? date('Y-m-d');
         $times = collect(); // Mặc định rỗng
+        $yard = null; // Thêm biến yard để truyền sang view
 
         if ($yard_id) {
+            $yard = Yard::with('type')->find($yard_id); // Truyền sang view để lấy tên và loại
+
             $times = Time::join('yards', 'times.yard_id', '=', 'yards.yard_id')
                         ->where('times.yard_id', $yard_id)
                         ->whereDate('times.date', $date)
@@ -39,10 +42,9 @@ class TimeController extends Controller
             }
         }
 
-        // Thêm biến xác định ngày quá khứ
         $isPastDate = strtotime($date) < strtotime(date('Y-m-d'));
 
-        return view('admin.timeyards.index', compact('times', 'yards', 'yard_id', 'date', 'isPastDate'));
+        return view('admin.timeyards.index', compact('times', 'yards', 'yard_id', 'date', 'isPastDate', 'yard'));
     }
 
     public function create(Request $request)

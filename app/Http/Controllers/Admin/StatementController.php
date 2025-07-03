@@ -71,10 +71,10 @@ class StatementController extends Controller
 
         // Nhóm theo loại sân, rồi theo tên sân
         $groupByTypeThenYard = $orderDetails->groupBy(function ($item) {
-            return $item->yard->type->name ?? 'Không xác định loại sân';
+            return optional(optional($item->yard)->type)->name ?? 'Loại sân không tồn tại';
         })->map(function ($group) {
             return $group->groupBy(function ($item) {
-                return $item->yard->name ?? 'Sân không tồn tại';
+                return optional($item->yard)->name ?? 'Sân không tồn tại';
             })->map(function ($yardGroup) {
                 return [
                     'total_revenue' => $yardGroup->sum('price'),

@@ -3,13 +3,13 @@
 <?php $__env->startSection('title', 'Thanh toán'); ?>
 
 <?php $__env->startSection('content'); ?>
-<?php if(session('success')): ?>
-    <script>alert("<?php echo e(session('success')); ?>");</script>
-<?php endif; ?>
-
-<?php if(session('error')): ?>
-    <script>alert("<?php echo e(session('error')); ?>");</script>
-<?php endif; ?>
+    <?php if(session('success')): ?>
+        <script>alert("<?php echo e(session('success')); ?>");</script>
+    <?php endif; ?>  
+    
+    <?php if(session('error')): ?>
+        <script>alert("<?php echo e(session('error')); ?>");</script>
+    <?php endif; ?>
 
 <div id="content" class="order-section">
     <h2 class="order-heading">THANH TOÁN</h2>
@@ -89,11 +89,11 @@
 
                                     
                                     <?php if($firstTypeRow): ?>
-                                        <td rowspan="<?php echo e($rowspanType); ?>"><?php echo e($type); ?></td>
+                                        <td class="left-align" rowspan="<?php echo e($rowspanType); ?>"><?php echo e($type); ?></td>
                                         <?php $firstTypeRow = false; ?>
                                     <?php endif; ?>
 
-                                    <td><?php echo e($order['yard_name']); ?></td>
+                                    <td class="left-align"><?php echo e($order['yard_name']); ?></td>
 
                                     <td>
                                         <?php $__currentLoopData = $order['times']; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $time): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>

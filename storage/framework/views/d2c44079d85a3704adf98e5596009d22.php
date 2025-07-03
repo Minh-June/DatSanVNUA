@@ -10,6 +10,17 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
 </head>
 <body>
+    <?php if($errors->any()): ?>
+        <script>
+            let errorMessages = <?php echo json_encode($errors->all(), 15, 512) ?>;
+            alert(errorMessages.join('\n'));
+            // Mở lại modal để người dùng thấy lỗi
+            window.onload = () => {
+                document.querySelector('.js-modal')?.classList.add('open');
+            };
+        </script>
+    <?php endif; ?>
+
     <?php if(!Auth::check() && request()->route()->getName() !== 'dang-nhap'): ?>
         <script>
             alert("Phiên đăng nhập hết hạn, vui lòng đăng nhập lại !");
@@ -28,7 +39,7 @@
                 </li>
                 <li>
                     <a class="home-heading search-btn" href="#">
-                        <i class="fa-solid fa-magnifying-glass"></i>TÌM SÂN NHANH
+                        <i class="fa-solid fa-magnifying-glass"></i>TÌM KIẾM
                     </a>
                 </li>
             </ul>
@@ -146,7 +157,7 @@
                 <i class="fa-solid fa-xmark"></i>
             </div>
             
-            <div class="modal-header">TÌM KIẾM</div>
+            <div class="modal-header">TÌM SÂN NHANH</div>
                 <form class="modal-body" method="GET" action="<?php echo e(route('tim-kiem')); ?>">
                     <label for="date">Chọn ngày:</label>
                     <input type="date" id="date" name="date"
@@ -156,7 +167,7 @@
 
                     <div class="form-group">
                         <label class="modal-label" for="type">Chọn loại sân:</label>
-                        <select name="type" id="type">
+                        <select name="type">
                             <option value="">Tất cả</option>
                             <?php $__currentLoopData = $types; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $type): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                 <option value="<?php echo e($type->type_id); ?>" <?php echo e(old('type') == $type->type_id ? 'selected' : ''); ?>>
@@ -172,7 +183,7 @@
                         <input type="text" id="time_from" name="time_from" placeholder="Dạng 06:00" required>
 
                         <label for="time_to">đến</label>
-                        <input type="text" id="time_to" name="time_to" placeholder="Dạng 22:30" required>
+                        <input type="text" id="time_to" name="time_to" placeholder="Dạng 22:00" required>
                     </div>
 
                     <button type="submit" class="order-football-btn">Tìm kiếm</button>

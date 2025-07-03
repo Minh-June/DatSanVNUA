@@ -27,27 +27,31 @@ class Time extends Model
         return $this->belongsTo(Yard::class, 'yard_id', 'yard_id');
     }
 
-    // Hàm tĩnh sao chép khung giờ hôm qua sang ngày hôm nay nếu chưa có
+    // Hàm sao chép khung giờ từ một ngày sang ngày khác cho một sân cụ thể
     public static function cloneFromDateToDate($yard_id, $fromDate, $toDate): int
     {
-        $source = self::where('yard_id', $yard_id)
+        // Lấy các khung giờ từ ngày nguồn
+        $sourceTimes = self::where('yard_id', $yard_id)
             ->whereDate('date', $fromDate)
             ->orderBy('time')
             ->get();
 
         $count = 0;
-        foreach ($source as $time) {
-            $exists = self::where('yard_id', $yard_id)
-                ->where('date', $toDate)
+
+        foreach ($sourceTimes as $time) {
+            // Kiểm tra nếu khung giờ này đã tồn tại ở ngày đích thì bỏ qua
+            $alreadyExists = self::where('yard_id', $yard_id)
+                ->whereDate('date', $toDate)
                 ->where('time', $time->time)
                 ->exists();
 
-            if (!$exists) {
+            if (!$alreadyExists) {
+                // Tạo khung giờ mới cho ngày đích
                 self::create([
                     'yard_id' => $yard_id,
-                    'time' => $time->time,
-                    'price' => $time->price,
-                    'date' => $toDate,
+                    'date'    => $toDate,
+                    'time'    => $time->time,
+                    'price'   => $time->price,
                 ]);
                 $count++;
             }

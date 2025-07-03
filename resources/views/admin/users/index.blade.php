@@ -111,6 +111,7 @@
                             <select name="role">
                                 <option value="0" {{ $user->role == 0 ? 'selected' : '' }}>Admin</option>
                                 <option value="1" {{ $user->role == 1 ? 'selected' : '' }}>Khách hàng</option>
+                                <option value="2" {{ $user->role == 2 ? 'selected' : '' }}>Cán bộ</option>
                             </select><br>
                             <button type="submit" class="update-btn">Cập nhật</button>
                         </form>

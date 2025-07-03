@@ -56,18 +56,24 @@
                         </div>
 
                         <div class="admin-manage">
-                            <li>
+                            <li class="{{ request()->routeIs('thong-tin-tai-khoan') ? 'active' : '' }}">
                                 <a href="{{ route('thong-tin-tai-khoan') }}">Lịch sử đặt sân</a>
                             </li>
-                            <li>
+                            <li class="{{ request()->routeIs('thong-tin-ca-nhan') ? 'active' : '' }}">
                                 <a href="{{ route('thong-tin-ca-nhan') }}">Thông tin cá nhân</a>
                             </li>
-                            <li>
+                            <li class="{{ request()->routeIs('thay-doi-mat-khau') ? 'active' : '' }}">
                                 <a href="{{ route('thay-doi-mat-khau') }}">Thay đổi mật khẩu</a>
                             </li>
-                            <li>
-                                <a href="#" onclick="event.preventDefault(); handleAccountDelete();">Xóa tài khoản</a>
-                            </li>
+                            @php
+                                $user = Auth::user();
+                            @endphp
+
+                            @if($user->role == 1)
+                                <li>
+                                    <a href="#" onclick="event.preventDefault(); handleAccountDelete();">Xóa tài khoản</a>
+                                </li>
+                            @endif
 
                             <form id="delete-account-form" action="{{ route('xoa-tai-khoan') }}" method="POST" style="display: none;">
                                 @csrf

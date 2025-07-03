@@ -47,22 +47,31 @@
                         </div>
                         
                         <div class="admin-manage">
-                            <li>
-                                <a href="<?php echo e(route('quan-ly-nguoi-dung')); ?>">Quản lý người dùng</a>
-                            </li>
-                            <li>
+                            <?php $user = Auth::user(); ?>
+
+                            <?php if($user && $user->role == 0): ?>
+                                <li class="<?php echo e(request()->is('admin/quan-ly-nguoi-dung*') ? 'active' : ''); ?>">
+                                    <a href="<?php echo e(route('quan-ly-nguoi-dung')); ?>">Quản lý người dùng</a>
+                                </li>
+                            <?php endif; ?>
+
+                            <li class="<?php echo e(request()->is('admin/quan-ly-loai-san*') ? 'active' : ''); ?>">
                                 <a href="<?php echo e(route('quan-ly-loai-san')); ?>">Quản lý loại sân</a>
                             </li>
-                            <li>
+
+                            <li class="<?php echo e(request()->is('admin/quan-ly-san*') || request()->is('admin/quan-ly-thoi-gian-san*') || request()->is('admin/quan-ly-hinh-anh-san*') ? 'active' : ''); ?>">
                                 <a href="<?php echo e(route('quan-ly-san')); ?>">Quản lý sân</a>
                             </li>
-                            <li>
+
+                            <li class="<?php echo e(request()->is('admin/quan-ly-don-dat-san*') || request()->is('admin/chi-tiet-don*') ? 'active' : ''); ?>">
                                 <a href="<?php echo e(route('quan-ly-don-dat-san')); ?>">Đơn đặt sân</a>
                             </li>
-                            <li>
+
+                            <li class="<?php echo e(request()->is('admin/thong-ke-bao-cao*') ? 'active' : ''); ?>">
                                 <a href="<?php echo e(route('thong-ke-bao-cao')); ?>">Thống kê, báo cáo</a>
                             </li>
-                            <li>
+
+                            <li class="<?php echo e(request()->is('admin/thong-tin-tai-khoan*') ? 'active' : ''); ?>">
                                 <a href="<?php echo e(route('thong-tin-tai-khoan')); ?>">Quản lý tài khoản</a>
                             </li>
                         </div>

@@ -91,18 +91,23 @@
 
                     @foreach($yards as $yardName => $data)
                         <tr>
-                            <td>{{ $stt++ }}</td>
-
-                            {{-- Cột loại sân chỉ hiển thị 1 lần trên nhóm, rowspan = số sân --}}
                             @if($firstTypeRow)
-                                <td class="left-align" rowspan="{{ $rowCount }}">{{ $typeName }}</td>
+                                <td rowspan="{{ $rowCount }}">{{ $stt++ }}</td>
+                            @endif
+
+                            @if($firstTypeRow)
+                                <td class="left-align" rowspan="{{ $rowCount }}">{{ $typeName ?? 'Loại sân không tồn tại' }}</td>
                                 @php $firstTypeRow = false; @endphp
                             @endif
 
-                            <td class="left-align">{{ $yardName }}</td>
+                            <td class="left-align">{{ $yardName ?? 'Sân không tồn tại' }}</td>
 
                             <td>
-                                <a href="{{ route('quan-ly-don-dat-san', ['yard_name' => $yardName, 'status' => 1]) }}">
+                                <a href="{{ route('quan-ly-don-dat-san', [
+                                    'yard_name' => $yardName,
+                                    'type_name' => $typeName,
+                                    'status' => 1
+                                ]) }}">
                                     {{ $data['booking_count'] }}
                                 </a>
                             </td>

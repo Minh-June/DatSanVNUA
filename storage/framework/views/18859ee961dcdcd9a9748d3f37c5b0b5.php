@@ -91,18 +91,23 @@
 
                     <?php $__currentLoopData = $yards; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $yardName => $data): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                         <tr>
-                            <td><?php echo e($stt++); ?></td>
-
-                            
                             <?php if($firstTypeRow): ?>
-                                <td class="left-align" rowspan="<?php echo e($rowCount); ?>"><?php echo e($typeName); ?></td>
+                                <td rowspan="<?php echo e($rowCount); ?>"><?php echo e($stt++); ?></td>
+                            <?php endif; ?>
+
+                            <?php if($firstTypeRow): ?>
+                                <td class="left-align" rowspan="<?php echo e($rowCount); ?>"><?php echo e($typeName ?? 'Loại sân không tồn tại'); ?></td>
                                 <?php $firstTypeRow = false; ?>
                             <?php endif; ?>
 
-                            <td class="left-align"><?php echo e($yardName); ?></td>
+                            <td class="left-align"><?php echo e($yardName ?? 'Sân không tồn tại'); ?></td>
 
                             <td>
-                                <a href="<?php echo e(route('quan-ly-don-dat-san', ['yard_name' => $yardName, 'status' => 1])); ?>">
+                                <a href="<?php echo e(route('quan-ly-don-dat-san', [
+                                    'yard_name' => $yardName,
+                                    'type_name' => $typeName,
+                                    'status' => 1
+                                ])); ?>">
                                     <?php echo e($data['booking_count']); ?>
 
                                 </a>

@@ -21,7 +21,7 @@
             </div>
 
             <a href="#" onclick="alert('Vui lòng liên hệ SĐT 0356645445 để được cấp lại mật khẩu !');" class="forgot-password">
-                Quên mật khẩu?
+                Quên mật khẩu ?
             </a>
 
             {{-- Hiển thị lỗi ngay trên nút đăng nhập --}}
@@ -39,7 +39,7 @@
         </form>
 
         <div class="links">
-            <p>Bạn chưa có tài khoản?</p>
+            <p>Bạn chưa có tài khoản ?</p>
             <a href="{{ route('dang-ky') }}"><button id="signUpButton">Đăng Ký</button></a>
         </div>
     </div>

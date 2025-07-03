@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>ĐẶT SÂN VNUA</title>
-    <link rel="stylesheet" href="{{ asset('css/style.css') }}">
-    <link rel="stylesheet" href="{{ asset('fonts/fontawesome-free-6.5.2/css/all.min.css') }}">
+    <link rel="stylesheet" href="<?php echo e(asset('css/style.css')); ?>">
+    <link rel="stylesheet" href="<?php echo e(asset('fonts/fontawesome-free-6.5.2/css/all.min.css')); ?>">
     <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
 </head>
 <body>
@@ -15,12 +15,12 @@
         <div id="header">
             <ul id="nav">
                 <li>
-                    <a class="home-heading" href="{{ route('dang-nhap') }}" target="_top">
+                    <a class="home-heading" href="<?php echo e(route('dang-nhap')); ?>" target="_top">
                         <i class="fa-solid fa-house"></i>TRANG CHỦ
                     </a>
                 </li>
                 <li>
-                    <a class="home-heading search-btn" href="{{ route('dang-nhap') }}" onclick="alert('Vui lòng đăng nhập để sử dụng chức năng !');">
+                    <a class="home-heading search-btn" href="<?php echo e(route('dang-nhap')); ?>" onclick="alert('Vui lòng đăng nhập để sử dụng chức năng !');">
                         <i class="fa-solid fa-magnifying-glass"></i>TÌM KIẾM
                     </a>
                 </li>
@@ -28,32 +28,33 @@
             <!-- End: Nav -->
 
             <div class="header-login">
-                <a class="login-btn dash" href="{{ route('dang-nhap') }}">Đăng Nhập</a>
-                <a class="signup-btn" href="{{ route('dang-ky') }}">Đăng Ký</a>
+                <a class="login-btn dash" href="<?php echo e(route('dang-nhap')); ?>">Đăng Nhập</a>
+                <a class="signup-btn" href="<?php echo e(route('dang-ky')); ?>">Đăng Ký</a>
             </div>
         </div>
         <!-- End: Header -->
 
         <div id="slider">
             <div class="slider-track">
-                <img src="{{ asset('image/slider/slider1.jpg') }}" alt="">
-                <img src="{{ asset('image/slider/slider2.jpg') }}" alt="">
-                <img src="{{ asset('image/slider/slider3.jpg') }}" alt="">
-                <img src="{{ asset('image/slider/slider4.jpg') }}" alt="">
-                <img src="{{ asset('image/slider/slider1.jpg') }}" alt=""> <!-- Ảnh đầu được nhân bản để tạo hiệu ứng lặp -->
+                <img src="<?php echo e(asset('image/slider/slider1.jpg')); ?>" alt="">
+                <img src="<?php echo e(asset('image/slider/slider2.jpg')); ?>" alt="">
+                <img src="<?php echo e(asset('image/slider/slider3.jpg')); ?>" alt="">
+                <img src="<?php echo e(asset('image/slider/slider4.jpg')); ?>" alt="">
+                <img src="<?php echo e(asset('image/slider/slider1.jpg')); ?>" alt=""> <!-- Ảnh đầu được nhân bản để tạo hiệu ứng lặp -->
             </div>
             <button class="slider-btn-left"><i class="fa-solid fa-chevron-left"></i></button>
             <button class="slider-btn-right"><i class="fa-solid fa-chevron-right"></i></button>
         </div>
         
         <!-- Begin: Content -->
-        @foreach ($groupedYards as $typeName => $yards)
+        <?php $__currentLoopData = $groupedYards; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $typeName => $yards): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
             <div id="content" class="content-section">
                 <h2 class="content-heading">
-                    {{ $typeName }}
+                    <?php echo e($typeName); ?>
+
                 </h2>
                 <div class="content-list">
-                    @foreach ($yards as $yard)
+                    <?php $__currentLoopData = $yards; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $yard): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                         <div class="content-item">
                             <?php
                                 // Lấy hình ảnh từ mảng $yard->images theo yard_id
@@ -68,20 +69,21 @@
                             ?>
                             <div class="content-body">
                                 <p class="content-body-name">
-                                    {{ $yard->name }}
+                                    <?php echo e($yard->name); ?>
+
                                 </p>
-                                <a href="{{ route('dang-nhap') }}"
+                                <a href="<?php echo e(route('dang-nhap')); ?>"
                                 onclick="alert('Vui lòng đăng nhập để sử dụng chức năng !');"
                                 class="order-football-btn">
                                     Chọn sân
                                 </a>
                             </div>
                         </div>
-                    @endforeach
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                 </div>
             </div>
             <div class="clear"></div>
-        @endforeach
+        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
         <!-- End: Content -->
 
         <!-- Begin: Contact section -->
@@ -211,3 +213,4 @@
     </script>
 </body>
 </html>
+<?php /**PATH D:\Workspace\laragon\www\qldatsan\resources\views/view.blade.php ENDPATH**/ ?>

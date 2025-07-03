@@ -15,7 +15,7 @@
         </script>
     @endif
 
-    <h2>{{ $times->first()->yard->type->name ?? '' }} - {{ $times->first()->yard->name ?? '' }} </h2>
+    <h2>{{ $yard->type->name ?? 'Loại sân không xác định' }} - {{ $yard->name ?? 'Không xác định' }}</h2>
 
     <div class="admin-top-bar">
         @if(request('yard_id'))

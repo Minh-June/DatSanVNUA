@@ -46,22 +46,31 @@
                         </div>
                         
                         <div class="admin-manage">
-                            <li>
-                                <a href="{{ route('quan-ly-nguoi-dung') }}">Quản lý người dùng</a>
-                            </li>
-                            <li>
+                            @php $user = Auth::user(); @endphp
+
+                            @if ($user && $user->role == 0)
+                                <li class="{{ request()->is('admin/quan-ly-nguoi-dung*') ? 'active' : '' }}">
+                                    <a href="{{ route('quan-ly-nguoi-dung') }}">Quản lý người dùng</a>
+                                </li>
+                            @endif
+
+                            <li class="{{ request()->is('admin/quan-ly-loai-san*') ? 'active' : '' }}">
                                 <a href="{{ route('quan-ly-loai-san') }}">Quản lý loại sân</a>
                             </li>
-                            <li>
+
+                            <li class="{{ request()->is('admin/quan-ly-san*') || request()->is('admin/quan-ly-thoi-gian-san*') || request()->is('admin/quan-ly-hinh-anh-san*') ? 'active' : '' }}">
                                 <a href="{{ route('quan-ly-san') }}">Quản lý sân</a>
                             </li>
-                            <li>
+
+                            <li class="{{ request()->is('admin/quan-ly-don-dat-san*') || request()->is('admin/chi-tiet-don*') ? 'active' : '' }}">
                                 <a href="{{ route('quan-ly-don-dat-san') }}">Đơn đặt sân</a>
                             </li>
-                            <li>
+
+                            <li class="{{ request()->is('admin/thong-ke-bao-cao*') ? 'active' : '' }}">
                                 <a href="{{ route('thong-ke-bao-cao') }}">Thống kê, báo cáo</a>
                             </li>
-                            <li>
+
+                            <li class="{{ request()->is('admin/thong-tin-tai-khoan*') ? 'active' : '' }}">
                                 <a href="{{ route('thong-tin-tai-khoan') }}">Quản lý tài khoản</a>
                             </li>
                         </div>
