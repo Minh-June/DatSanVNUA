@@ -68,7 +68,7 @@ class RegisterRequest extends FormRequest
             // Tên đăng nhập
             'username.required'     => 'Tên người dùng là bắt buộc.',
             'username.unique'       => 'Tên người dùng đã được sử dụng.',
-            'username.regex'        => 'Tên người dùng chỉ được chứa chữ cái và số, không chứa dấu cách hoặc ký tự đặc biệt.',
+            'username.regex'        => 'Tên người dùng chỉ được chứa chữ cái và số.',
             'username.max'          => 'Tên người dùng không được vượt quá 10 ký tự.',
 
             // Mật khẩu

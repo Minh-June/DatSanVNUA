@@ -3,84 +3,121 @@
 @section('title', 'Quản lý đơn đặt sân thể thao')
 
 @section('content')
-    @if(session('success'))
-        <script>alert("{{ session('success') }}");</script>
-    @endif
 
-    @if(session('error'))
-        <script>alert("{{ session('error') }}");</script>
-    @endif
+@if(session('success'))
+    <script>alert("{{ session('success') }}");</script>
+@endif
 
-    <h2>Danh sách đơn đặt sân</h2>
+@if(session('error'))
+    <script>alert("{{ session('error') }}");</script>
+@endif
 
-    <div class="admin-top-bar">
-        <div class="admin-search">
-            <form method="GET" action="{{ route('quan-ly-don-dat-san') }}">
-                <input type="hidden" name="yard_name" value="{{ request('yard_name') }}">
-                <label for="selected_date">Ngày:</label>
-                <input type="date" id="selected_date" name="selected_date" value="{{ request('selected_date', now()->toDateString()) }}">
-                <button class="update-btn" type="submit">Tìm kiếm</button>
-            </form>
-        </div>
+<h2>Danh sách đơn đặt sân</h2>
 
-        <div class="admin-add-btn">
-            <a class="update-btn" href="{{ route('trang-chu') }}">Thêm đơn đặt sân</a>
-        </div>
+<div class="admin-top-bar">
+    <div class="admin-search">
+        <form method="GET" action="{{ route('quan-ly-don-dat-san') }}">
+            <input type="hidden" name="yard_name" value="{{ request('yard_name') }}">
+            <label for="selected_date">Ngày:</label>
+            <input type="date" id="selected_date" name="selected_date" value="{{ request('selected_date', now()->toDateString()) }}">
+            <button class="update-btn" type="submit">Tìm kiếm</button>
+        </form>
     </div>
 
-    @if($orders->count())
-        <table id="ListCustomers">
+    <div class="admin-add-btn">
+        @if(auth()->user()->role != 3)
+            <a class="update-btn" style="margin-left:10px;" href="{{ route('trang-chu') }}">Thêm đơn đặt sân</a>
+        @endif
+    </div>
+</div>
+
+@if($orders->count())
+    <table id="ListCustomers">
+        <thead>
             <tr>
                 <th>STT</th>
-                <th>Ngày tạo</th>
+                <th>Ngày đặt</th>
                 <th>Họ và tên</th>
                 <th>SĐT</th>
-                <th>Thành tiền</th>
-                <th>Ảnh thanh toán</th>
+                <th>Tổng tiền</th>
+                <th>Thanh toán</th>
                 <th>Thông tin</th>
-                <th>Tùy chọn</th>
-                @if (Auth::user()->role == 0)
-                    <th>Xóa</th>
-                @endif
+                <th colspan="2">Tùy chọn</th>
             </tr>
+        </thead>
+        <tbody>
+        @php $currentUser = auth()->user(); $today = now()->toDateString(); @endphp
+        @foreach($orders as $key => $order)
+            @php
+                $orderDate = \Carbon\Carbon::parse($order->date)->toDateString();
+                $statusOptions = [
+                    0 => 'Chờ xác nhận',
+                    1 => 'Xác nhận',
+                    2 => 'Hủy',
+                    3 => 'Đã đặt cọc'
+                ];
 
-            @foreach($orders as $key => $order)
-                <tr>
-                    <td>{{ $key + 1 }}</td>
-                    <td>
-                        {{ \Carbon\Carbon::parse($order->date)->format('d/m/Y') }}<br>
-                        {{ \Carbon\Carbon::parse($order->date)->format('H:i') }}
-                    </td>
-                    <td class="left-align">{{ $order->name }}</td>
-                    <td>{{ $order->phone }}</td>
-                    <td>
-                        {{ number_format($order->orderDetails->sum('price'), 0, ',', '.') }}đ
-                    </td>
-                    <td>
-                        @php $images = json_decode($order->image); @endphp
-                        @if ($images && count($images) > 0)
-                            @foreach ($images as $img)
-                                <img src="{{ asset('storage/' . $img) }}" alt="Ảnh" style="width:100px; height:200px; cursor:pointer;" onclick="showImage(this.src)">
-                            @endforeach
-                        @else
-                            Không có
-                        @endif
-                    </td>
-                    <td>
-                        <a href="{{ route('cap-nhat-don-dat-san', $order->order_id) }}">Xem chi tiết</a>
-                    </td>
+                $images = json_decode($order->image);
+
+                // Quyền chỉnh sửa: role 0, 2; role 3 nếu là của manager và không phải đơn quá khứ
+                $isAdminManaged = $order->orderDetails->contains(fn($d) => $d->yard && $d->yard->user_id == $currentUser->user_id);
+                $hasPermission = $order->orderDetails->contains(fn($d) =>
+                    ($currentUser->role == 2 && $d->yard->user_id == $currentUser->user_id) ||
+                    ($currentUser->role == 3 && $d->yard->user_id == $currentUser->manager_id)
+                );
+
+                $canEdit = ($currentUser->role == 0 && $isAdminManaged) ||
+                        (in_array($currentUser->role, [2,3]) && $hasPermission && ($currentUser->role != 3 || $orderDate >= $today));
+            @endphp
+
+            <tr>
+                <td>{{ $key + 1 }}</td>
+
+                <td>
+                    {{ \Carbon\Carbon::parse($order->date)->format('d/m/Y') }}<br>
+                    {{ \Carbon\Carbon::parse($order->date)->format('H:i') }}
+                </td>
+
+                <td class="left-align">
+                    @foreach(array_chunk(explode(' ', $order->name), 3) as $chunk)
+                        {{ implode(' ', $chunk) }}<br>
+                    @endforeach
+                </td>
+
+                <td>{{ $order->phone }}</td>
+
+                <td>{{ number_format($order->orderDetails->sum('price'), 0, ',', '.') }}đ</td>
+
+                <td>
+                    @if($images && count($images))
+                        @foreach($images as $img)
+                            <img src="{{ asset('storage/' . $img) }}" alt="Ảnh" class="order-img" onclick="showImage(this.src)">
+                        @endforeach
+                    @else
+                        Thanh toán<br>tại sân
+                    @endif
+                </td>
+
+                <td>
+                    <a href="{{ route('cap-nhat-don-dat-san', $order->order_id) }}">Chi tiết</a>
+                </td>
+
+                @if($canEdit)
                     <td>
                         <form method="POST" action="{{ route('cap-nhat-trang-thai-don-dat-san', $order->order_id) }}">
                             @csrf
                             <select name="status">
-                                <option value="0" {{ $order->status == 0 ? 'selected' : '' }}>Chờ xác nhận</option>
-                                <option value="1" {{ $order->status == 1 ? 'selected' : '' }}>Xác nhận</option>
-                                <option value="2" {{ $order->status == 2 ? 'selected' : '' }}>Hủy</option>
+                                @foreach($statusOptions as $val => $text)
+                                    @if($val != 3 || ($images && count($images)))
+                                        <option value="{{ $val }}" {{ $order->status == $val ? 'selected' : '' }}>{{ $text }}</option>
+                                    @endif
+                                @endforeach
                             </select><br>
                             <button type="submit" class="update-btn">Cập nhật</button>
                         </form>
                     </td>
-                    @if (Auth::user()->role == 0)
+
+                    @if($currentUser->role != 3)
                         <td>
                             <form method="POST" action="{{ route('xoa-don-dat-san', $order->order_id) }}" onsubmit="return confirm('Bạn có chắc muốn xóa đơn này?')">
                                 @csrf
@@ -89,10 +126,32 @@
                             </form>
                         </td>
                     @endif
-                </tr>
-            @endforeach
-        </table>
-    @else
-        <h2 style="font-weight: normal; font-size: 18px;">Không có đơn đặt sân nào</h2>
-    @endif
+                @else
+                    <td colspan="2">
+                        @switch($order->status)
+                            @case(\App\Models\Order::STATUS_PENDING)
+                                <span class="status status-pending">Chờ xác nhận</span>
+                                @break
+                            @case(\App\Models\Order::STATUS_CONFIRMED)
+                                <span class="status status-confirmed">Đã xác nhận</span>
+                                @break
+                            @case(\App\Models\Order::STATUS_CANCELLED)
+                                <span class="status status-cancelled">Đơn đã hủy</span>
+                                @break
+                            @case(\App\Models\Order::STATUS_DEPOSIT)
+                                <span class="status status-deposit">Đã đặt cọc</span>
+                                @break
+                            @default
+                                <span class="status status-unknown">Không xác định</span>
+                        @endswitch
+                    </td>
+                @endif
+            </tr>
+        @endforeach
+        </tbody>
+    </table>
+@else
+    <h2 style="font-weight: normal; font-size: 18px;">Hiện tại chưa có đơn đặt sân nào</h2>
+@endif
+
 @endsection

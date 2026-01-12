@@ -32,12 +32,16 @@
                 <div class="content-list">
                     @foreach ($yards as $yard)
                         <div class="content-item">
-                            <img src="{{ $yard->first_image_url ?? asset('image/football.jpg') }}" alt="" class="football-img">
                             <div class="content-body">
+                                <a href="{{ route('dat-san', ['yard_id' => $yard->yard_id, 'type_id' => $yard->type_id, 'user_id' => $yard->user_id]) }}">
+                                    <img src="{{ $yardFirstImages[$yard->yard_id] ?? asset('image/football.jpg') }}" alt="" class="football-img">
+                                </a>
                                 <h3 class="content-body-name">
                                     {{ $yard->name }}
                                 </h3>
-                                <a href="{{ route('dat-san', ['yard_id' => $yard->yard_id, 'type_id' => $yard->type_id]) }}" class="order-football-btn">Chọn sân</a>
+                                <a href="{{ route('dat-san', ['yard_id' => $yard->yard_id, 'type_id' => $yard->type_id, 'user_id' => $yard->user_id]) }}" class="order-football-btn">
+                                    Chọn sân
+                                </a>
                             </div>
                         </div>
                     @endforeach
@@ -64,17 +68,23 @@
                     <p>
                         <i class="fa-solid fa-phone"></i>
                         <span class="website-label">Điện thoại:</span>
-                        <a href="tel:+8424362618401" class="website-link">024(3) 62.618.401</a>
+                        <a href="tel:{{ $admin->phonenb ?? '#' }}" class="website-link">
+                            {{ $admin->phonenb ?? 'Chưa cập nhật' }}
+                        </a>
                     </p>
                     <p>
                         <i class="fa-solid fa-envelope"></i>
                         <span class="website-label">Email:</span>
-                        <a href="mailto:gdtc@vnua.edu.vn" class="website-link">gdtc@vnua.edu.vn</a>
+                        <a href="mailto:{{ $admin->email ?? '#' }}" class="website-link">
+                            {{ $admin->email ?? 'Chưa cập nhật' }}
+                        </a>
                     </p>
                     <p>
                         <i class="fa-solid fa-globe"></i>
                         <span class="website-label">Website:</span>
-                        <a href="http://gdtc.vnua.edu.vn" target="_blank" class="website-link">http://gdtc.vnua.edu.vn</a>
+                        <a href="{{ $admin->www ?? 'http://gdtc.vnua.edu.vn' }}" target="_blank" class="website-link">
+                            {{ $admin->www ?? 'Chưa cập nhật' }}
+                        </a>
                     </p>
                     <div class="contact-hour">
                         <h4>GIỜ MỞ CỬA</h4>

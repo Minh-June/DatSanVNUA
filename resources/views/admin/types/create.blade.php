@@ -13,6 +13,16 @@
 
     <h2>Thêm loại sân</h2>
 
+    <div class="admin-top-bar">
+        <div class="admin-search">
+            <a class="update-btn" href="{{ route('quan-ly-loai-san') }}">
+                <i class="fa-solid fa-arrow-left"></i> Quay lại
+            </a>
+        </div>
+
+        <div class="admin-add-btn"></div>
+    </div>
+
     <!-- Form thêm loại sân mới -->
     <div class="adminedit">
         <form action="{{ route('luu-loai-san') }}" method="POST">

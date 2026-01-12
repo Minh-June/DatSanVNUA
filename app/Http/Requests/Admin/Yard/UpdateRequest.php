@@ -35,7 +35,7 @@ class UpdateRequest extends FormRequest
         return [
             'name.required' => 'Tên sân không được để trống.',
             'name.regex' => 'Tên sân không được chứa ký tự đặc biệt.',
-            'name.unique' => 'Tên sân này đã tồn tại trong cùng thể loại. Vui long nhập tên sân khác !',
+            'name.unique' => 'Tên sân này đã tồn tại trong cùng thể loại. Vui lòng nhập tên sân khác !',
             'type_id.required' => 'Vui lòng chọn thể loại sân.',
             'type_id.exists' => 'Thể loại sân không hợp lệ.',
         ];

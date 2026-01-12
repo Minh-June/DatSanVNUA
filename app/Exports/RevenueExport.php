@@ -16,59 +16,154 @@ class RevenueExport implements FromCollection, WithEvents, ShouldAutoSize, WithD
     protected $from, $to, $filterLabel, $totalRevenue;
     protected $rowMerges = [];
 
-    public function __construct($from, $to, $filterLabel, $totalRevenue)
+    public function __construct($from, $to, $filterLabel, $yardDetails, $monthRents, $productOrders)
     {
         $this->from = $from;
         $this->to = $to;
         $this->filterLabel = $filterLabel;
-        $this->totalRevenue = $totalRevenue;
-        $this->dataCount = 0;
+        $this->yardDetails = $yardDetails;
+        $this->monthRents = $monthRents;
+        $this->productOrders = $productOrders;
     }
 
     public function collection()
     {
         $data = [];
 
+        // 11 hàng trống đầu để dành chỗ logo và tiêu đề
         for ($i = 0; $i < 11; $i++) {
             $data[] = [''];
         }
 
-        $orderDetails = OrderDetail::whereBetween('date', [$this->from, $this->to])
-            ->whereHas('order', fn($q) => $q->where('status', 1))
-            ->with('yard.type')
-            ->get();
-
-        $grouped = $orderDetails->groupBy(fn($item) => $item->yard->type->name)
-            ->map(fn($group) => $group->groupBy(fn($item) => $item->yard->name));
-
         $rowIndex = 12;
         $stt = 1;
 
-        foreach ($grouped as $typeName => $yards) {
+        // =========================
+        // Bảng 1: Thuê sân cố định
+        // =========================
+        $data[] = ['', '', '', 'Doanh thu thuê sân cố định', '', '', ''];
+        $rowIndex++;
+
+        $data[] = ['STT','Loại sân','Tên sân','Số đơn đặt','Doanh thu','',''];
+        $rowIndex++;
+
+        $groupFixed = $this->monthRents->groupBy(fn($item) => $item->yard->type->name ?? 'Loại sân không xác định')
+            ->map(fn($group) => $group->groupBy(fn($item) => $item->yard->name));
+
+        $sttFixed = 1;
+        $totalFixed = 0;
+
+        foreach ($groupFixed as $typeName => $yards) {
             $startRow = $rowIndex;
-            foreach ($yards as $yardName => $group) {
+            foreach ($yards as $yardName => $items) {
+                $countOrders = $items->pluck('month_rent_id')->unique()->count();
+                $sumRevenue = $items->sum('price');
+                $totalFixed += $sumRevenue;
+
                 $data[] = [
-                    '', '', // A, B trống
-                    $stt++,
+                    $sttFixed++,
                     $typeName,
                     $yardName,
-                    $group->pluck('order_id')->unique()->count(),
-                    $group->sum('price'),
+                    $countOrders,
+                    $sumRevenue,
                     '',
+                    ''
                 ];
                 $rowIndex++;
             }
             $endRow = $rowIndex - 1;
             if ($endRow > $startRow) {
                 $this->rowMerges[] = [
-                    'column' => 'D',
+                    'column' => 'B',
                     'start' => $startRow,
                     'end' => $endRow,
                 ];
             }
         }
 
+        // Tổng
+        $data[] = ['', '', 'Tổng doanh thu:', $totalFixed, '', '', ''];
+        $rowIndex += 2; // Thêm 1 dòng trống
+
+        // =========================
+        // Bảng 2: Thuê sân lẻ
+        // =========================
+        $data[] = ['', '', '', 'Doanh thu thuê sân lẻ', '', '', ''];
+        $rowIndex++;
+
+        $data[] = ['STT','Loại sân','Tên sân','Số đơn đặt','Doanh thu','',''];
+        $rowIndex++;
+
+        $groupYard = $this->yardDetails->groupBy(fn($item) => $item->yard->type->name ?? 'Loại sân không xác định')
+            ->map(fn($group) => $group->groupBy(fn($item) => $item->yard->name));
+
+        $sttYard = 1;
+        $totalYard = 0;
+
+        foreach ($groupYard as $typeName => $yards) {
+            $startRow = $rowIndex;
+            foreach ($yards as $yardName => $items) {
+                $countOrders = $items->pluck('order_id')->unique()->count();
+                $sumRevenue = $items->sum('price');
+                $totalYard += $sumRevenue;
+
+                $data[] = [
+                    $sttYard++,
+                    $typeName,
+                    $yardName,
+                    $countOrders,
+                    $sumRevenue,
+                    '',
+                    ''
+                ];
+                $rowIndex++;
+            }
+            $endRow = $rowIndex - 1;
+            if ($endRow > $startRow) {
+                $this->rowMerges[] = [
+                    'column' => 'B',
+                    'start' => $startRow,
+                    'end' => $endRow,
+                ];
+            }
+        }
+
+        $data[] = ['', '', 'Tổng doanh thu:', $totalYard, '', '', ''];
+        $rowIndex += 2;
+
+        // =========================
+        // Bảng 3: Bán hàng
+        // =========================
+        $data[] = ['', '', '', 'Doanh thu bán hàng', '', '', ''];
+        $rowIndex++;
+
+        $data[] = ['STT','Loại sản phẩm','Sản phẩm','Số đơn đặt','Doanh thu','',''];
+        $rowIndex++;
+
+        $sttProduct = 1;
+        $totalProduct = 0;
+
+        foreach ($this->productOrders as $dataProd) {
+            $sumRevenue = $dataProd['total_revenue'];
+            $totalProduct += $sumRevenue;
+
+            $data[] = [
+                $sttProduct++,
+                $dataProd['type_name'],
+                $dataProd['product_name'],
+                $dataProd['total_orders'],
+                $sumRevenue,
+                '',
+                ''
+            ];
+            $rowIndex++;
+        }
+
+        $data[] = ['', '', 'Tổng doanh thu:', $totalProduct, '', '', ''];
+
+        $this->totalRevenue = $totalFixed + $totalYard + $totalProduct;
         $this->dataCount = $rowIndex - 12;
+
         return new Collection($data);
     }
 

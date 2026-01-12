@@ -20,7 +20,9 @@ class StoreRequest extends FormRequest
                 'required',
                 'string',
                 'max:255',
+                // Chỉ cho phép chữ, số, khoảng trắng, dấu - ()
                 'regex:/^[\p{L}0-9\s\-\(\)]+$/u',
+                // Unique theo type_id
                 Rule::unique('yards')->where(function ($query) {
                     return $query->where('type_id', $this->type_id);
                 }),
@@ -34,8 +36,8 @@ class StoreRequest extends FormRequest
             'type_id.required' => 'Vui lòng chọn thể loại sân.',
             'type_id.exists' => 'Thể loại sân không hợp lệ.',
             'name.required' => 'Tên sân không được để trống.',
-            'name.regex' => 'Tên sân không được chứa ký tự đặc biệt.',
-            'name.unique' => 'Tên sân đã tồn tại trong thể loại sân đã chọn. Vui lòng nhập tên sân khác !',
+            'name.regex' => 'Tên sân chỉ được chứa chữ cái, số, khoảng trắng và dấu - ().',
+            'name.unique' => 'Tên sân đã tồn tại trong loại sân đã chọn. Vui lòng nhập tên khác!',
         ];
     }
 }

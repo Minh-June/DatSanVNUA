@@ -7,35 +7,32 @@ use Illuminate\Database\Eloquent\Model;
 
 class Order extends Model
 {
-    protected $table = 'orders'; // Tên bảng
-    protected $primaryKey = 'order_id'; // Khóa chính
-    public $timestamps = false; // Không sử dụng timestamps
+    use HasFactory;
 
-    // Các trạng thái đơn hàng
-    const STATUS_PENDING   = 'chờ xác nhận';
-    const STATUS_CONFIRMED = 'đã xác nhận';
-    const STATUS_CANCELLED = 'đã hủy';
+    protected $table = 'orders';
+    protected $primaryKey = 'order_id';
+    public $timestamps = false;
 
-    protected $casts = [
-        'status' => 'integer',
-    ];
+    const STATUS_PENDING   = 0; // chờ xác nhận
+    const STATUS_CONFIRMED = 1; // tự xác nhận
+    const STATUS_CANCELLED = 2; // đã hủy
+    const STATUS_DEPOSIT   = 3; // đã đặt cọc
 
     protected $fillable = [
-        'date',     // Ngày tạo đơn (kiểu dữ liệu datetime)
-        'user_id',
-        'name',     // Tên người đặt
-        'phone',    // Số điện thoại người đặt
-        'image',    // Ảnh thanh toán người đặt tải lên
-        'status',   // Trạng thái đơn (0: chờ xác nhận, 1: đã xác nhận, 2: đã hủy)
+        'user_id', // của chủ sân
+        'date', // Ngày tạo đơn
+        'name', // Tên khách đặt
+        'phone',    // Số điện thoại khách đặt
+        'image',    // Ảnh thanh toán nếu có
+        'status',        // 0 = chờ, 1 = tự xác nhận, 2 = hủy, 3 = đặt cọc
+        'auto_confirm',  // 1 = toàn kinh điển → auto xác nhận
     ];
 
-    // Quan hệ: Một đơn hàng thuộc về một người dùng
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id', 'user_id');
     }
 
-    // Quan hệ: Một đơn hàng có nhiều chi tiết đơn hàng
     public function orderDetails()
     {
         return $this->hasMany(OrderDetail::class, 'order_id', 'order_id');

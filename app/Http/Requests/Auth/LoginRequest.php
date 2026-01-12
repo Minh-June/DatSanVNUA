@@ -17,6 +17,7 @@ class LoginRequest extends FormRequest
     {
         return [
             'username' => 'required|string|max:255',
+            'password' => 'required|string',
         ];
     }
 
@@ -40,6 +41,7 @@ class LoginRequest extends FormRequest
             'username' => $this->input('username'),
             'password' => $this->input('password'),
         ])) {
+            // Chỉ hiện một thông báo duy nhất khi login fail
             throw ValidationException::withMessages([
                 'login_failed' => 'Tên đăng nhập và mật khẩu không đúng.',
             ]);

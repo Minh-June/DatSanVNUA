@@ -18,9 +18,10 @@
             <div class="input-group">
                 <i class="fa-solid fa-lock"></i>
                 <input type="password" name="password" id="password" placeholder="Mật khẩu" required>
+                <i class="fa-regular fa-eye toggle-password" style="cursor: pointer; margin-left: -30px;"></i>
             </div>
 
-            <a href="#" onclick="alert('Vui lòng liên hệ SĐT 0356645445 để được cấp lại mật khẩu !');" class="forgot-password">
+            <a href="#" onclick="alert('Vui lòng liên hệ SĐT 0913304554 để được cấp lại mật khẩu !');" class="forgot-password">
                 Quên mật khẩu ?
             </a>
 

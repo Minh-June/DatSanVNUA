@@ -15,13 +15,27 @@ class ImageController extends Controller
     public function index(Request $request)
     {
         $yards = Yard::orderBy('name', 'asc')->get(); // Lấy danh sách sân
+        $selectedYard = null;
+        $canManage = false;
 
         if ($request->has('yard_id')) {
-            $selectedYard = Yard::with('images')->findOrFail($request->yard_id); // Lấy sân và hình ảnh của sân
-            return view('admin.imgyards.index', compact('yards', 'selectedYard')); // Truyền dữ liệu sân và hình ảnh
+            $selectedYard = Yard::with('images', 'user', 'type')->findOrFail($request->yard_id);
+
+            $user = auth()->user();
+            $owner = $selectedYard->user;
+
+            if ($owner) {
+                // Quyền quản lý
+                if ($user->role == 0 && $owner->role == 0 && $user->user_id == $owner->user_id) {
+                    $canManage = true; // admin xem sân của chính họ
+                } elseif ($user->role == 2 && $user->user_id == $owner->user_id) {
+                    $canManage = true; // chủ sân quản lý sân của mình
+                }
+                // role=3 luôn false
+            }
         }
 
-        return view('admin.imgyards.index', compact('yards')); // Trả về khi chưa chọn sân
+        return view('admin.imgyards.index', compact('yards', 'selectedYard', 'canManage'));
     }
 
     public function create(Request $request)

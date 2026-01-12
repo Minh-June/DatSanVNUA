@@ -3,7 +3,6 @@
 namespace App\Http\Requests\Admin\TimeYard;
 
 use Illuminate\Foundation\Http\FormRequest;
-use App\Models\Time;
 
 class UpdateRequest extends FormRequest
 {
@@ -15,30 +14,29 @@ class UpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'yard_id' => 'required|exists:yards,yard_id',
-            'date' => 'required|date',
-            'price' => 'required|numeric|min:0',
-            'time' => [
-                'required',
-                'regex:/^\d{2}:\d{2}\s*-\s*\d{2}:\d{2}$/'
-            ],
+            'yard_id'        => 'required|exists:yards,yard_id',
+            'start'          => 'required|date_format:H:i',
+            'end'            => 'required|date_format:H:i|after:start',
+            'price_weekday'  => 'nullable|numeric|min:0',
+            'price_weekend'  => 'nullable|numeric|min:0',
         ];
     }
 
-    public function withValidator($validator)
+    public function messages(): array
     {
-        $validator->after(function ($validator) {
-            $time_id = $this->route('time_id');
+        return [
+            'yard_id.required'      => 'Vui lòng chọn sân.',
+            'yard_id.exists'        => 'Sân không tồn tại.',
 
-            $exists = Time::where('yard_id', $this->yard_id)
-                ->where('date', $this->date)
-                ->where('time', $this->time)
-                ->where('time_id', '!=', $time_id)
-                ->exists();
+            'start.required'        => 'Vui lòng chọn giờ bắt đầu.',
+            'start.date_format'     => 'Định dạng giờ bắt đầu phải là HH:MM.',
 
-            if ($exists) {
-                $validator->errors()->add('time', 'Khung giờ này đã tồn tại, vui lòng đổi khung giờ khác!');
-            }
-        });
+            'end.required'          => 'Vui lòng chọn giờ kết thúc.',
+            'end.date_format'       => 'Định dạng giờ kết thúc phải là HH:MM.',
+            'end.after'             => 'Giờ kết thúc phải lớn hơn giờ bắt đầu.',
+
+            'price_weekday.numeric' => 'Giá T2-T6 phải là số.',
+            'price_weekend.numeric' => 'Giá T7-CN phải là số.',
+        ];
     }
 }

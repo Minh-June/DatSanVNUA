@@ -4,98 +4,133 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\OrderDetail;
-use App\Models\Order;
-use Carbon\Carbon;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Response;
 use App\Exports\RevenueExport;
-use App\Models\Type;
+use Carbon\Carbon;
+use App\Models\OrderDetail;
+use App\Models\MonthRent;
+use App\Models\ProductOrder;
 use App\Models\Yard;
+use App\Models\Store;
 
 class StatementController extends Controller
 {
     public function index(Request $request)
     {
+        $user = auth()->user();
         $filterType = $request->input('filter_type', 'date');
-        $typeId = $request->input('type_id');
-        $yardId = $request->input('yard_id');
-        $keyword = $request->input('keyword');  // Lấy từ khóa tìm kiếm từ request
+        $keyword = $request->input('keyword');
 
         // Xác định khoảng thời gian lọc
-        $date = $request->input('date', Carbon::now()->format('Y-m-d'));
-        $month = $request->input('month', Carbon::now()->format('Y-m'));
-        $year = $request->input('year', Carbon::now()->year);
+        $date = $request->input('date', now()->format('Y-m-d'));
+        $month = $request->input('month', now()->format('Y-m'));
+        $year = $request->input('year', now()->year);
 
         if ($filterType == 'date') {
-            $from = $date;
-            $to = $date;
+            $from = Carbon::parse($date)->startOfDay()->format('Y-m-d H:i:s');
+            $to   = Carbon::parse($date)->endOfDay()->format('Y-m-d H:i:s');
         } elseif ($filterType == 'month') {
-            $from = Carbon::createFromFormat('Y-m', $month)->startOfMonth()->format('Y-m-d');
-            $to = Carbon::createFromFormat('Y-m', $month)->endOfMonth()->format('Y-m-d');
-        } elseif ($filterType == 'year') {
-            $from = Carbon::createFromFormat('Y', $year)->startOfYear()->format('Y-m-d');
-            $to = Carbon::createFromFormat('Y', $year)->endOfYear()->format('Y-m-d');
+            $from = Carbon::createFromFormat('Y-m', $month)->startOfMonth()->startOfDay()->format('Y-m-d H:i:s');
+            $to   = Carbon::createFromFormat('Y-m', $month)->endOfMonth()->endOfDay()->format('Y-m-d H:i:s');
         } else {
-            $from = $to = Carbon::now()->format('Y-m-d');
+            $from = Carbon::createFromFormat('Y', $year)->startOfYear()->startOfDay()->format('Y-m-d H:i:s');
+            $to   = Carbon::createFromFormat('Y', $year)->endOfYear()->endOfDay()->format('Y-m-d H:i:s');
         }
 
-        $query = OrderDetail::whereHas('order', function ($q) {
-            $q->where('status', 1); // Chỉ lấy đơn đã xác nhận
+        // Xác định quyền xem
+        $ownerId = null;
+        if ($user->role == 2) $ownerId = $user->user_id;
+        elseif ($user->role == 3) $ownerId = $user->manager_id;
+
+        // 1️⃣ Doanh thu sân lẻ
+        $yardDetails = OrderDetail::with('yard.type')
+        ->whereHas('order', function ($q) use ($from, $to) {
+            $q->whereIn('status', [1,3])
+            ->whereBetween('date', [$from, $to]); // ✅ orders.date
         })
-        ->whereBetween('date', [$from, $to])
-        ->with(['yard.type']);
+        ->when($ownerId, fn($q) => $q->whereIn(
+            'yard_id',
+            Yard::where('user_id', $ownerId)->pluck('yard_id')
+        ))
+        ->when($keyword, fn($q) =>
+            $q->whereHas('yard', fn($q2) =>
+                $q2->where('name', 'like', "%$keyword%")
+            )
+        )
+        ->get();
 
-        // Nếu chọn loại sân
-        if ($typeId) {
-            $query->whereHas('yard', function ($q) use ($typeId) {
-                $q->where('type_id', $typeId);
-            });
-        }
+        // 2️⃣ Doanh thu sân cố định
+        $monthRents = MonthRent::with('yard.type')
+            ->whereIn('status', [1,3])
+            ->when($ownerId, fn($q) => $q->whereIn(
+                'yard_id',
+                Yard::where('user_id', $ownerId)->pluck('yard_id')
+            ))
+            ->whereBetween('date', [$from, $to]) // Dùng cột date: ngày tạo đơn
+            ->when($keyword, fn($q) => $q->whereHas('yard', fn($q2) => $q2->where('name','like',"%$keyword%")))
+            ->get();
 
-        // Nếu chọn tên sân theo yard_id
-        if ($yardId) {
-            $query->where('yard_id', $yardId);
-        }
+        $fixedOrderCount = $monthRents->count();
 
-        // Nếu nhập keyword tìm theo tên sân
-        if ($keyword) {
-            $query->whereHas('yard', function ($q) use ($keyword) {
-                $q->where('name', 'like', '%' . $keyword . '%');
-            });
-        }
+        // 3️⃣ Doanh thu bán hàng
+        $productOrders = ProductOrder::with(['orderDetails.product.type', 'store'])
+            ->whereIn('status', [1, 3])
+            ->whereBetween('date', [$from, $to])
+            ->when($ownerId, fn($q) => $q->whereHas('store', fn($q2) => $q2->where('user_id', $ownerId)))
+            ->get();
 
-        $orderDetails = $query->get();
+        // Tổng doanh thu
+        $totalRevenue = $yardDetails->sum('price') + $monthRents->sum('price') + $productOrders->sum('total_price');
 
-        $totalRevenue = $orderDetails->sum('price');
+        // Gom nhóm sân lẻ
+        $groupByTypeThenYard = $yardDetails->groupBy(fn($item) => $item->yard->type->name ?? 'Loại sân không xác định')
+            ->map(fn($group) => $group->groupBy(fn($item) => $item->yard->name)
+            ->map(fn($yardGroup) => [
+                'total_revenue' => $yardGroup->sum('price'),
+                'booking_count' => $yardGroup->pluck('order_id')->unique()->count(),
+            ]));
 
-        // Nhóm theo loại sân, rồi theo tên sân
-        $groupByTypeThenYard = $orderDetails->groupBy(function ($item) {
-            return optional(optional($item->yard)->type)->name ?? 'Loại sân không tồn tại';
-        })->map(function ($group) {
-            return $group->groupBy(function ($item) {
-                return optional($item->yard)->name ?? 'Sân không tồn tại';
-            })->map(function ($yardGroup) {
-                return [
-                    'total_revenue' => $yardGroup->sum('price'),
-                    'booking_count' => $yardGroup->pluck('order_id')->unique()->count(),
-                ];
-            });
-        });
+        // Gom nhóm sân cố định
+        $groupFixed = $monthRents->groupBy(fn($item) => $item->yard->type->name ?? 'Loại sân không xác định')
+            ->map(fn($group) => $group->groupBy(fn($item) => $item->yard->name)
+            ->map(fn($yardGroup) => [
+                'total_revenue' => $yardGroup->sum('price'),
+                'booking_count' => $yardGroup->pluck('month_rent_id')->unique()->count(), // số đơn
+            ]));
 
-        // Dữ liệu cho dropdown
-        $allTypes = Type::orderBy('name')->get();
-        $allYards = Yard::orderBy('name')->get();
+        // Gom nhóm theo loại sản phẩm và tên sản phẩm
+        $groupProduct = $productOrders->flatMap(fn($order) => $order->orderDetails)
+            ->map(fn($detail) => [
+                'type_name' => $detail->product->type->name ?? 'Loại sản phẩm không xác định',
+                'product_name' => $detail->product->name ?? 'Sản phẩm không xác định',
+                'total_orders' => 1, // mỗi chi tiết đơn là 1 đơn
+                'total_revenue' => $detail->price * $detail->quantity,
+            ])
+            ->groupBy(fn($item) => $item['type_name'] . '|' . $item['product_name'])
+            ->map(fn($items) => [
+                'type_name' => $items->first()['type_name'],
+                'product_name' => $items->first()['product_name'],
+                'total_orders' => $items->sum('total_orders'),
+                'total_revenue' => $items->sum('total_revenue'),
+            ]);
 
         return view('admin.statements.index', compact(
-            'totalRevenue', 'groupByTypeThenYard', 'allTypes', 'allYards'
+            'totalRevenue',
+            'groupByTypeThenYard',
+            'groupFixed',
+            'productOrders',
+            'fixedOrderCount',
+            'groupProduct'
         ));
     }
 
     public function exportExcel(Request $request)
     {
+        $user = auth()->user();
         $filterType = $request->input('filter_type', 'date');
 
+        // Xác định khoảng thời gian
         if ($filterType == 'date') {
             $date = $request->input('date', now()->format('Y-m-d'));
             $from = $date;
@@ -106,26 +141,40 @@ class StatementController extends Controller
             $from = \Carbon\Carbon::createFromFormat('Y-m', $month)->startOfMonth()->format('Y-m-d');
             $to = \Carbon\Carbon::createFromFormat('Y-m', $month)->endOfMonth()->format('Y-m-d');
             $filterLabel = 'Tháng ' . \Carbon\Carbon::parse($from)->format('m/Y');
-        } elseif ($filterType == 'year') {
+        } else {
             $year = $request->input('year', now()->year);
             $from = \Carbon\Carbon::createFromFormat('Y', $year)->startOfYear()->format('Y-m-d');
             $to = \Carbon\Carbon::createFromFormat('Y', $year)->endOfYear()->format('Y-m-d');
             $filterLabel = 'Năm ' . $year;
-        } else {
-            $from = now()->format('Y-m-d');
-            $to = now()->format('Y-m-d');
-            $filterLabel = 'Ngày ' . now()->format('d/m/Y');
         }
 
-        // Tổng doanh thu
-        $totalRevenue = \App\Models\OrderDetail::whereBetween('date', [$from, $to])
-            ->whereHas('order', function ($q) {
-                $q->where('status', 1);
-            })
-            ->sum('price');
+        // Chuẩn bị dữ liệu sân lẻ
+        $yardDetails = \App\Models\OrderDetail::with('yard.type', 'order')
+            ->whereHas('order', fn($q) => $q->whereIn('status', [1,3]))
+            ->whereBetween('date', [$from, $to])
+            ->get();
+
+        // Chuẩn bị dữ liệu sân cố định
+        $monthRents = \App\Models\MonthRent::with('yard.type')
+            ->whereIn('status', [1,3])
+            ->whereBetween('date', [$from, $to])
+            ->get();
+
+        // Chuẩn bị dữ liệu bán hàng
+        $productOrders = \App\Models\ProductOrder::with(['orderDetails.product.type', 'store'])
+            ->where('status',1)
+            ->whereBetween('date', [$from, $to])
+            ->get();
 
         return \Maatwebsite\Excel\Facades\Excel::download(
-            new \App\Exports\RevenueExport($from, $to, $filterLabel, $totalRevenue),
+            new \App\Exports\RevenueExport(
+                $from, 
+                $to, 
+                $filterLabel, 
+                $yardDetails, 
+                $monthRents, 
+                $productOrders
+            ),
             'Doanh_Thu_Dat_San.xlsx'
         );
     }

@@ -8,43 +8,46 @@ use App\Http\Requests\Admin\TimeYard\StoreRequest;
 use App\Http\Requests\Admin\TimeYard\UpdateRequest;
 use App\Models\Time;
 use App\Models\Yard;
+use Carbon\Carbon;
 
 class TimeController extends Controller
 {
     public function index(Request $request)
     {
-        $yards = Yard::with('type')->orderBy('name', 'asc')->get(); // Thêm with('type') nếu cần
         $yard_id = $request->yard_id;
-        $date = $request->date ?? date('Y-m-d');
-        $times = collect(); // Mặc định rỗng
-        $yard = null; // Thêm biến yard để truyền sang view
+        $times = collect();
+        $yard = null;
+        $canManage = false;
 
         if ($yard_id) {
-            $yard = Yard::with('type')->find($yard_id); // Truyền sang view để lấy tên và loại
-
-            $times = Time::join('yards', 'times.yard_id', '=', 'yards.yard_id')
-                        ->where('times.yard_id', $yard_id)
-                        ->whereDate('times.date', $date)
-                        ->orderBy('times.time', 'asc')
-                        ->select('times.*')
+            $yard = Yard::with('type', 'user')->find($yard_id);
+            $times = Time::where('yard_id', $yard_id)
+                        ->orderBy('start', 'asc')
                         ->get();
 
-            if ($times->isEmpty()) {
-                $yesterday = date('Y-m-d', strtotime($date . ' -1 day'));
-                Time::cloneFromDateToDate($yard_id, $yesterday, $date);
+            $user = auth()->user();
+            $owner = $yard->user ?? null;
 
-                $times = Time::join('yards', 'times.yard_id', '=', 'yards.yard_id')
-                            ->where('times.yard_id', $yard_id)
-                            ->whereDate('times.date', $date)
-                            ->orderBy('times.time', 'asc')
-                            ->select('times.*')
-                            ->get();
+            if($owner) {
+                if($user->role == 0 && $owner->role == 0 && $owner->user_id == $user->user_id) {
+                    $canManage = true; // admin xem sân của chính họ
+                } elseif($user->role == 2 && $owner->user_id == $user->user_id) {
+                    $canManage = true; // chủ sân xem sân của mình
+                }
+                // role=3 luôn false
             }
         }
 
-        $isPastDate = strtotime($date) < strtotime(date('Y-m-d'));
+        return view('admin.timeyards.index', compact('times', 'yard', 'yard_id', 'canManage'));
+    }
 
-        return view('admin.timeyards.index', compact('times', 'yards', 'yard_id', 'date', 'isPastDate', 'yard'));
+    public function updateStatus(Request $request, $_id)
+    {
+        $time = Time::findOrFail($_id);
+        $time->status = $request->status; // 1 = hiển thị, 0 = ẩn
+        $time->save();
+
+        return redirect()->back()->with('success', 'Cập nhật trạng thái thành công !');
     }
 
     public function create(Request $request)
@@ -56,77 +59,96 @@ class TimeController extends Controller
 
     public function store(StoreRequest $request)
     {
+        $yard_id = $request->yard_id;
+        $start = Carbon::parse($request->start)->format('H:i');
+        $end   = Carbon::parse($request->end)->format('H:i');
+
+        // Kiểm tra trùng hoặc chồng khung giờ
+        $exists = Time::where('yard_id', $yard_id)
+            ->where(function($query) use ($start, $end) {
+                $query->whereBetween('start', [$start, $end])
+                    ->orWhereBetween('end', [$start, $end])
+                    ->orWhere(function($q) use ($start, $end) {
+                        $q->where('start', '<=', $start)
+                            ->where('end', '>=', $end);
+                    });
+            })
+            ->exists();
+
+        if ($exists) {
+            return redirect()->back()
+                ->withInput()
+                ->withErrors(['start' => 'Khung giờ này trùng hoặc chồng lên khung giờ đã có.']);
+        }
+
         Time::create([
-            'yard_id' => $request->yard_id,
-            'time'    => $request->time,
-            'price'   => $request->price,
-            'date'    => $request->date,
+            'yard_id'       => $yard_id,
+            'start'         => $start,
+            'end'           => $end,
+            'price_weekday' => $request->price_weekday ?: null,
+            'price_weekend' => $request->price_weekend ?: null,
+            'is_classic'    => 0,
+            'status'        => 0,
         ]);
 
         return redirect()
-            ->route('quan-ly-thoi-gian-san', ['yard_id' => $request->yard_id])
-            ->with('success', 'Thêm khung giờ cho thuê thành công!');
+            ->route('quan-ly-thoi-gian-san', ['yard_id' => $yard_id])
+            ->with('success', 'Thêm khung giờ thành công !');
     }
 
-    // Hiển thị form cập nhật
     public function edit($time_id)
     {
         $time = Time::findOrFail($time_id);
         $yards = Yard::orderBy('name')->get();
-
-        return view('admin.timeyards.update', compact('time', 'yards'));
+        $yard_id = $time->yard_id;
+        return view('admin.timeyards.update', compact('time', 'yards', 'yard_id'));
     }
 
     public function update(UpdateRequest $request, $time_id)
     {
         $time = Time::findOrFail($time_id);
+        $start = Carbon::parse($request->start)->format('H:i');
+        $end   = Carbon::parse($request->end)->format('H:i');
 
-        $time->update([
-            'yard_id' => $request->yard_id,
-            'time' => $request->time,
-            'price' => $request->price,
-            'date' => $request->date,
-        ]);
+        // Kiểm tra trùng hoặc chồng khung giờ (bỏ qua chính khung này)
+        $exists = Time::where('yard_id', $time->yard_id)
+            ->where('time_id', '<>', $time_id)
+            ->where(function($query) use ($start, $end) {
+                $query->whereBetween('start', [$start, $end])
+                    ->orWhereBetween('end', [$start, $end])
+                    ->orWhere(function($q) use ($start, $end) {
+                        $q->where('start', '<=', $start)
+                            ->where('end', '>=', $end);
+                    });
+            })
+            ->exists();
 
-        // Cập nhật tất cả các ngày sau với cùng khung giờ
-        Time::where('yard_id', $request->yard_id)
-            ->where('time', $time->time)
-            ->whereDate('date', '>', $request->date)
-            ->update([
-                'time' => $request->time,
-                'price' => $request->price,
-            ]);
-
-        // Tạo bản ghi cho ngày kế tiếp nếu chưa có
-        $nextDate = date('Y-m-d', strtotime($request->date . ' +1 day'));
-        $nextTime = Time::where('yard_id', $request->yard_id)
-            ->where('date', $nextDate)
-            ->where('time', $request->time)
-            ->first();
-
-        if (!$nextTime) {
-            Time::create([
-                'yard_id' => $request->yard_id,
-                'time' => $request->time,
-                'price' => $request->price,
-                'date' => $nextDate,
-            ]);
+        if ($exists) {
+            return redirect()->back()
+                ->withInput()
+                ->withErrors(['start' => 'Khung giờ này trùng hoặc chồng lên khung giờ đã có.']);
         }
 
+        $time->update([
+            'start'         => $start,
+            'end'           => $end,
+            'price_weekday' => $request->price_weekday ?: null,
+            'price_weekend' => $request->price_weekend ?: null,
+        ]);
+
         return redirect()
-            ->route('quan-ly-thoi-gian-san', ['yard_id' => $request->yard_id])
-            ->with('success', 'Cập nhật thời gian thành công!');
+            ->route('quan-ly-thoi-gian-san', ['yard_id' => $time->yard_id])
+            ->with('success', 'Cập nhật khung giờ thành công !');
     }
 
-    // Xóa khung giờ
     public function delete(Request $request, $time_id)
     {
         $time = Time::findOrFail($time_id);
+        $yard_id = $time->yard_id;
         $time->delete();
-    
-        // Chuyển hướng về trang quản lý khung giờ với sân đã chọn
+
         return redirect()
-            ->route('quan-ly-thoi-gian-san', ['yard_id' => $request->yard_id])
-            ->with('success', 'Xóa khung giờ thành công!');
+            ->route('quan-ly-thoi-gian-san', ['yard_id' => $yard_id])
+            ->with('success', 'Xóa khung giờ thành công !');
     }
 }

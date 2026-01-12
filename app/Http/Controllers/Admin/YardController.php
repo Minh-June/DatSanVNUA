@@ -11,16 +11,37 @@ use App\Http\Requests\Admin\Yard\UpdateRequest;
 
 class YardController extends Controller
 {
-    public function index(Request $request) {
-        $query = Yard::with('type')->orderBy('name', 'asc');
+    public function index(Request $request)
+    {
+        $user = auth()->user();
+        $type_id = $request->query('type_id');
 
-        // Kiểm tra nếu có filter theo thể loại sân
-        if ($request->has('type_id') && $request->type_id != '') {
-            $query->where('type_id', $request->type_id);
+        // Nếu là admin: xem tất cả sân
+        if ($user->role == 0) {
+            $yards = Yard::with('type', 'user')
+                ->when($type_id, fn($q) => $q->where('type_id', $type_id))
+                ->get();
+        }
+        // Nếu là chủ thầu: xem sân của mình
+        elseif ($user->role == 2) {
+            $yards = Yard::with('type', 'user')
+                ->where('user_id', $user->user_id)
+                ->when($type_id, fn($q) => $q->where('type_id', $type_id))
+                ->get();
+        }
+        // Nếu là nhân viên: xem sân của chủ thầu mình làm việc cho
+        elseif ($user->role == 3) {
+            $yards = Yard::with('type', 'user')
+                ->where('user_id', $user->manager_id)
+                ->when($type_id, fn($q) => $q->where('type_id', $type_id))
+                ->get();
+        }
+        // Các role khác: không có quyền
+        else {
+            $yards = collect();
         }
 
-        $yards = $query->get();
-        $types = Type::all(); // Lấy tất cả thể loại sân để hiển thị trong dropdown
+        $types = \App\Models\Type::all();
 
         return view('admin.yards.index', compact('yards', 'types'));
     }
@@ -40,19 +61,22 @@ class YardController extends Controller
             ->with('success', 'Cập nhật trạng thái sân thành công !');
     }
 
-    public function create() {
+    public function create()
+    {
         $types = Type::orderBy('name', 'asc')->get();
         return view('admin.yards.create', compact('types'));
     }
 
     public function store(StoreRequest $request)
     {
+        // Tạo sân mới
         Yard::create([
             'type_id' => $request->type_id,
             'name' => $request->name,
+            'status' => 0, // Mặc định mới tạo thì hiện
         ]);
 
-        return redirect()->route('quan-ly-san')->with('success', 'Thêm sân thành công !');
+        return redirect()->route('quan-ly-san')->with('success', 'Thêm sân thành công!');
     }
 
     public function edit($yard_id) {

@@ -17,27 +17,37 @@ class RegisterController extends Controller
 
     public function register(RegisterRequest $request)
     {
-        // Xác thực dữ liệu đầu vào
         $validated = $request->validated();
 
-        // Tạo người dùng mới vào bảng 'users'
-        User::create([
-            'username'  => $validated['username'],
-            'password'  => Hash::make($validated['password']),
-            'role'      => 1, // Mặc định là người dùng thường
-            'fullname'  => $validated['fullname'],
-            'gender'    => $validated['gender'],
-            'birthdate' => $validated['birthdate'],
-            'phonenb'   => $validated['phonenb'],
-            'email'     => $validated['email'],
-        ]);
+        // Mặc định là khách (role = 1)
+        $role = 1;
+        $managerId = null;
 
-        // Kiểm tra nếu user hiện tại là admin (role = 0)
-        if (Auth::check() && Auth::user()->role == 0) {
-            return redirect()->route('quan-ly-nguoi-dung')->with('success', 'Thêm người dùng thành công!');
+        // Nếu người đang đăng nhập là admin hoặc chủ thầu
+        if (Auth::check() && in_array(Auth::user()->role, [0, 2])) {
+            $role = 3; // Nhân viên
+            $managerId = Auth::id(); // Gán manager_id là user_id của người tạo
         }
 
-        // Nếu không phải admin thì redirect về đăng nhập
-        return redirect()->route('dang-nhap')->with('success', 'Đăng ký thành công!');
+        // Tạo người dùng mới
+        User::create([
+            'username'   => $validated['username'],
+            'password'   => Hash::make($validated['password']),
+            'role'       => $role,
+            'fullname'   => $validated['fullname'],
+            'gender'     => $validated['gender'],
+            'birthdate'  => $validated['birthdate'],
+            'phonenb'    => $validated['phonenb'],
+            'email'      => $validated['email'],
+            'manager_id' => $managerId,
+        ]);
+
+        // Nếu là admin hoặc chủ thầu → quay lại trang quản lý người dùng
+        if (Auth::check() && in_array(Auth::user()->role, [0, 2])) {
+            return redirect()->route('quan-ly-nguoi-dung')->with('success', 'Thêm nhân viên thành công!');
+        }
+
+        // Nếu người tự đăng ký (không đăng nhập)
+        return redirect()->route('dang-nhap')->with('success', 'Đăng ký tài khoản thành công!');
     }
 }

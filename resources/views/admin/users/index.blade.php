@@ -25,7 +25,7 @@
                     <input
                         type="text"
                         name="keyword"
-                        placeholder="Nhập thông tin"
+                        placeholder="Tìm kiếm người dùng..."
                         value="{{ request('keyword') }}"
                         required
                         pattern="^[\p{L}0-9\s]+$"
@@ -33,6 +33,10 @@
                     />
                     <button class="update-btn" type="submit">Tìm kiếm</button>
                 </form>
+            @else
+                <a class="update-btn" href="{{ route('quan-ly-nguoi-dung') }}">
+                    <i class="fa-solid fa-arrow-left"></i> Quay lại
+                </a>
             @endif
         </div>
 
@@ -41,7 +45,7 @@
                 <a class="delete-btn"
                 href="{{ route('reset-mat-khau-nguoi-dung', ['user_id' => $xem_user->user_id]) }}"
                 onclick="return confirm('Bạn có chắc chắn muốn đặt lại mật khẩu người dùng này không?')">
-                <i class="fa-solid fa-rotate-left"></i> Đặt lại mật khẩu
+                    <i class="fa-solid fa-rotate-left"></i> Đặt lại mật khẩu
                 </a>
             @else
                 <a class="update-btn" href="{{ route('dang-ky') }}">Thêm người dùng</a>
@@ -88,7 +92,7 @@
                 <tr>
                     <th>STT</th>
                     <th>Họ và tên</th>
-                    <th>SĐT</th>
+                    <th>Số điện thoại</th>
                     <th>Tên tài khoản</th>
                     <th>Thông tin</th>
                     <th>Vai trò</th>
@@ -103,16 +107,25 @@
                     <td>{{ $user->phonenb }}</td>
                     <td>{{ $user->username }}</td>
                     <td>
-                        <a href="{{ route('quan-ly-nguoi-dung', ['xem' => $user->user_id]) }}">Xem chi tiết</a>
+                        <a href="{{ route('quan-ly-nguoi-dung', ['xem' => $user->user_id]) }}">Chi tiết</a>
                     </td>
                     <td>
                         <form method="POST" action="{{ route('cap-nhat-vai-tro-nguoi-dung', $user->user_id) }}">
                             @csrf
                             <select name="role">
-                                <option value="0" {{ $user->role == 0 ? 'selected' : '' }}>Admin</option>
-                                <option value="1" {{ $user->role == 1 ? 'selected' : '' }}>Khách hàng</option>
-                                <option value="2" {{ $user->role == 2 ? 'selected' : '' }}>Cán bộ</option>
-                            </select><br>
+                                @php $currentUser = auth()->user(); @endphp
+
+                                @if($currentUser->role == 0)
+                                    <option value="0" {{ $user->role == 0 ? 'selected' : '' }}>Admin</option>
+                                    <option value="1" {{ $user->role == 1 ? 'selected' : '' }}>Khách hàng</option>
+                                    <option value="2" {{ $user->role == 2 ? 'selected' : '' }}>Chủ thầu</option>
+                                    <option value="3" {{ $user->role == 3 ? 'selected' : '' }}>Nhân viên</option>
+                                @elseif($currentUser->role == 2)
+                                    <option value="1" {{ $user->role == 1 ? 'selected' : '' }}>Khách hàng</option>
+                                    <option value="3" {{ $user->role == 3 ? 'selected' : '' }}>Nhân viên</option>
+                                @endif
+                            </select>
+                            <br>
                             <button type="submit" class="update-btn">Cập nhật</button>
                         </form>
                     </td>

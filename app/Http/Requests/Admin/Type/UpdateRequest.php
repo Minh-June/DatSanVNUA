@@ -18,10 +18,18 @@ class UpdateRequest extends FormRequest
                 'required',
                 'string',
                 'max:255',
-                'regex:/^[\p{L}\s]+$/u', // Không cho phép số & ký tự đặc biệt
-                'unique:types,name,' . $this->route('type_id'), // Cho UpdateRequest
+                'regex:/^[\p{L}\s]+$/u',
+                'unique:types,name,' . $this->route('type_id') . ',type_id', // Trừ bản ghi hiện tại
             ],
         ];
     }
 
+    public function messages()
+    {
+        return [
+            'name.required' => 'Vui lòng nhập tên loại sân!',
+            'name.regex' => 'Tên loại sân chỉ được chứa chữ cái và khoảng trắng!',
+            'name.unique' => 'Tên loại sân đã tồn tại, vui lòng đặt tên khác!',
+        ];
+    }
 }

@@ -4,18 +4,47 @@ namespace App\Http\Controllers\Client;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\Yard;
+use App\Models\User;
 use App\Models\Type;
 
 class SuccessController extends Controller
 {
-    public function index()
+    public function index($user_id = null)
     {
+        $currentRoute = request()->route()->getName();
+
+        if ($currentRoute === 'gio-hang') {
+            // Hiển thị giỏ hàng
+            $buys = session('buys', []);
+            $totalItems = array_sum(array_column($buys, 'quantity'));
+            $totalPrice = array_sum(array_map(fn($item) => $item['price'] * $item['quantity'], $buys));
+
+            return view('client.cart', [
+                'buys' => $buys,
+                'totalItems' => $totalItems,
+                'totalPrice' => $totalPrice,
+            ]);
+        }
+
+        // Ngược lại, hiển thị xác nhận đặt sân
         $orders = session('orders', []);
-        $types = Type::all(); // Nếu bạn cần danh sách loại sân cho view
+        $types = Type::all();
 
-        session(['orders' => $orders]);
+        $owners = collect();
 
-        return view('client.success', compact('orders', 'types'));
+        if ($user_id) {
+            $user = User::find($user_id);
+            $owners->push($user?->fullname ?? 'Minh');
+        } elseif (!empty($orders)) {
+            $yardIds = collect($orders)->pluck('yard_id')->unique();
+            $yards = Yard::with('user')->whereIn('yard_id', $yardIds)->get();
+            foreach ($yards as $yard) {
+                $owners->push($yard->user?->fullname ?? 'Minh');
+            }
+        }
+
+        return view('client.success', compact('orders', 'types', 'owners'));
     }
 
     public function delete(Request $request)

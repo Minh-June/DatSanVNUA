@@ -10,25 +10,46 @@ class User extends Authenticatable
 {
     use HasFactory, Notifiable;
 
-    protected $table = 'users'; // Tên bảng
-    protected $primaryKey = 'user_id'; // Khóa chính
-    public $timestamps = false; // Không sử dụng timestamps
+    protected $table = 'users';
+    protected $primaryKey = 'user_id';
+    public $timestamps = false;
 
     protected $fillable = [
         'user_id',
-        'username', // Tên đăng nhập
-        'password', // Mật khẩu
-        'role', // Quyền hạn (0: admin, 1: user)
-        'fullname', // Họ tên
-        'gender', // Giới tính (0: nam, 1: nữ, 2: khác)
-        'birthdate', // Ngày sinh
-        'phonenb', // Số điện thoại
-        'email' 
-    ]; // Các cột có thể gán
+        'username',
+        'password',
+        'role',
+        'fullname',
+        'gender',
+        'birthdate',
+        'phonenb',
+        'email',
+        'manager_id',
+        'acc_name',
+        'acc_number',
+        'acc_type',
+        'qr_code',
+        'image',
+        'www',
+    ];
 
-    // Quan hệ: Một người dùng có thể có nhiều đơn đặt sân
     public function orders()
     {
         return $this->hasMany(Order::class, 'user_id', 'user_id');
+    }
+
+    public function yards()
+    {
+        return $this->hasMany(Yard::class, 'user_id', 'user_id');
+    }
+
+    public function newsTypes()
+    {
+        return $this->hasMany(NewsType::class, 'user_id', 'user_id');
+    }
+
+    public function store()
+    {
+        return $this->hasOne(Store::class, 'user_id', 'user_id');
     }
 }

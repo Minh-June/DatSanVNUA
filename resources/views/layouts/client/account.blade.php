@@ -6,6 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>ĐẶT SÂN VNUA</title>
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/responsive.css') }}">
     <link rel="stylesheet" href="{{ asset('fonts/fontawesome-free-6.5.2/css/all.min.css') }}">
     <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
 </head>
@@ -26,13 +27,12 @@
                         @if (!Auth::check() || Auth::user()->role == 1)
                             <i class="fa-solid fa-house"></i>
                         @endif
-                        {{ Auth::check() && Auth::user()->role != 1 ? 'QUẢN LÝ SÂN THỂ THAO' : 'TRANG CHỦ' }}
+                        {{ Auth::check() && Auth::user()->role != 1 ? 'TRUNG TÂM QUẢN LÝ' : 'TRANG CHỦ' }}
                     </a>
                 </li>
-                <li></li>
             </ul>     
             <div class="header-login">
-                <form action="{{ route('dang-xuat') }}" method="post" onsubmit="return confirm('Bạn có chắc chắn muốn đăng xuất?');">
+                <form action="{{ route('dang-xuat') }}" method="post" onsubmit="return confirm('Bạn có chắc chắn muốn đăng xuất ?');">
                     @csrf
                     <button type="submit" class="signup-btn">Đăng xuất</button>
                 </form>
@@ -46,19 +46,33 @@
                 <div class="admin">
                     <div class="admin-section-left">
                         <div class="header-section-left">
-                            <i class="fa-solid fa-user-tie"></i>
                             @php
                                 $user = Auth::user();
                             @endphp
+
+                            @if(!empty($user->image))
+                                <img src="{{ asset('storage/' . $user->image) }}" 
+                                    alt="Avatar" 
+                                    class="user-avatar-admin">
+                            @else
+                                <i class="fa-solid fa-user-tie"></i>
+                            @endif
+
                             <a class="avatar-name" href="{{ route('thong-tin-tai-khoan') }}" target="_self">
                                 {{ $user->username }}
                             </a>
                         </div>
 
                         <div class="admin-manage">
+                            <li class="{{ request()->routeIs('client.fixed-orders') ? 'active' : '' }}">
+                                <a href="{{ route('client.fixed-orders') }}">Đơn thuê cố định</a>
+                            </li>
                             <li class="{{ request()->routeIs('thong-tin-tai-khoan') ? 'active' : '' }}">
                                 <a href="{{ route('thong-tin-tai-khoan') }}">Lịch sử đặt sân</a>
                             </li>
+                            <li class="{{ request()->routeIs('lich-su-mua-hang') ? 'active' : '' }}">
+                                <a href="{{ route('lich-su-mua-hang') }}">Lịch sử mua hàng</a>
+                            </li> 
                             <li class="{{ request()->routeIs('thong-tin-ca-nhan') ? 'active' : '' }}">
                                 <a href="{{ route('thong-tin-ca-nhan') }}">Thông tin cá nhân</a>
                             </li>
@@ -69,11 +83,11 @@
                                 $user = Auth::user();
                             @endphp
 
-                            @if($user->role == 1)
+                            <!-- @if($user->role == 1)
                                 <li>
                                     <a href="#" onclick="event.preventDefault(); handleAccountDelete();">Xóa tài khoản</a>
                                 </li>
-                            @endif
+                            @endif -->
 
                             <form id="delete-account-form" action="{{ route('xoa-tai-khoan') }}" method="POST" style="display: none;">
                                 @csrf
@@ -94,7 +108,7 @@
 
         <!-- Begin: Footer -->
         <div id="footer">
-            <p class="copyright">Designed by Group 48</p>
+            <p class="copyright">Designed by M</p>
         </div>
         <!-- End: Footer -->
     </div>
@@ -109,7 +123,7 @@
         justify-content: center;
         align-items: center;
     ">
-        <img id="popup-img" src="" style="max-width:90%; max-height:90%; box-shadow: 0 0 10px #000;">
+        <img id="popup-img" src="" style="width: auto; height: 90%;">
     </div>
     <script>
         function showImage(src) {

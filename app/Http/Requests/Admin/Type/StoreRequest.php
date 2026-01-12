@@ -18,8 +18,8 @@ class StoreRequest extends FormRequest
                 'required',
                 'string',
                 'max:255',
-                'regex:/^[\p{L}\s]+$/u', // Chỉ cho chữ cái và khoảng trắng
-                'unique:types,name', // Kiểm tra trùng tên trong bảng types
+                'regex:/^[\p{L}\s]+$/u', // Chỉ chữ & khoảng trắng
+                'unique:types,name', // Không được trùng tên
             ],
         ];
     }
@@ -27,9 +27,9 @@ class StoreRequest extends FormRequest
     public function messages()
     {
         return [
-            'name.required' => 'Vui lòng nhập tên loại sân !',
-            'name.regex' => 'Tên loại sân không được chứa số hoặc ký tự đặc biệt !',
-            'name.unique' => 'Tên sân đã tồn tại, vui lòng đặt tên khác !',
+            'name.required' => 'Vui lòng nhập tên loại sân!',
+            'name.regex' => 'Tên loại sân chỉ được chứa chữ cái và khoảng trắng!',
+            'name.unique' => 'Tên loại sân đã tồn tại, vui lòng đặt tên khác!',
         ];
     }
 }

@@ -1,81 +1,108 @@
 @extends('layouts.admin')
 
-@section('title', 'Quản lý khung giờ cho thuê')
+@section('title', 'Quản lý khung giờ sân')
 
 @section('content')
-    @if(session('success'))
-        <script>
-            alert("{{ session('success') }}");
-        </script>
-    @endif
+@if(session('success'))
+    <script>alert("{{ session('success') }}");</script>
+@endif
 
-    @if(session('error'))
-        <script>
-            alert("{{ session('error') }}");
-        </script>
-    @endif
+<h2>{{ $yard->type->name ?? 'Loại sân không xác định' }} - {{ $yard->name ?? 'Không xác định' }}</h2>
 
-    <h2>{{ $yard->type->name ?? 'Loại sân không xác định' }} - {{ $yard->name ?? 'Không xác định' }}</h2>
+@php
+    $user = auth()->user();
+    $owner = $yard->user ?? null;
+    $canManage = false;
 
-    <div class="admin-top-bar">
-        @if(request('yard_id'))
-            <div class="admin-search">
-                <form method="GET" action="{{ route('quan-ly-thoi-gian-san') }}">
-                    <input type="hidden" name="yard_id" value="{{ request('yard_id') }}">
-                    <label for="date">Ngày:</label>
-                    <input type="date" id="date" name="date" value="{{ request('date', date('Y-m-d')) }}">
-                    <button class="update-btn" type="submit">Tìm kiếm</button>
-                </form>
-            </div>
-        @endif
+    if($owner) {
+        if($user->role == 0 && $owner->role == 0 && $owner->user_id == $user->user_id) {
+            // Admin xem sân do chính họ quản lý
+            $canManage = true;
+        } elseif($user->role == 2 && $owner->user_id == $user->user_id) {
+            // Chủ sân xem sân của mình
+            $canManage = true;
+        }
+        // Nhân viên role=3 luôn ẩn cột
+    }
+@endphp
 
-        @if(!$isPastDate)
-            <div class="admin-add-btn">
-                <a class="update-btn"
-                    href="{{ route('them-thoi-gian-san', ['yard_id' => request('yard_id'), 'date' => $date]) }}">
-                    Thêm khung giờ
-                </a>
-            </div>
-        @endif
+<div class="admin-top-bar">
+    <div class="admin-search">
+        <a class="update-btn" href="{{ route('quan-ly-san') }}">
+            <i class="fa-solid fa-arrow-left"></i> Quay lại
+        </a>
     </div>
 
-    <!-- Hiển thị bảng dữ liệu khi đã chọn sân và lọc theo ngày -->
-    <table id='ListCustomers'>
-        <thead>
+    @if($canManage)
+    <div class="admin-add-btn">
+        <a class="update-btn" href="{{ route('them-thoi-gian-san', ['yard_id' => $yard->yard_id]) }}">
+            Thêm khung giờ cho thuê
+        </a>
+    </div>
+    @endif
+</div>
+
+<table id="ListCustomers">
+    <thead>
+        <tr>
+            <th>STT</th>
+            <th>Khung giờ</th>
+            <th>Giá T2-T6 (đ)</th>
+            <th>Giá T7-CN (đ)</th>
+            @if($canManage)
+                <th colspan="3">Tùy chọn</th>
+            @endif
+        </tr>
+    </thead>
+    <tbody>
+        @forelse($times as $index => $time)
             <tr>
-                <th>STT</th>
-                <th>Khung giờ</th>
-                <th>Giá tiền</th>
-                @if(!$isPastDate)
-                    <th colspan="2">Tuỳ chọn</th>
+                <td>{{ $index + 1 }}</td>
+                <td>{{ \Carbon\Carbon::parse($time->start)->format('H:i') }} - {{ \Carbon\Carbon::parse($time->end)->format('H:i') }}</td>
+                <td>
+                    {{ ($time->price_weekday && $time->price_weekday > 0) 
+                        ? number_format($time->price_weekday, 0, ',', '.') . 'đ' 
+                        : 'Không cho thuê' }}
+                </td>
+                <td>
+                    {{ ($time->price_weekend && $time->price_weekend > 0) 
+                        ? number_format($time->price_weekend, 0, ',', '.') . 'đ' 
+                        : 'Không cho thuê' }}
+                </td>
+
+                @if($canManage)
+                    <td>
+                        <form method="POST" action="{{ route('cap-nhat-trang-thai-thoi-gian-dat-san', ['_id' => $time->time_id]) }}">
+                            @csrf
+                            <select name="status">
+                                <option value="0" {{ $time->status == 0 ? 'selected' : '' }}>Hiển thị</option>
+                                <option value="1" {{ $time->status == 1 ? 'selected' : '' }}>Ẩn</option>
+                            </select><br>
+                            <button type="submit" class="update-btn">Cập nhật</button>
+                        </form>
+                    </td>
+                    <td>
+                        <form method="GET" action="{{ route('cap-nhat-thoi-gian-san', ['time_id' => $time->time_id]) }}">
+                            <button type="submit" class="update-btn">Sửa</button>
+                        </form>
+                    </td>
+                    <td>
+                        <form method="POST" action="{{ route('xoa-thoi-gian-san', ['time_id' => $time->time_id]) }}"
+                              onsubmit="return confirm('Bạn có chắc chắn muốn xoá khung giờ này?')">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="delete-btn">Xóa</button>
+                        </form>
+                    </td>
                 @endif
             </tr>
-        </thead>
-        <tbody>
-            @foreach($times as $index => $time)
-                <tr>
-                    <td>{{ $index + 1 }}</td>
-                    <td>{{ $time->time }}</td>
-                    <td>{{ number_format($time->price, 0, ',', '.') }}đ</td>
-
-                    @if(!$isPastDate)
-                        <td>
-                            <form method="GET" action="{{ route('cap-nhat-thoi-gian-san', ['time_id' => $time->time_id]) }}">
-                                <button type="submit" class="update-btn">Sửa</button>
-                            </form>
-                        </td>
-                        <td>
-                            <form method="POST"
-                                action="{{ route('xoa-thoi-gian-san', ['time_id' => $time->time_id, 'yard_id' => request('yard_id')]) }}"
-                                onsubmit="return confirm('Bạn có chắc chắn muốn xoá khung giờ này?')">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="delete-btn">Xóa</button>
-                            </form>
-                        </td>
-                    @endif
-                </tr>
-            @endforeach
-        </tbody>
-    </table>
+        @empty
+            <tr>
+                <td colspan="{{ $canManage ? 7 : 4 }}" style="text-align:center;">
+                    Chưa có khung giờ nào.
+                </td>
+            </tr>
+        @endforelse
+    </tbody>
+</table>
 @endsection

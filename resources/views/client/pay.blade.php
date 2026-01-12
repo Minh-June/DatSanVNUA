@@ -3,149 +3,375 @@
 @section('title', 'Thanh toán')
 
 @section('content')
-    @if(session('success'))
-        <script>alert("{{ session('success') }}");</script>
-    @endif  
-    
-    @if(session('error'))
-        <script>alert("{{ session('error') }}");</script>
-    @endif
+@if(session('success'))
+    <script>alert("{{ session('success') }}");</script>
+@endif  
+
+@if(session('error'))
+    <script>alert("{{ session('error') }}");</script>
+@endif
 
 <div id="content" class="order-section">
     <h2 class="order-heading">THANH TOÁN</h2>
 
-    <div class="pay-content">
-        <div class="pay-information">
-            <div class="bank-account">Tài khoản ngân hàng</div>
-            <div class="bank-account">Tên tài khoản: Nguyễn Hữu Quang Minh</div>
-            <div class="bank-account">Số tài khoản: 1903 6786 8800 12</div>
-            <div class="bank-account">Ngân hàng: Techcombank</div>
-        </div>
-        <div class="pay-information">
-            <div class="bank-qr">
-                <img class="bank-qr-img" src="{{ asset('image/qr/qr.jpg') }}" alt="Mã QR"> <br>
-                Mã QR
-            </div>
-        </div>
+    {{-- Thời gian đếm ngược --}}
+    <div class="pay-method" style="margin-bottom: 20px;">
+        <p style="color:red;">Đơn của bạn còn được giữ chỗ trong</p>
+        <p id="countdown" style="color:red;">10:00</p>
     </div>
-    <div class="clear"></div>
 
-    <div class="pay-customer">
-        <h2>Thông tin đơn đặt sân</h2><br>
+    {{-- Chọn hình thức thanh toán --}}
+    <div class="pay-method" style="margin-bottom: 20px;">
+        <p>Hình thức thanh toán</p>
+        <label style="margin-right: 20px;">
+            <input type="radio" name="payment_method" value="offline" checked>
+            Thanh toán trực tiếp tại sân
+        </label>
+        <label>
+            <input type="radio" name="payment_method" value="online">
+            Thanh toán trước khi đến sân
+        </label>
+    </div>
+
+    @php
+        // Tạo orderKey riêng cho đơn hiện tại
+        $orderKey = session('current_order_key') ?? uniqid('order_');
+        session(['current_order_key' => $orderKey]);
+    @endphp
+
+    {{-- Thanh toán Offline --}}
+    <div class="pay-customer offline-group" style="margin-bottom:300px">
+        <p>Thông tin đơn đặt sân</p><br>
 
         <table id="ListCustomers">
             <thead>
-                <tr>
-                    <th>Họ và tên</th>
-                    <th>SĐT</th>
-                    <th>Ngày đặt</th>
-                    <th>Loại sân</th>
-                    <th>Tên sân</th>
-                    <th>Thời gian thuê</th>
-                    <th>Giá từng khung giờ</th>
-                    <th>Ghi chú</th>
-                </tr>
+            <tr>
+                <th>Họ và tên</th>
+                <th>SĐT</th>
+                <th>Ngày thuê</th>
+                <th>Loại sân</th>
+                <th>Tên sân</th>
+                <th>Thời gian</th>
+                <th>Giá (đ)</th>
+                <th>Ghi chú</th>
+            </tr>
             </thead>
+
             <tbody>
+            @php
+                $ordersCollection = collect($orders);
+                $groupedByOwner = $ordersCollection->groupBy('yard_owner_id');
+            @endphp
+
+            @foreach($groupedByOwner as $ownerOrders)
                 @php
-                    $totalAmount = 0;
-                    $groupedByUser = collect($orders)->groupBy(fn($o) => $o['name'] . '-' . $o['phone']);
+                    $rows = collect();
+
+                    foreach ($ownerOrders as $order) {
+                        foreach ($order['times'] as $i => $time) {
+                            $rows->push([
+                                'name' => $order['name'],
+                                'phone' => $order['phone'],
+                                'date' => $order['date'],
+                                'type_name' => $order['type_name'],
+                                'yard_name' => $order['yard_name'],
+                                'time' => $time,
+                                'price' => $order['price_per_slot'][$i] ?? 0,
+                                'notes' => $order['notes'] ?? 'Không có',
+                            ]);
+                        }
+                    }
+
+                    // sort theo ngày + giờ
+                    $rows = $rows->sortBy(function ($r) {
+                        return \Carbon\Carbon::createFromFormat(
+                            'Y-m-d H:i',
+                            $r['date'].' '.substr($r['time'], 0, 5)
+                        )->timestamp;
+                    })->values();
+
+                    // gộp theo Ngày + Tên sân
+                    $groupByDateYard = $rows->groupBy(fn($r) => $r['date'].'_'.$r['yard_name']);
+
+                    $totalAmount = $rows->sum('price');
+                    $globalRowspan = $rows->count();
+                    $firstGlobal = true;
                 @endphp
 
-                @forelse ($groupedByUser as $userGroup)
+                @foreach($groupByDateYard as $group)
                     @php
-                        $rowspanNamePhone = $userGroup->count();
-                        $firstNamePhoneRow = true;
-                        $groupedByDate = $userGroup->groupBy('date');
+                        $rowspan = $group->count();
+                        $firstRow = true;
                     @endphp
 
-                    @foreach ($groupedByDate as $date => $dateGroup)
-                        @php
-                            $rowspanDate = $dateGroup->count();
-                            $firstDateRow = true;
-                            $groupedByType = $dateGroup->groupBy('type_name');
-                        @endphp
+                    @foreach($group as $row)
+                    <tr>
+                        {{-- Họ tên + SĐT gộp toàn bộ --}}
+                        @if($firstGlobal)
+                            <td rowspan="{{ $globalRowspan }}">{{ $row['name'] }}</td>
+                            <td rowspan="{{ $globalRowspan }}">{{ $row['phone'] }}</td>
+                        @endif
 
-                        @foreach ($groupedByType as $type => $typeGroup)
-                            @php
-                                $rowspanType = $typeGroup->count();
-                                $firstTypeRow = true;
-                            @endphp
+                        {{-- Ngày thuê + Loại sân + Tên sân --}}
+                        @if($firstRow)
+                            <td rowspan="{{ $rowspan }}">
+                                {{ \Carbon\Carbon::parse($row['date'])->format('d/m/Y') }}
+                            </td>
+                            <td rowspan="{{ $rowspan }}">{{ $row['type_name'] }}</td>
+                            <td rowspan="{{ $rowspan }}">{{ $row['yard_name'] }}</td>
+                        @endif
 
-                            @foreach ($typeGroup as $order)
-                                <tr>
-                                    {{-- Gộp họ tên + SĐT --}}
-                                    @if ($firstNamePhoneRow)
-                                        <td rowspan="{{ $rowspanNamePhone }}">{{ $order['name'] }}</td>
-                                        <td rowspan="{{ $rowspanNamePhone }}">{{ $order['phone'] }}</td>
-                                        @php $firstNamePhoneRow = false; @endphp
-                                    @endif
+                        <td>{{ $row['time'] }}</td>
+                        <td>{{ number_format($row['price']) }}đ</td>
+                        <td>{{ $row['notes'] }}</td>
+                    </tr>
 
-                                    {{-- Gộp ngày đặt --}}
-                                    @if ($firstDateRow)
-                                        <td rowspan="{{ $rowspanDate }}">{{ \Carbon\Carbon::parse($date)->format('d/m/Y') }}</td>
-                                        @php $firstDateRow = false; @endphp
-                                    @endif
-
-                                    {{-- Gộp loại sân --}}
-                                    @if ($firstTypeRow)
-                                        <td class="left-align" rowspan="{{ $rowspanType }}">{{ $type }}</td>
-                                        @php $firstTypeRow = false; @endphp
-                                    @endif
-
-                                    <td class="left-align">{{ $order['yard_name'] }}</td>
-
-                                    <td>
-                                        @foreach ($order['times'] as $time)
-                                            {{ $time }}<br>
-                                        @endforeach
-                                    </td>
-
-                                    <td>
-                                        @foreach ($order['price_per_slot'] ?? [] as $price)
-                                            {{ number_format($price) }}đ<br>
-                                        @endforeach
-                                    </td>
-
-                                    <td>{{ $order['notes'] ?? 'Không có' }}</td>
-                                </tr>
-                                @php $totalAmount += $order['price'] ?? 0; @endphp
-                            @endforeach
-                        @endforeach
+                    @php
+                        $firstRow = false;
+                        $firstGlobal = false;
+                    @endphp
                     @endforeach
-                @empty
-                    <tr><td colspan="8">Không có đơn đặt sân nào.</td></tr>
-                @endforelse
-            </tbody>
+                @endforeach
 
-            @if(count($orders) > 0)
-            <tfoot>
+                {{-- Tổng tiền theo từng sân --}}
                 <tr>
-                    <td colspan="6" style="text-align: right;"><strong>Tổng tiền:</strong></td>
-                    <td colspan="2"><strong>{{ number_format($totalAmount) }}đ</strong></td>
+                    <td colspan="6" style="text-align:right;font-weight:bold;">Tổng tiền:</td>
+                    <td colspan="2" style="font-weight:bold;">
+                        {{ number_format($totalAmount) }}đ
+                    </td>
                 </tr>
-            </tfoot>
+            @endforeach
+
+            @if($groupedByOwner->isEmpty())
+            <tr>
+                <td colspan="8">Không có đơn đặt sân nào!</td>
+            </tr>
             @endif
+            </tbody>
         </table>
 
-        @if (count($orders) > 0)
-        <div class="pay-upload">
-            <p>* LƯU Ý: Nếu bạn muốn thanh toán trước<br><br>
-                Chuyển khoản ĐÚNG số tiền ở phần "Tổng tiền"<br><br>
-                Nội dung chuyển khoản: TÊN + SĐT<br><br>
-                Sau khi hoàn tất, chụp lại màn hình giao dịch và gửi ảnh bên dưới</p>
-
-            <form action="{{ route('pay.upload') }}" method="post" enctype="multipart/form-data">
-                @csrf
-                <input type="file" name="images[]" multiple accept=".jpg,.jpeg,.png"><br><br>
-                <div class="pay-btn">
-                    <button type="submit" class="order-football-btn">Xác nhận đặt sân</button>
-                </div>
-            </form>
-        </div>
-        @endif
+        {{-- Form thanh toán Offline --}}
+        <form id="offlineForm" action="{{ route('pay.offline') }}" method="post">
+            @csrf
+            <input type="hidden" name="notes" value="{{ $orders[0]['notes'] ?? 'Không có' }}">
+            <input type="hidden" name="order_key" value="{{ $orderKey }}">
+            <div class="pay-btn" style="margin-top: 20px; text-align: center;">
+                <button type="submit" class="order-football-btn">Xác nhận đặt sân</button>
+            </div>
+        </form>
     </div>
 
-    <div class="clear"></div>
+    {{-- Thanh toán Online --}}
+    <div class="pay-customer online-group" style="display:none; margin-bottom:300px">
+        <p>Thông tin đơn đặt sân</p><br>
+        <table id="ListCustomers">
+            <thead>
+            <tr>
+                <th>Họ và tên</th>
+                <th>SĐT</th>
+                <th>Ngày thuê</th>
+                <th>Loại sân</th>
+                <th>Tên sân</th>
+                <th>Thời gian</th>
+                <th>Giá (đ)</th>
+                <th>Ghi chú</th>
+                <th>Tùy chọn</th>
+            </tr>
+            </thead>
+
+            <tbody>
+            @php
+                $ordersCollection = collect($orders);
+                $groupedByOwner = $ordersCollection->groupBy('yard_owner_id');
+            @endphp
+
+            @foreach($groupedByOwner as $ownerId => $ownerOrders)
+            @php
+                $rows = collect();
+
+                foreach ($ownerOrders as $order) {
+                    foreach ($order['times'] as $i => $time) {
+                        $rows->push([
+                            'name' => $order['name'],
+                            'phone' => $order['phone'],
+                            'date' => $order['date'],
+                            'type_name' => $order['type_name'],
+                            'yard_name' => $order['yard_name'],
+                            'time' => $time,
+                            'price' => $order['price_per_slot'][$i] ?? 0,
+                            'notes' => $order['notes'] ?? 'Không có',
+                        ]);
+                    }
+                }
+
+                // sort ngày → giờ
+                $rows = $rows->sortBy(fn($r) =>
+                    \Carbon\Carbon::createFromFormat(
+                        'Y-m-d H:i',
+                        $r['date'].' '.substr($r['time'], 0, 5)
+                    )->timestamp
+                )->values();
+
+                // gộp theo ngày + sân
+                $groupByDateYard = $rows->groupBy(fn($r) => $r['date'].'_'.$r['yard_name']);
+
+                $totalAmount = $rows->sum('price');
+                $globalRowspan = $rows->count();
+                $firstGlobal = true;
+            @endphp
+
+            @foreach($groupByDateYard as $group)
+                @php
+                    $rowspan = $group->count();
+                    $firstRow = true;
+                @endphp
+
+                @foreach($group as $row)
+                <tr>
+                    {{-- Họ tên + SĐT + Thanh toán (gộp toàn chủ sân) --}}
+                    @if($firstGlobal)
+                        <td rowspan="{{ $globalRowspan }}">{{ $row['name'] }}</td>
+                        <td rowspan="{{ $globalRowspan }}">{{ $row['phone'] }}</td>
+                    @endif
+
+                    {{-- Ngày thuê + Loại sân + Tên sân --}}
+                    @if($firstRow)
+                        <td rowspan="{{ $rowspan }}">
+                            {{ \Carbon\Carbon::parse($row['date'])->format('d/m/Y') }}
+                        </td>
+                        <td rowspan="{{ $rowspan }}">{{ $row['type_name'] }}</td>
+                        <td rowspan="{{ $rowspan }}">{{ $row['yard_name'] }}</td>
+                    @endif
+
+                    <td>{{ $row['time'] }}</td>
+                    <td>{{ number_format($row['price']) }}đ</td>
+                    <td>{{ $row['notes'] }}</td>
+
+                    @if($firstGlobal)
+                        <td rowspan="{{ $globalRowspan }}">
+                            <button class="order-football-btn btn-pay"
+                                    style="font-size:17px;"
+                                    data-owner="{{ $ownerId }}">
+                                Thanh toán
+                            </button>
+                        </td>
+                    @endif
+                </tr>
+
+                @php
+                    $firstRow = false;
+                    $firstGlobal = false;
+                @endphp
+                @endforeach
+            @endforeach
+
+            {{-- Tổng tiền theo chủ sân --}}
+            <tr>
+                <td colspan="6" style="text-align:right;font-weight:bold;">Tổng tiền:</td>
+                <td colspan="3" style="font-weight:bold;">
+                    {{ number_format($totalAmount) }}đ
+                </td>
+            </tr>
+            @endforeach
+
+            @if($groupedByOwner->isEmpty())
+            <tr>
+                <td colspan="9">Không có đơn đặt sân nào!</td>
+            </tr>
+            @endif
+            </tbody>
+        </table>
+    </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const radios = document.querySelectorAll('input[name="payment_method"]');
+    const offlineGroup = document.querySelector('.offline-group');
+    const onlineGroup = document.querySelector('.online-group');
+    const countdownEl = document.getElementById('countdown');
+    const offlineForm = document.querySelector('#offlineForm');
+
+    // orderKey riêng cho đơn hiện tại
+    const orderKey = "{{ $orderKey }}";
+
+    // --- Cấu hình thời gian đếm ngược (phút) ---
+    const COUNTDOWN_MINUTES = 10;
+
+    // --- Khởi tạo layout theo radio ---
+    function updateLayout(value) {
+        if (value === 'online') {
+            offlineGroup && (offlineGroup.style.display = 'none');
+            onlineGroup && (onlineGroup.style.display = 'block');
+        } else {
+            offlineGroup && (offlineGroup.style.display = 'block');
+            onlineGroup && (onlineGroup.style.display = 'none');
+        }
+    }
+    const selectedMethod = localStorage.getItem('payment_method_' + orderKey) || document.querySelector('input[name="payment_method"]:checked').value;
+    updateLayout(selectedMethod);
+    radios.forEach(r => r.checked = (r.value === selectedMethod));
+    radios.forEach(r => {
+        r.addEventListener('change', function () {
+            updateLayout(this.value);
+            localStorage.setItem('payment_method_' + orderKey, this.value);
+        });
+    });
+
+    // --- Chuyển sang trang thanh toán ONLINE ---
+    document.querySelectorAll('.btn-pay').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            const ownerId = this.dataset.owner;
+            if(ownerId) window.location.href = `/thanh-toan/online/${ownerId}`;
+            else alert('Không tìm thấy mã chủ sân!');
+        });
+    });
+
+    // --- Countdown giữ nguyên khi chuyển sang ONLINE ---
+    let remainingTime = localStorage.getItem('payment_remaining_' + orderKey);
+    if (!remainingTime) {
+        remainingTime = COUNTDOWN_MINUTES * 60;
+    }
+    remainingTime = parseInt(remainingTime);
+
+    const timer = setInterval(() => {
+        const min = Math.floor(remainingTime / 60);
+        const sec = remainingTime % 60;
+        countdownEl.textContent = `${min.toString().padStart(2,'0')}:${sec.toString().padStart(2,'0')}`;
+
+        if (remainingTime <= 0) {
+            clearInterval(timer);
+            localStorage.removeItem('payment_remaining_' + orderKey);
+
+            // Chỉ hiện alert với 1 nút OK
+            alert("Vui lòng quay về trang chủ đặt sân !");
+            window.location.href = "{{ route('payment.timeout') }}";
+            return;
+        }
+
+        remainingTime--;
+        localStorage.setItem('payment_remaining_' + orderKey, remainingTime);
+    }, 1000);
+
+    // Dừng countdown khi submit form Offline
+    if (offlineForm) {
+        offlineForm.addEventListener('submit', function () {
+            clearInterval(timer);
+            localStorage.removeItem('payment_remaining_' + orderKey);
+            
+            // Xóa orderKey cũ trong session để lần sau tạo mới
+            fetch("{{ route('payment.timeout') }}", {
+                method: "POST",
+                headers: {
+                    "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content,
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ reset_order_key: true })
+            });
+        });
+    }
+
+});
+</script>
 @endsection

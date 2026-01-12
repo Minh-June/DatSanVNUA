@@ -9,103 +9,140 @@ use App\Models\Order;
 use App\Models\Yard;
 use App\Models\Type;
 use App\Models\Time;
-use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class OrderDetailController extends Controller
 {
     public function index(Request $request, $order_detail_id)
     {
-        $editDetail = OrderDetail::with('yard', 'order')->findOrFail($order_detail_id);
-        $order = Order::with('orderDetails.yard')->find($editDetail->order_id);
-        
-        // Lấy danh sách loại sân
+        $currentUser = auth()->user();
+        $editDetail = OrderDetail::with('yard.type', 'order')->findOrFail($order_detail_id);
+        $order = Order::with('orderDetails.yard.type')->findOrFail($editDetail->order_id);
+
         $types = Type::all();
-
-        // Lấy type_id được chọn, nếu không có thì lấy từ sân đang chỉnh sửa
         $selectedType = $request->input('type_id', $editDetail->yard->type_id ?? null);
-        
-        // Lọc danh sách sân theo loại sân nếu có chọn
-        $yards = $selectedType ? Yard::where('type_id', $selectedType)->get() : Yard::all();
 
-        // Lấy sân và ngày đang chọn (hoặc từ chi tiết cũ)
+        $yards = Yard::where('user_id', $currentUser->user_id)
+            ->when($selectedType, fn($q) => $q->where('type_id', $selectedType))
+            ->get();
+
         $selectedYard = $request->input('yard_id', $editDetail->yard_id);
         $selectedDate = $request->input('date', $editDetail->date);
 
         $timesForSelectedDate = collect();
 
-        // Nếu đã chọn sân và ngày thì lấy khung giờ khả dụng
         if ($selectedYard && $selectedDate) {
-            $bookedTimes = DB::table('order_details')
-                ->join('orders', 'order_details.order_id', '=', 'orders.order_id')
-                ->where('orders.status', 1)
-                ->where('order_details.date', $selectedDate)
-                ->where('order_details.yard_id', $selectedYard)
-                ->where('order_details.order_detail_id', '!=', $order_detail_id) // bỏ qua chi tiết hiện tại
-                ->pluck('order_details.time')
-                ->toArray();
-
-            $timesForSelectedDate = Time::where('yard_id', $selectedYard)
-                ->whereDate('date', $selectedDate)
-                ->whereNotIn('time', $bookedTimes)
-                ->get();
+            $timesForSelectedDate = $this->getAvailableTimes($selectedYard, $selectedDate);
         }
 
-        $totalPrice = $order ? $order->orderDetails->sum('price') : 0;
+        $totalPrice = $order->orderDetails->sum('price');
 
         return view('admin.orders.update', compact(
-            'order',
-            'editDetail',
-            'types',
-            'yards',
-            'selectedType',
-            'selectedYard',
-            'selectedDate',
-            'timesForSelectedDate',
-            'totalPrice'
+            'order', 'editDetail', 'types', 'yards',
+            'selectedType', 'selectedYard', 'selectedDate', 'timesForSelectedDate',
+            'totalPrice', 'currentUser'
         ));
+    }
+
+    public function getByType($type_id)
+    {
+        $currentUser = auth()->user();
+
+        $yards = Yard::where('type_id', $type_id)
+            ->where('user_id', $currentUser->user_id)
+            ->get(['yard_id', 'name']);
+
+        return response()->json($yards);
+    }
+
+    public function getTimesByYard($yard_id, $date)
+    {
+        $dayOfWeek = date('w', strtotime($date)); // 0=CN, 1=T2 ... 6=T7
+
+        // Lấy tất cả khung giờ kinh điển (is_classic = 1) của sân
+        $allTimes = Time::where('yard_id', $yard_id)
+            ->where('status', 0)       // hiển thị
+            ->where('is_classic', 1)   // chỉ khung giờ kinh điển
+            ->get()
+            ->map(function($t) use ($dayOfWeek) {
+                return [
+                    'time' => Carbon::parse($t->start)->format('H:i') . ' - ' . Carbon::parse($t->end)->format('H:i'),
+                    'price' => ($dayOfWeek == 0 || $dayOfWeek == 6) ? $t->price_weekend : $t->price_weekday
+                ];
+            });
+
+        // Lấy các khung giờ đã được đặt từ OrderDetail join với Order
+        $bookedTimes = OrderDetail::join('orders', 'order_details.order_id', '=', 'orders.order_id')
+            ->where('order_details.yard_id', $yard_id)
+            ->where('order_details.date', $date)
+            ->whereIn('orders.status', [1,3]) // ẩn các đơn đã xác nhận hoặc đặt cọc
+            ->pluck('order_details.time')
+            ->toArray();
+
+        // Lọc bỏ các khung giờ đã đặt
+        $times = collect($allTimes)
+            ->filter(fn($t) => !in_array($t['time'], $bookedTimes))
+            ->values();
+
+        return response()->json($times);
+    }
+
+    // Hàm private dùng chung để lấy khung giờ khả dụng
+    private function getAvailableTimes($yard_id, $date)
+    {
+        $dayOfWeek = date('w', strtotime($date));
+
+        // Lấy tất cả khung giờ gợi ý (is_classic = 0) và hiển thị (status = 0)
+        $allTimes = Time::where('yard_id', $yard_id)
+            ->where('status', 0)
+            ->where('is_classic', 0)
+            ->get()
+            ->map(fn($t) => [
+                'time' => Carbon::parse($t->start)->format('H:i') . ' - ' . Carbon::parse($t->end)->format('H:i'),
+                'price' => ($dayOfWeek == 0 || $dayOfWeek == 6) ? $t->price_weekend : $t->price_weekday
+            ]);
+
+        // Lấy các khung giờ đã bị đặt / đơn toàn kinh điển
+        $bookedTimes = OrderDetail::join('orders', 'order_details.order_id', '=', 'orders.order_id')
+            ->where('order_details.yard_id', $yard_id)
+            ->where('order_details.date', $date)
+            ->where(function($q){
+                $q->whereIn('orders.status', [1,3])   // đã xác nhận hoặc đặt cọc
+                ->orWhere('orders.auto_confirm', 1); // đơn toàn kinh điển
+            })
+            ->pluck('order_details.time')
+            ->toArray();
+
+        // Lọc bỏ các khung giờ đã đặt
+        return collect($allTimes)
+            ->filter(fn($t) => !in_array($t['time'], $bookedTimes))
+            ->values();
     }
 
     public function update(Request $request, $order_detail_id)
     {
         $request->validate([
-            'yard_id' => 'required|exists:yards,yard_id',
-            'date' => 'required|date',
-            'time' => 'required|string',
-            'price' => 'required|numeric',
-            'notes' => 'nullable|string',
+            'yard_id'=>'required|exists:yards,yard_id',
+            'date'=>'required|date',
+            'time'=>'required|string',
+            'price'=>'required|numeric',
+            'notes'=>'nullable|string',
         ]);
 
-        $orderDetail = OrderDetail::findOrFail($order_detail_id);
-
-        // Tổng tiền cũ của đơn
-        $order = $orderDetail->order;
+        $detail = OrderDetail::findOrFail($order_detail_id);
+        $order = $detail->order;
         $oldTotal = $order->orderDetails->sum('price');
 
-        // Cập nhật chi tiết đơn
-        $orderDetail->update([
-            'yard_id' => $request->yard_id,
-            'date' => $request->date,
-            'time' => $request->time,
-            'price' => $request->price,
-            'notes' => $request->notes,
-        ]);
+        $detail->update($request->only(['yard_id','date','time','price','notes']));
 
-        // Tính lại tổng tiền mới
-        $order->refresh();
-        $newTotal = $order->orderDetails->sum('price');
+        $diff = $order->refresh()->orderDetails->sum('price') - $oldTotal;
 
-        $diff = $newTotal - $oldTotal;
-
-        if ($diff > 0) {
-            $message = "Cập nhật chi tiết đơn thành công. Tổng tiền tăng thêm " . number_format($diff, 0, ',', '.') . "đ.";
-        } elseif ($diff < 0) {
-            $message = "Cập nhật chi tiết đơn thành công. Tổng tiền giảm " . number_format(abs($diff), 0, ',', '.') . "đ.";
-        } else {
-            $message = "Cập nhật chi tiết đơn thành công. Tổng tiền không thay đổi.";
-        }
+        $message = "Cập nhật chi tiết đơn thành công.";
+        if($diff>0) $message .= " Tổng tiền tăng thêm ".number_format($diff,0,',','.')."đ.";
+        elseif($diff<0) $message .= " Tổng tiền giảm ".number_format(abs($diff),0,',','.')."đ.";
 
         return redirect()->route('cap-nhat-chi-tiet-don', $order_detail_id)
-            ->with('price_change_message', $message);
+                         ->with('price_change_message',$message);
     }
 
     public function delete($order_detail_id)
@@ -114,16 +151,11 @@ class OrderDetailController extends Controller
         $order_id = $detail->order_id;
         $detail->delete();
 
-        // Kiểm tra nếu đơn không còn chi tiết nào nữa thì chuyển về danh sách đơn
-        $remainingDetails = OrderDetail::where('order_id', $order_id)->count();
-
-        if ($remainingDetails === 0) {
-            return redirect()->route('quan-ly-don-dat-san')
-                ->with('success', 'Đã xóa hết chi tiết đơn. Đơn này không còn chi tiết nào.');
+        $remainingDetails = OrderDetail::where('order_id',$order_id)->count();
+        if($remainingDetails===0){
+            return redirect()->route('quan-ly-don-dat-san')->with('success','Đã xóa hết chi tiết đơn.');
         }
 
-        // Nếu vẫn còn chi tiết thì quay lại trang cập nhật đơn
-        return redirect()->route('cap-nhat-don-dat-san', $order_id)
-            ->with('success', 'Đã xóa chi tiết đơn thành công!');
+        return redirect()->route('cap-nhat-chi-tiet-don',$order_id)->with('success','Đã xóa chi tiết đơn thành công!');
     }
 }

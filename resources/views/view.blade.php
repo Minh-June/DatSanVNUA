@@ -6,6 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>ĐẶT SÂN VNUA</title>
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/responsive.css') }}">
     <link rel="stylesheet" href="{{ asset('fonts/fontawesome-free-6.5.2/css/all.min.css') }}">
     <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
 </head>
@@ -13,15 +14,33 @@
     <div id="main">
         <!-- Begin: Header -->
         <div id="header">
-            <ul id="nav">
+            <ul id="nav" class="hide-on-pc">
                 <li>
-                    <a class="home-heading" href="{{ route('dang-nhap') }}" target="_top">
+                    <a class="home-heading" style="color:white;" href="{{ route('dang-nhap') }}" target="_top">
+                        <i class="fa-solid fa-house"></i>ĐẶT SÂN VNUA
+                    </a>
+                </li>
+            </ul>
+        
+            <ul id="nav" class="hide-on-mobile">
+                <li>
+                    <a class="home-heading" style="color:white;" href="{{ route('dang-nhap') }}" target="_top">
                         <i class="fa-solid fa-house"></i>TRANG CHỦ
                     </a>
                 </li>
                 <li>
                     <a class="home-heading search-btn" href="{{ route('dang-nhap') }}" onclick="alert('Vui lòng đăng nhập để sử dụng chức năng !');">
                         <i class="fa-solid fa-magnifying-glass"></i>TÌM KIẾM
+                    </a>
+                </li>
+                <li>
+                    <a class="home-heading search-btn" href="{{ route('dang-nhap') }}" onclick="alert('Vui lòng đăng nhập để sử dụng chức năng !');">
+                        <i class="fa-solid fa-cart-shopping"></i>MUA SẮM
+                    </a>
+                </li>
+                <li>
+                    <a class="home-heading search-btn" href="{{ route('dang-nhap') }}" onclick="alert('Vui lòng đăng nhập để sử dụng chức năng !');">
+                        <i class="fa-solid fa-newspaper"></i>TIN TỨC
                     </a>
                 </li>
             </ul>
@@ -101,17 +120,23 @@
                     <p>
                         <i class="fa-solid fa-phone"></i>
                         <span class="website-label">Điện thoại:</span>
-                        <a href="tel:+8424362618401" class="website-link">024(3) 62.618.401</a>
+                        <a href="tel:{{ $admin->phonenb ?? '#' }}" class="website-link">
+                            {{ $admin->phonenb ?? 'Chưa cập nhật' }}
+                        </a>
                     </p>
                     <p>
                         <i class="fa-solid fa-envelope"></i>
                         <span class="website-label">Email:</span>
-                        <a href="mailto:gdtc@vnua.edu.vn" class="website-link">gdtc@vnua.edu.vn</a>
+                        <a href="mailto:{{ $admin->email ?? '#' }}" class="website-link">
+                            {{ $admin->email ?? 'Chưa cập nhật' }}
+                        </a>
                     </p>
                     <p>
                         <i class="fa-solid fa-globe"></i>
                         <span class="website-label">Website:</span>
-                        <a href="http://gdtc.vnua.edu.vn" target="_blank" class="website-link">http://gdtc.vnua.edu.vn</a>
+                        <a href="{{ $admin->www ?? 'http://gdtc.vnua.edu.vn' }}" target="_blank" class="website-link">
+                            {{ $admin->www ?? 'Chưa cập nhật' }}
+                        </a>
                     </p>
                     <div class="contact-hour">
                         <h3>GIỜ MỞ CỬA</h3>
@@ -138,7 +163,7 @@
 
         <!-- Begin: Footer -->
         <div id="footer">
-            <p class="copyright">Designed by Group 48</p>
+            <p class="copyright">Designed by M</p>
         </div>
         <!-- End: Footer -->
          

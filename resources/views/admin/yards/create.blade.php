@@ -3,21 +3,25 @@
 @section('title', 'Thêm sân')
 
 @section('content')
-    <!-- Hiển thị thông báo -->
     @if(session('success'))
-        <script>
-            alert("{{ session('success') }}");
-        </script>
+        <script>alert("{{ session('success') }}");</script>
     @endif
 
-    <!-- Hiển thị thông báo lỗi -->
     @if ($errors->any())
-        <script>
-            alert("{{ $errors->first() }}");
-        </script>
+        <script>alert("{{ $errors->first() }}");</script>
     @endif
 
     <h2>Thêm sân mới</h2>
+
+    <div class="admin-top-bar">
+        <div class="admin-search">
+            <a class="update-btn" href="{{ route('quan-ly-san') }}">
+                <i class="fa-solid fa-arrow-left"></i> Quay lại
+            </a>
+        </div>
+
+        <div class="admin-add-btn"></div>
+    </div>
 
     <!-- Form thêm sân mới -->
     <div class="adminedit">
@@ -28,14 +32,18 @@
                 <select id="type_id" name="type_id" required>
                     <option value="">Chọn loại sân</option>
                     @foreach($types as $type)
-                        <option value="{{ $type->type_id }}">{{ $type->name }}</option>
+                        <option value="{{ $type->type_id }}" 
+                            {{ old('type_id', $yard->type_id ?? '') == $type->type_id ? 'selected' : '' }}>
+                            {{ $type->name }}
+                        </option>
                     @endforeach
                 </select>
             </div>
 
             <div class="adminedit-form-group">
                 <label for="name">Tên sân:</label>
-                <input type="text" id="name" name="name" required>
+                <input type="text" id="name" name="name" 
+                    value="{{ old('name', $yard->name ?? '') }}" required>
             </div>
 
             <div class="adminedit-button">
